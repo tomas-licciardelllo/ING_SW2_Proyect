@@ -1,2 +1,7 @@
-# ING_SW2_Proyect
-Este es un proyecto de la asignatura ingenieria de software 2
+# **PROYECTO TALLER**
+Esta es la documentación pertinente sobre el proyecto realizado por los alumnos:
+Para la asignatura de Ingenería del Software 2
+
+## PROBLEMAS OBTENIDOS
+
+## TECNOLOGÍAS USADAS
