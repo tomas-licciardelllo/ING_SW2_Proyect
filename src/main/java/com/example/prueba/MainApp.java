@@ -3,6 +3,7 @@ package com.example.prueba;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -11,8 +12,11 @@ public class MainApp extends Application {
     @Override
     public void start(Stage stage) {
         Button btn = new Button("Haz clic");
-        VBox root = new VBox(btn);
-        root.setSpacing(10);
+        //VBox root = new VBox(btn);
+        //root.setSpacing(10);
+
+        BorderPane root = new BorderPane();
+        root.setTop(Header.createHeader(stage));
 
         Scene scene = new Scene(root, 300, 200);
 
@@ -22,7 +26,9 @@ public class MainApp extends Application {
         stage.setScene(scene);
         stage.setTitle("JavaFX con CSS");
         stage.show();
-        btn.getStyleClass().add("boton-principal");
+        stage.setMaximized(true);
+        //btn.getStyleClass().add("boton-principal");
+
 
 
     }
