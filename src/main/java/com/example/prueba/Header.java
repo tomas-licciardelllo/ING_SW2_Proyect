@@ -29,9 +29,13 @@ public class Header {
         // Botones a la derecha
         Button btn1 = new Button("Trabajos");
         Button btn2 = new Button("Facturas");
+        Button btn3 = new Button("Presupuestos");
+        Button btn4 = new Button("Pagos");
         btn1.getStyleClass().add("botonHeader");
         btn2.getStyleClass().add("botonHeader");
-        HBox botones = new HBox(10, btn1, btn2);
+        btn3.getStyleClass().add("botonHeader");
+        btn4.getStyleClass().add("botonHeader");
+        HBox botones = new HBox(10, btn1, btn2, btn3, btn4);
         botones.setAlignment(Pos.CENTER_RIGHT);
         StackPane.setAlignment(botones, Pos.CENTER_RIGHT);
 
