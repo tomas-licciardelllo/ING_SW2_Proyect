@@ -1,29 +1,47 @@
-/* styles.css */
-.root {
-    -fx-background-color: #f5f5f5; /* color de fondo general */
-}
+    .root {
+        -fx-rojo: #C11720;
+        -fx-gris: #8E8D8D;
+        -fx-grisclaro: #ADADAD;
+        -fx-grisosc: #808080;
+        -fx-azul: #004E89;
+        -fx-celeste: #008AC0;
+    }
 
-.button {
-    -fx-background-color: #3498db;
-    -fx-text-fill: white;
-    -fx-font-size: 14px;
-    -fx-background-radius: 8px;
-}
+    //
+    //
 
-.button:hover {
-    -fx-background-color: #2980b9;
-}
+    .header {
+        -fx-background-color: -fx-grisclaro;
+    }
 
-.botonHeader{
-    -fx-background-color: #000000;
-    -fx-text-fill: #ffffff;
-    -fx-font-size: 20px;
-    -fx-radius: 3px;
-    -fx-font-family: "SansSerif"
-}
+    .fondo {
+        -fx-background-color: #ffffff;
+    }
 
-.titulo{
-    -fx-font-size: 30px;
-    -fx-font-weight: bold;
-    -fx-font-family: "Monospaced";
-}
+    .button:hover {
+        -fx-background-color: -fx-grisosc;
+    }
+
+    .botonHeader{
+        -fx-background-color: -fx-gris;
+        -fx-text-fill: #ffffff;
+        -fx-font-size: 25px;
+        -fx-background-radius: 10px;
+        -fx-font-family: "Livvic Regular";
+    }
+
+    .titulo{
+        -fx-font-size: 30px;
+        -fx-font-weight: bold;
+        -fx-font-family: "Livvic Black";
+        -fx-font-color: #000000;
+    }
+
+    .img-cont{
+        -fx-alignment: TOP_LEFT;
+        -fx-padding: 10px;
+    }
+
+    .img-logo {
+        -fx-effect: dropshadow(gaussian, #ADADAD, 5, 0.0, 0.0, 1.0);
+    }
