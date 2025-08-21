@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class MainApp extends Application {
@@ -12,11 +13,15 @@ public class MainApp extends Application {
     @Override
     public void start(Stage stage) {
         Button btn = new Button("Haz clic");
-        //VBox root = new VBox(btn);
-        //root.setSpacing(10);
+        Font.loadFont(getClass().getResourceAsStream("/font/Livvic-Regular.ttf"), 14);
+        Font.loadFont(getClass().getResourceAsStream("/font/Livvic-Bold.ttf"), 14);
+        Font.loadFont(getClass().getResourceAsStream("/font/Livvic-Black.ttf"), 14);
+
+
 
         BorderPane root = new BorderPane();
         root.setTop(Header.createHeader(stage));
+        root.getStyleClass().add("fondo");
 
         Scene scene = new Scene(root, 300, 200);
 
