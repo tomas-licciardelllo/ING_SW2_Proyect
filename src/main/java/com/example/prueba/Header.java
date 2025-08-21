@@ -59,7 +59,7 @@ public class Header {
 
             header.getChildren().add(logoContainer);
         } else {
-            System.out.println("❌ No se encontró la imagen en el classpath.");
+            System.out.println("ERROR! No se encontro la img");
         }
 
         // Imagen a la izquierda
