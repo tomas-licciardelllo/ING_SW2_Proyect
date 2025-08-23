@@ -7,8 +7,24 @@
         -fx-celeste: #008AC0;
     }
 
-    //
-    //
+    .cajacarga {
+        -fx-alignment: center;
+        -fx-background-color: linear-gradient(to bottom, -fx-gris, -fx-grisosc);
+        -fx-background-color: white;
+    }
+
+    .textocarga{
+        -fx-text-fill: black;
+        -fx-font-size: 20px;
+        -fx-font-family: "Livvic Regular"
+    }
+
+    .barraprogreso {
+        -fx-accent: -fx-azul;
+        -fx-control-inner-background: transparent;
+        -fx-background-radius: 15;
+        -fx-border-radius: 15;
+    }
 
     .header {
         -fx-background-color: -fx-grisclaro;
