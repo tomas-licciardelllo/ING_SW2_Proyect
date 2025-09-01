@@ -78,8 +78,9 @@ public class MainApp extends Application {
 
         launch();
         Conexion conn = new Conexion();
-        cliente PEPE = new cliente("PEPE","PEPEFON","PEPESEGUROS");
+        cliente PEPE = new cliente("PEPE3","PEPEFON2","PEPESEGUROS");
         String SQL = PEPE.insCliente();
         conn.executeSQL(SQL);
+
     }
 }

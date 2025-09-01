@@ -3,7 +3,7 @@ import java.sql.*;
 
 public class Conexion{
 
-    private static final String URL = "jdbc:sqlite:C:\\Users\\Administrator\\IdeaProjects\\ING_SW2_Proyect\\TDB.db"; // COMO LO HICE DESDE LA CLI SE CREÓ EN SYS32 NO SE PREOCUPEN, DESPUÉS CUANDO LO PONEMOS EN LA CARPETA QUEDA.
+    private static final String URL = "jdbc:sqlite:"+System.getProperty("user.dir") + "/src/main/resources/TDB.db";
     private static Connection conn = null;
 
     public Conexion (){}
@@ -41,15 +41,17 @@ public class Conexion{
 
     public void executeSQL(String SQL)
     {
-        try(Connection conn= getConnection();
-            Statement  stmnt = conn.createStatement())
+        PreparedStatement stmnt = null;
+        try
         {
-            stmnt.executeUpdate(SQL);
+            Connection conn= getConnection();
+            stmnt = conn.prepareStatement(SQL);
+            stmnt.executeUpdate();
             System.out.println("ELE TE A\n");
         }catch (SQLException e)
         {
             System.out.println("!(ELE TE A):" + e);
-            conn = closeConnection();
         }
+        conn = closeConnection();
     }
 }
