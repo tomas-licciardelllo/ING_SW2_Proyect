@@ -1,4 +1,4 @@
-package com.example.prueba;
+package clases.control;
 import java.sql.*;
 
 public class Conexion{

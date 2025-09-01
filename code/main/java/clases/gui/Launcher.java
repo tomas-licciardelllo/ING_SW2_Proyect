@@ -1,4 +1,4 @@
-package com.example.prueba;
+package clases.gui;
 
 import javafx.application.Application;
 

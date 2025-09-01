@@ -1,7 +1,5 @@
-package com.example.prueba;
+package clases.gui;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -12,8 +10,6 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.util.Duration;
-import javafx.animation.KeyValue;
 
 import java.net.URL;
 
