@@ -34,4 +34,11 @@ public class cliente {
     public void setSeguro(String seguro) {
         Seguro = seguro;
     }
+
+    public String insCliente()
+    {
+        return "INSERT INTO persona(nombre,telefono,seguro) VALUES('"
+                + nombre+"','"+Telefono+"','"+Seguro+"')";
+    }
+
 }

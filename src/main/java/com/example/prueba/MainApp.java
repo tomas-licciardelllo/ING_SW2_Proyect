@@ -77,5 +77,9 @@ public class MainApp extends Application {
     public static void main(String[] args) {
 
         launch();
+        Conexion conn = new Conexion();
+        cliente PEPE = new cliente("PEPE","PEPEFON","PEPESEGUROS");
+        String SQL = PEPE.insCliente();
+        conn.executeSQL(SQL);
     }
 }
