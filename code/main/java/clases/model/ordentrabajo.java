@@ -1,4 +1,4 @@
-package com.example.prueba;
+package clases.model;
 
 public class ordentrabajo {
 }
