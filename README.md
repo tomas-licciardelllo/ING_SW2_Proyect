@@ -1,5 +1,5 @@
 # ***Sistema "ChapAPP"***
-## *TU ALIADO EN EL TALLER*
+**TU ALIADO EN EL TALLER**
 
 ## Nosotros
 Este es el sistema hecho como parte de un proyecto final para la asignatura Ingenieria del Software II.
