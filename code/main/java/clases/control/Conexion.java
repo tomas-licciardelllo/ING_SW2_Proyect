@@ -1,4 +1,4 @@
-package clases.control;
+package main.java.clases.control;
 import java.sql.*;
 
 public class Conexion{

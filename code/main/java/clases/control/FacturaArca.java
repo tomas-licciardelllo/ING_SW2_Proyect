@@ -1,4 +1,4 @@
-package clases.control;
+package main.java.clases.control;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
