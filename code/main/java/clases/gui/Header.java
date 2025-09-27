@@ -41,7 +41,7 @@ public class Header {
         StackPane.setAlignment(botones, Pos.CENTER_RIGHT);
 
 
-        URL url = Header.class.getResource("/img/logoJD.jpg");
+        URL url = Header.class.getResource("/resources/img/logoJD.jpg");
         if (url != null) {
             Image logo = new Image(url.toExternalForm());
             ImageView logoIV = new ImageView(logo);

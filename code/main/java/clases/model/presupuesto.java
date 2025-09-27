@@ -1,8 +1,9 @@
-package main.java.clases.model;
+package clases.model;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import clases.control.*;
 
 public class presupuesto {
     private String membrete;

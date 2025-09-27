@@ -1,4 +1,4 @@
-package main.java.clases.gui;
+package clases.gui;
 
 import javafx.application.Application;
 

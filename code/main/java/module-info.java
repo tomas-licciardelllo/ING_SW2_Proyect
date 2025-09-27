@@ -4,12 +4,13 @@ module taller {
     requires java.desktop;
     requires java.net.http;
     requires java.sql;
+    requires com.google.gson;
 
     opens clases.model to javafx.fxml;
     opens clases.gui to javafx.fxml;
     opens clases.control to javafx.fxml;
 
-    exports clases.control;
     exports clases.gui;
     exports clases.model;
+    exports clases.control;
 }

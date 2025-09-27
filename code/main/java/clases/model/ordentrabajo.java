@@ -1,4 +1,4 @@
-package main.java.clases.model;
+package clases.model;
 import java.time.*;
 import java.util.List;
 

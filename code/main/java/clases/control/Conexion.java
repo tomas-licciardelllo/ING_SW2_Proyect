@@ -1,9 +1,9 @@
-package main.java.clases.control;
+package clases.control;
 import java.sql.*;
 
 public class Conexion{
 
-    private static final String URL = "jdbc:sqlite:"+System.getProperty("user.dir") + "/src/main/resources/TDB.db";
+    private static final String URL = "jdbc:sqlite:"+System.getProperty("user.dir") + "/code/main/resources/TDB.db";
     private static Connection conn = null;
 
     public Conexion (){}

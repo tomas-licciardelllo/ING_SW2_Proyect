@@ -1,4 +1,4 @@
-package main.java.clases.gui;
+package clases.gui;
 
 import javafx.animation.*;
 import javafx.application.Application;
@@ -11,14 +11,17 @@ import javafx.scene.control.ProgressBar;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.animation.PauseTransition;
+import clases.control.*;
+import clases.dao.*;
+import clases.model.*;
 
 public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) {
-        Font.loadFont(getClass().getResourceAsStream("/font/Livvic-Regular.ttf"), 14);
-        Font.loadFont(getClass().getResourceAsStream("/font/Livvic-Bold.ttf"), 14);
-        Font.loadFont(getClass().getResourceAsStream("/font/Livvic-Black.ttf"), 14);
+        Font.loadFont(getClass().getResourceAsStream("/resources/font/Livvic-Regular.ttf"), 14);
+        Font.loadFont(getClass().getResourceAsStream("/resources/font/Livvic-Bold.ttf"), 14);
+        Font.loadFont(getClass().getResourceAsStream("/resources/font/Livvic-Black.ttf"), 14);
 
         //Un poco de carga, Chiche y Lirico, ustedes opinaran
         Label cargando = new Label("INGRESANDO ...");
@@ -32,7 +35,7 @@ public class MainApp extends Application {
         carga.getStyleClass().add("cajacarga");
 
         Scene load = new Scene(carga,300,200);
-        load.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+        load.getStylesheets().add(getClass().getResource("/resources/styles.css").toExternalForm());
 
 
 
@@ -62,7 +65,7 @@ public class MainApp extends Application {
             root.getStyleClass().add("fondo");
 
             Scene principal = new Scene(root, 900, 600);
-            principal.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+            principal.getStylesheets().add(getClass().getResource("/resources/styles.css").toExternalForm());
 
             stage.setScene(principal);
             stage.setMaximized(true);

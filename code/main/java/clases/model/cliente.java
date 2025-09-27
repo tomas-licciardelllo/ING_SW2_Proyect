@@ -1,19 +1,14 @@
-package main.java.clases.model;
-
-import java.util.ArrayList;
-import java.util.List;
+package clases.model;
 
 public class cliente {
     private String nombre;
-    private String telefono;
-    private List<auto> autos;
-    private List<presupuesto> presupuestos;
+    private String Telefono;
+    private String Seguro;
 
-    public cliente(String nombre, String telefono, List<auto> autos, List<presupuesto> presupuestos) {
+    public cliente(String nombre, String telefono, String seguro) {
         this.nombre = nombre;
-        this.telefono = telefono;
-        this.autos = autos;
-        this.presupuestos = presupuestos;
+        Telefono = telefono;
+        Seguro = seguro;
     }
 
     public String getNombre() {
@@ -25,33 +20,25 @@ public class cliente {
     }
 
     public String getTelefono() {
-        return telefono;
+        return Telefono;
     }
 
     public void setTelefono(String telefono) {
-        this.telefono = telefono;
+        Telefono = telefono;
     }
 
-    public List<presupuesto> getPresupuestos() {
-        return presupuestos;
+    public String getSeguro() {
+        return Seguro;
     }
 
-    public void setPresupuestos(List<presupuesto> presupuestos) {
-        this.presupuestos = presupuestos;
+    public void setSeguro(String seguro) {
+        Seguro = seguro;
     }
 
-    public List<auto> getAutos() {
-        return autos;
-    }
-
-    public void setAutos(List<auto> autos) {
-        this.autos = autos;
-    }
-
-    /*public String insCliente()
+    public String insCliente()
     {
         return "INSERT INTO persona(nombre,telefono,seguro) VALUES('"
                 + nombre+"','"+Telefono+"','"+Seguro+"')";
-    }*/
+    }
 
 }

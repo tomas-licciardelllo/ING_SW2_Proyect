@@ -1,4 +1,4 @@
-package main.java.clases.dao;
+package clases.dao;
 
 public interface dao {
     public boolean create();
