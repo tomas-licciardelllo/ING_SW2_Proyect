@@ -1,8 +1,9 @@
-package main.java.clases.gui;
+package clases.gui;
 
 import javafx.animation.*;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -11,6 +12,12 @@ import javafx.scene.control.ProgressBar;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.animation.PauseTransition;
+import clases.control.Conexion;
+import clases.model.*;
+
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainApp extends Application {
 
@@ -32,7 +39,7 @@ public class MainApp extends Application {
         carga.getStyleClass().add("cajacarga");
 
         Scene load = new Scene(carga,300,200);
-        load.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+        load.getStylesheets().add(getClass().getResource("/resources/styles.css").toExternalForm());
 
 
 
@@ -61,8 +68,26 @@ public class MainApp extends Application {
             root.setTop(Header.createHeader(stage));
             root.getStyleClass().add("fondo");
 
+
+            // --- Aquí creamos el botón ---
+            Button btnClientes = new Button("Clientes");
+            btnClientes.setOnAction(ev -> {
+                new ClienteScreen(stage); // muestra la pantalla de clientes en el mismo Stage
+            });
+
+
+            Button btnPresupuestos = new Button("Presupuestos");
+            btnPresupuestos.setOnAction(ev->{
+                new PresupuestoScreen(stage);
+            });
+
+            // Lo ponemos en el centro (puede ser un VBox si querés agregar más elementos)
+            VBox centro = new VBox(10, btnClientes,btnPresupuestos);
+            centro.setStyle("-fx-padding: 20;");
+            root.setCenter(centro);
+
             Scene principal = new Scene(root, 900, 600);
-            principal.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+            principal.getStylesheets().add(getClass().getResource("/resources/styles.css").toExternalForm());
 
             stage.setScene(principal);
             stage.setMaximized(true);
@@ -71,12 +96,16 @@ public class MainApp extends Application {
     }
 
     public static void main(String[] args) {
-
         launch();
-        Conexion conn = new Conexion();
-        cliente PEPE = new cliente("PEPE3","PEPEFON2","PEPESEGUROS");
-        String SQL = PEPE.insCliente();
-        conn.executeSQL(SQL);
+
+        List<auto> l1 = new ArrayList<>();
+        List<parte> l2 = new ArrayList<>();
+        List<auto> l3 = new ArrayList<>();
+        List<presupuesto> l4 = new ArrayList<>();
+        l2.add(new parte(l3,"Manija"));
+        l1.add(new auto("Toyota", l2,"Corolla",2003, "css", "2993"));
+        cliente c1 = new cliente("Jorge", "1124233",l1,l4);
+        Connection conn = Conexion.getConnection();
 
     }
 }

@@ -1,4 +1,4 @@
-package main.java.clases.model;
+package clases.model;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ public class auto {
     private String patente;
     private seguro seguro;
     private List<parte> partes;
-
+    private int IdBD;
 
     //Constructor 1 sin el Seguro
     public auto(String tipo, List<parte> partes, String patente, int anio, String marca, String modelo) {
@@ -88,4 +88,8 @@ public class auto {
     public void setPartes(List<parte> partes) {
         this.partes = partes;
     }
+
+    public  void setIdBD(int id){this.IdBD = id;}
+
+    public int getIdBD(){return IdBD;}
 }

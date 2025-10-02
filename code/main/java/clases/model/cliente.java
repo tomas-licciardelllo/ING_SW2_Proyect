@@ -1,4 +1,4 @@
-package main.java.clases.model;
+package clases.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +8,7 @@ public class cliente {
     private String telefono;
     private List<auto> autos;
     private List<presupuesto> presupuestos;
-
+    private int idBD;
     public cliente(String nombre, String telefono, List<auto> autos, List<presupuesto> presupuestos) {
         this.nombre = nombre;
         this.telefono = telefono;
@@ -48,10 +48,14 @@ public class cliente {
         this.autos = autos;
     }
 
-    /*public String insCliente()
+    public  void setIdBD(int id){this.idBD = id;}
+
+    public int getIdBD(){return idBD;}
+
+    public String insCliente()
     {
-        return "INSERT INTO persona(nombre,telefono,seguro) VALUES('"
-                + nombre+"','"+Telefono+"','"+Seguro+"')";
-    }*/
+        return "INSERT INTO persona(nombre,telefono) VALUES('"
+                + nombre+"','"+telefono+"')";
+    }
 
 }

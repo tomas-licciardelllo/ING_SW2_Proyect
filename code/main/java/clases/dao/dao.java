@@ -1,8 +1,11 @@
-package main.java.clases.dao;
+package clases.dao;
 
-public interface dao {
-    public boolean create();
-    public boolean update();
-    public boolean delete();
-    public boolean read();
+import java.util.List;
+
+public interface dao<T> {
+    public boolean create(T t);
+    public boolean update(T t);
+    public boolean delete(int id);
+    public T read(int id);
+    public List<T> getAll();
 }
