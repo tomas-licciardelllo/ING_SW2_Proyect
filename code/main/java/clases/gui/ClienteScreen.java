@@ -47,11 +47,19 @@ public class ClienteScreen {
         Button btnAgregar = new Button("Agregar cliente");
         btnAgregar.getStyleClass().add("botonHeader");
 
+        Button btnVolver = new Button("Voler");
+        btnVolver.getStyleClass().add("botonvolver");
 
         btnBuscar.setOnAction(e->{
             auto nuevo = new auto("Camioneta",new ArrayList<parte>(),"HG 234 UH",2003,"Toyota", "Corolla");
             autoDao.create(nuevo);
         });
+
+       btnVolver.setOnAction(e->{
+           Stage ss = (Stage) btnVolver.getScene().getWindow();
+           stage.setScene(MainApp.mAppVolver(stage));
+        });
+
         HBox barraBusqueda = new HBox(10);
         barraBusqueda.setStyle("-fx-padding: 10; -fx-background-color: #dddddd;");
         barraBusqueda.setPrefWidth(anchoPantalla);
@@ -60,7 +68,7 @@ public class ClienteScreen {
         Region spacerIz = new Region();
         HBox.setHgrow(spacer,Priority.ALWAYS);
         HBox.setHgrow(spacerIz,Priority.ALWAYS);
-        barraBusqueda.getChildren().addAll(spacerIz,txtBuscar, btnBuscar,spacer, btnAgregar);
+        barraBusqueda.getChildren().addAll(spacerIz,txtBuscar, btnBuscar,spacer, btnAgregar,btnVolver);
 
 
         txtBuscar.prefWidthProperty().bind(barraBusqueda.widthProperty().multiply(0.6));
@@ -140,8 +148,6 @@ public class ClienteScreen {
 
             }
         });
-
-
 
 
         stage.setScene(scene);

@@ -58,6 +58,10 @@ public class PresupuestoScreen {
         VBox opc = new VBox(opcion,opcion2);
         HBox Rep = new HBox(10,opc,partes);
 
+        btnAtras.setOnAction(e ->{
+            Stage ss = (Stage) btnAtras.getScene().getWindow();
+            stage.setScene(MainApp.mAppVolver(stage));
+        });
 
         Button agrCliente = new Button("Asignar Cliente");
 

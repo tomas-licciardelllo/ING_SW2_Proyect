@@ -92,8 +92,43 @@ public class MainApp extends Application {
             stage.setScene(principal);
             stage.setMaximized(true);
         });
+
+        pausa.setOnFinished(e -> {
+            stage.setScene(mAppVolver(stage));
+            stage.setMaximized(true);
+        });
+
         pausa.play();
     }
+
+    public static Scene mAppVolver(Stage stage) {
+        BorderPane root = new BorderPane();
+        root.setTop(Header.createHeader(stage));
+        root.getStyleClass().add("fondo");
+
+        // Botón Clientes
+        Button btnClientes = new Button("Clientes");
+        btnClientes.setOnAction(ev -> {
+            new ClienteScreen(stage);
+        });
+
+        // Botón Presupuestos
+        Button btnPresupuestos = new Button("Presupuestos");
+        btnPresupuestos.setOnAction(ev -> {
+            new PresupuestoScreen(stage);
+        });
+
+        // Centro con botones
+        VBox centro = new VBox(10, btnClientes, btnPresupuestos);
+        centro.setStyle("-fx-padding: 20;");
+        root.setCenter(centro);
+
+        Scene principal = new Scene(root, 900, 600);
+        principal.getStylesheets().add(MainApp.class.getResource("/resources/styles.css").toExternalForm());
+
+        return principal;
+    }
+
 
     public static void main(String[] args) {
         launch();
