@@ -18,6 +18,10 @@ public class presupuesto {
     private ordentrabajo ordentrabajo;
     private cliente cliente;
     private auto auto;
+    //estos atributos son solo para la base de datos y el manejo de la clase en la base de datos
+    private int idPresupuesto;
+    private int id_cliente;
+    private int id_auto;
 
 
     //En el constructor no esta ni la orden ni la factura porque es 0 o más

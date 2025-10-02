@@ -1,14 +1,19 @@
 package clases.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class cliente {
     private String nombre;
-    private String Telefono;
-    private String Seguro;
-
-    public cliente(String nombre, String telefono, String seguro) {
+    private String telefono;
+    private List<auto> autos;
+    private List<presupuesto> presupuestos;
+    private int idBD;
+    public cliente(String nombre, String telefono, List<auto> autos, List<presupuesto> presupuestos) {
         this.nombre = nombre;
-        Telefono = telefono;
-        Seguro = seguro;
+        this.telefono = telefono;
+        this.autos = autos;
+        this.presupuestos = presupuestos;
     }
 
     public String getNombre() {
@@ -20,25 +25,37 @@ public class cliente {
     }
 
     public String getTelefono() {
-        return Telefono;
+        return telefono;
     }
 
     public void setTelefono(String telefono) {
-        Telefono = telefono;
+        this.telefono = telefono;
     }
 
-    public String getSeguro() {
-        return Seguro;
+    public List<presupuesto> getPresupuestos() {
+        return presupuestos;
     }
 
-    public void setSeguro(String seguro) {
-        Seguro = seguro;
+    public void setPresupuestos(List<presupuesto> presupuestos) {
+        this.presupuestos = presupuestos;
     }
+
+    public List<auto> getAutos() {
+        return autos;
+    }
+
+    public void setAutos(List<auto> autos) {
+        this.autos = autos;
+    }
+
+    public  void setIdBD(int id){this.idBD = id;}
+
+    public int getIdBD(){return idBD;}
 
     public String insCliente()
     {
-        return "INSERT INTO persona(nombre,telefono,seguro) VALUES('"
-                + nombre+"','"+Telefono+"','"+Seguro+"')";
+        return "INSERT INTO persona(nombre,telefono) VALUES('"
+                + nombre+"','"+telefono+"')";
     }
 
 }
