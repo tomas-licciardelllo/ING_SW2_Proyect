@@ -85,7 +85,5 @@ public class PresupuestoScreen {
         Scene scene = new Scene(root,anchoPantalla * 0.8, altoPantalla * 0.8);
         stage.setScene(scene);
         stage.show();
-
-
     }
 }
