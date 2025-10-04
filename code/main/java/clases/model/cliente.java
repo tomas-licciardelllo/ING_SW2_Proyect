@@ -6,6 +6,17 @@ public class cliente {
     private String Seguro;
 
     public cliente(String nombre, String telefono, String seguro) {
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class cliente {
+    private String nombre;
+    private String telefono;
+    private List<auto> autos;
+    private List<presupuesto> presupuestos;
+    private int idBD;
+    public cliente(String nombre, String telefono, List<auto> autos, List<presupuesto> presupuestos) {
         this.nombre = nombre;
         Telefono = telefono;
         Seguro = seguro;
@@ -39,6 +50,22 @@ public class cliente {
     {
         return "INSERT INTO persona(nombre,telefono,seguro) VALUES('"
                 + nombre+"','"+Telefono+"','"+Seguro+"')";
+    public List<auto> getAutos() {
+        return autos;
+    }
+
+    public void setAutos(List<auto> autos) {
+        this.autos = autos;
+    }
+
+    public  void setIdBD(int id){this.idBD = id;}
+
+    public int getIdBD(){return idBD;}
+
+    public String insCliente()
+    {
+        return "INSERT INTO persona(nombre,telefono) VALUES('"
+                + nombre+"','"+telefono+"')";
     }
 
 }

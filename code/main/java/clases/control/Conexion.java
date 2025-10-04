@@ -1,9 +1,17 @@
 package clases.control;
+import clases.gui.ClienteScreen;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import clases.model.cliente;
+
+import java.nio.file.Paths;
 import java.sql.*;
 
 public class Conexion{
 
     private static final String URL = "jdbc:sqlite:"+System.getProperty("user.dir") + "/code/main/resources/TDB.db";
+    private static final String URL = "jdbc:sqlite:" + System.getProperty("user.dir") + "/code/main/resources/TDB.db";
     private static Connection conn = null;
 
     public Conexion (){}
@@ -54,4 +62,5 @@ public class Conexion{
         }
         conn = closeConnection();
     }
+
 }
