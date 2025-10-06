@@ -3,7 +3,6 @@ package clases.gui;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -14,7 +13,7 @@ import javafx.scene.image.ImageView;
 
 import java.net.URL;
 
-public class Header extends Parent {
+public class Header {
 
     public static Node createHeader(Stage stage) {
         // Contenedor principal
