@@ -2,10 +2,9 @@ package clases.dao;
 
 import clases.control.Conexion;
 import clases.model.auto;
+import clases.model.cliente;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +49,50 @@ public class AutoDAO implements dao<auto>{
 
     @Override
     public List<auto> getAll(){
-        return  new ArrayList<auto>();
+        List<auto> lista = new ArrayList<>();
+        String sql = "SELECT aID, marca, modelo, anio, patente FROM auto";
+
+        try (Connection conn = Conexion.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                lista.add(new auto(
+                        rs.getString("marca"),
+                        new ArrayList<>(),
+                        rs.getString("patente"),
+                        rs.getInt("anio"),
+                        rs.getString("marca"),
+                        rs.getString("modelo")
+                ));
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error al obtener auto: " + e.getMessage());
+        }
+
+        return lista;
+    }
+
+    public List<Integer> getAllId(){
+        List<Integer> arr = new ArrayList<>();
+        String sql = "SELECT aID FROM auto";
+
+        try(Connection conn = Conexion.getConnection();
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql))
+        {
+            while(rs.next()){
+                arr.add(rs.getInt("aID"));
+            }
+        }
+
+        catch(SQLException e)
+        {
+            System.out.println("Error al obtener los id: " + e.getMessage());
+        }
+
+        return arr;
     }
 
 }

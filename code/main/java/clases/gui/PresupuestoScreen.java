@@ -1,5 +1,6 @@
 package clases.gui;
 
+import clases.dao.PresupuestoDAO;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -8,8 +9,11 @@ import javafx.scene.layout.*;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.w3c.dom.Text;
-
+import clases.model.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+
+import clases.dao.*;
 
 public class PresupuestoScreen {
 
@@ -20,7 +24,6 @@ public class PresupuestoScreen {
         VBox formulario = new VBox(10);
         formulario.setMinSize(300, 200);
         formulario.setMaxSize(600, 400);
-
         formulario.setStyle(
                 "-fx-padding: 20;" +
                         "-fx-background-color: #847770;" + // blanco
@@ -64,6 +67,20 @@ public class PresupuestoScreen {
         });
 
         Button agrCliente = new Button("Asignar Cliente");
+
+        btnGuardar.setOnAction(e->{
+            PresupuestoDAO pd = new PresupuestoDAO();
+            ClienteDAO cd = new ClienteDAO();
+            cliente c = cd.read(2);
+            c.setIdBD(2);
+            AutoDAO ad = new AutoDAO();
+            auto a = ad.read(1);
+            a.setIdBD(1);
+            ArrayList<String> par = new ArrayList<>();
+            par.add(partes.getValue());
+            presupuesto p = new presupuesto("",0,LocalDate.now(),par,txtTipoTrabajo.getText(),txtTipoPintura.getText(),Integer.parseInt(txtDiasTrabajo.getText()),Integer.parseInt(txtCostoTotal.getText()),c,a);
+            pd.create(p);
+        });
 
         agrCliente.setOnAction(e-> {
             new ClienteScreen(stage);

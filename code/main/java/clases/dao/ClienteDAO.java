@@ -52,7 +52,6 @@ public class ClienteDAO implements dao<cliente> {
         } catch (SQLException e) {
             System.out.println("Error al leer cliente: " + e.getMessage());
         }
-
         return c;
     }
 

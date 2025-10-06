@@ -22,7 +22,7 @@ public class PresupuestoDAO implements dao<presupuesto>{
         try (Connection conn = Conexion.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)){
             pstmt.setInt(1,p.getNumero());
-            pstmt.setDate(2, Date.valueOf(p.getFecha()));
+            pstmt.setString(2, String.valueOf(Date.valueOf(p.getFecha())));
             pstmt.setString(3,p.getRepuestos().toString());
             pstmt.setString(4,p.getTipoTrabajo());
             pstmt.setString(5,p.getTipoPintura());

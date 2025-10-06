@@ -1,6 +1,4 @@
 package clases.gui;
-
-
 import clases.dao.AutoDAO;
 import clases.dao.ClienteDAO;
 import clases.model.auto;

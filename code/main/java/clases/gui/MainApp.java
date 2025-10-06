@@ -81,8 +81,14 @@ public class MainApp extends Application {
                 new PresupuestoScreen(stage);
             });
 
+            Button btnVehiculos = new Button("Vehículos");
+            btnVehiculos.setOnAction(ev->{
+                new VehiculosScreen(stage);
+            });
+
             // Lo ponemos en el centro (puede ser un VBox si querés agregar más elementos)
             VBox centro = new VBox(10, btnClientes,btnPresupuestos);
+            centro.getChildren().add(btnVehiculos);
             centro.setStyle("-fx-padding: 20;");
             root.setCenter(centro);
 
@@ -118,8 +124,13 @@ public class MainApp extends Application {
             new PresupuestoScreen(stage);
         });
 
+        Button btnVehiculos = new Button("Vehículos");
+        btnVehiculos.setOnAction(ev->{
+            new VehiculosScreen(stage);
+        });
+
         // Centro con botones
-        VBox centro = new VBox(10, btnClientes, btnPresupuestos);
+        VBox centro = new VBox(10, btnClientes, btnPresupuestos,btnVehiculos);
         centro.setStyle("-fx-padding: 20;");
         root.setCenter(centro);
 
