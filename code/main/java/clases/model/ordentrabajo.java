@@ -3,7 +3,16 @@ import java.time.*;
 import java.util.List;
 
 public class ordentrabajo {
-    public enum Estado {Pendiente, Desarrollo, Finalizada};
+    public enum Estado {Pendiente, Desarrollo, Finalizada;
+        public static Estado fromInt(int value) {
+            return switch (value) {
+                case 1 -> Pendiente;
+                case 2 -> Desarrollo;
+                case 3 -> Finalizada;
+                default -> throw new IllegalArgumentException("Valor inválido para Estado: " + value);
+            };
+        }
+    };
 
     private Estado estado;
     private LocalDate fecha_inicio;

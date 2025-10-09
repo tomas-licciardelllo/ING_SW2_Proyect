@@ -110,7 +110,6 @@ public class ClienteDAO implements dao<cliente> {
                         new ArrayList<>()
                 ));
             }
-
         } catch (SQLException e) {
             System.out.println("Error al obtener clientes: " + e.getMessage());
         }
