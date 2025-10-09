@@ -7,8 +7,12 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import org.w3c.dom.Text;
 
+import java.io.File;
+import java.net.URL;
 import java.time.LocalDate;
 
 public class PresupuestoScreen {
@@ -54,7 +58,11 @@ public class PresupuestoScreen {
         CheckBox opcion2 = new CheckBox("Cambio");
         Button btnGuardar = new Button("Guardar");
         Button btnCancelar = new Button("Cancelar");
-        Button btnAtras = new Button("Atras");
+        System.out.println("Directorio actual: " + System.getProperty("user.dir"));
+        Image img = new Image(getClass().getResource("/img/BackwardsArrow.png").toExternalForm());
+        ImageView imageView = new ImageView(img);
+        Button btnAtras = new Button("",imageView);
+
         VBox opc = new VBox(opcion,opcion2);
         HBox Rep = new HBox(10,opc,partes);
 

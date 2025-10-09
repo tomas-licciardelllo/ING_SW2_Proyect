@@ -25,8 +25,7 @@ public class presupuesto {
 
 
     //En el constructor no esta ni la orden ni la factura porque es 0 o más
-    public presupuesto(String membrete, int numero, LocalDate fecha, ArrayList<String> repuestos, String tipoTrabajo, String tipoPintura, int diasChapa, float costoTotal, cliente cliente, auto auto) {
-        this.membrete = membrete;
+    public presupuesto(int numero, LocalDate fecha, ArrayList<String> repuestos, String tipoTrabajo, String tipoPintura, int diasChapa, float costoTotal, cliente cliente, auto auto) {
         this.numero = numero;
         this.fecha = fecha;
         this.repuestos = repuestos;
@@ -38,14 +37,14 @@ public class presupuesto {
         this.auto = auto;
     }
 
-    public String getMembrete() {
+ /*   public String getMembrete() {
         return membrete;
-    }
-
+    }*/
+/*
     public void setMembrete(String membrete) {
         this.membrete = membrete;
     }
-
+*/
     public auto getAuto() {
         return auto;
     }

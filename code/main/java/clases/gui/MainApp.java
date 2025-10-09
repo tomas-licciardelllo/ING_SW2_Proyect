@@ -16,9 +16,6 @@ import clases.control.Conexion;
 import clases.model.*;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,14 +81,8 @@ public class MainApp extends Application {
                 new PresupuestoScreen(stage);
             });
 
-
-            Button btnOrdenes = new Button("Ver ordenes");
-            btnOrdenes.setOnAction(ev->{
-
-                new OrdenScreen(stage);
-            });
             // Lo ponemos en el centro (puede ser un VBox si querés agregar más elementos)
-            VBox centro = new VBox(10, btnClientes,btnPresupuestos, btnOrdenes);
+            VBox centro = new VBox(10, btnClientes,btnPresupuestos);
             centro.setStyle("-fx-padding: 20;");
             root.setCenter(centro);
 
@@ -121,33 +112,19 @@ public class MainApp extends Application {
             new ClienteScreen(stage);
         });
 
+        Button btnMostrarPresupuesto = new Button("Mostrar Presupuesto");
+        btnMostrarPresupuesto.setOnAction(e->{
+            new MostrarPresupuestoScreen(stage);
+        });
+
         // Botón Presupuestos
         Button btnPresupuestos = new Button("Presupuestos");
         btnPresupuestos.setOnAction(ev -> {
             new PresupuestoScreen(stage);
         });
 
-        Button btnOrdenes = new Button("Ver ordenes");
-        btnOrdenes.setOnAction(ev->{
-            String sql = "INSERT INTO orden_trabajo (fecha_Fin, tareas, estado, pID, fecha_In) VALUES (?, ?, ?, ?, ?)";
-            try (Connection conn = Conexion.getConnection();
-                 PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-                stmt.setDate(1, java.sql.Date.valueOf("2025-05-28"));
-                stmt.setString(2, "Arreglar vidrios");
-                stmt.setInt(3, 1);  // estado
-                stmt.setInt(4, 2);  // pID
-                stmt.setDate(5, java.sql.Date.valueOf("2025-09-12"));
-
-                stmt.executeUpdate();
-                System.out.println("¡Hechooo chaval!");
-            } catch (SQLException ex) {
-                System.out.println("Error: " + ex.getMessage());
-            }
-            new OrdenScreen(stage);
-        });
-        // Lo ponemos en el centro (puede ser un VBox si querés agregar más elementos)
-        VBox centro = new VBox(10, btnClientes,btnPresupuestos, btnOrdenes);
+        // Centro con botones
+        VBox centro = new VBox(10, btnClientes, btnPresupuestos,btnMostrarPresupuesto);
         centro.setStyle("-fx-padding: 20;");
         root.setCenter(centro);
 

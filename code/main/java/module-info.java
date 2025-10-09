@@ -6,6 +6,7 @@ module taller {
     requires java.sql;
     requires com.google.gson;
     requires javafx.graphics;
+    requires javafx.base;
 
     opens clases.model to javafx.fxml;
     opens clases.gui to javafx.fxml;
