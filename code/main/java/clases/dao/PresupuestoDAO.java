@@ -4,13 +4,10 @@ import clases.model.auto;
 import clases.model.cliente;
 import clases.model.parte;
 import clases.model.presupuesto;
-
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class PresupuestoDAO implements dao<presupuesto>{
@@ -52,13 +49,64 @@ public class PresupuestoDAO implements dao<presupuesto>{
 
     @Override
     public presupuesto read(int id){
-        presupuesto aux = new presupuesto("f",1, LocalDate.now(), new ArrayList<String>(),"j","d",3,23,new cliente("w","2",new ArrayList<auto>(),new ArrayList<presupuesto>()),new auto("W",new ArrayList<parte>(),"w",2,"w","e"));
+        presupuesto aux = new presupuesto(1, LocalDate.now(), new ArrayList<String>(),"j","d",3,23,new cliente("w","2",new ArrayList<auto>(),new ArrayList<presupuesto>()),new auto("W",new ArrayList<parte>(),"w",2,"w","e"));
         return  aux;
     }
 
     @Override
-    public List<presupuesto> getAll(){
-        return  new ArrayList<presupuesto>();
+    public List<presupuesto> getAll() {
+        List<presupuesto> lista = new ArrayList<>();
+        String sql = "SELECT p.numero, p.fecha, p.repuestos, p.t_trabajo, p.t_pintura, p.d_chapa, p.costo_total, " +
+                "c.id AS idCliente, c.nombre AS nombreCliente, c.telefono AS telCliente " +
+                "FROM presupuesto p " +
+                "LEFT JOIN persona c ON p.id_cliente = c.id";
+
+        try (Connection conn = Conexion.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                // Crear cliente directamente desde ResultSet
+                cliente c = new cliente(
+                        rs.getString("nombreCliente"),
+                        rs.getString("telCliente"),
+                        new ArrayList<>(),
+                        new ArrayList<>()
+                );
+
+                // Parsear repuestos
+                String repuestosStr = rs.getString("repuestos");
+                ArrayList<String> repuestos = new ArrayList<>();
+                if (repuestosStr != null && !repuestosStr.isEmpty()) {
+                    repuestosStr = repuestosStr.replaceAll("\\[|\\]", "");
+                    repuestos.addAll(Arrays.asList(repuestosStr.split(", ")));
+                }
+
+                // Crear presupuesto
+                presupuesto p = new presupuesto(
+                        rs.getInt("numero"),
+                        rs.getDate("fecha").toLocalDate(),
+                        repuestos,
+                        rs.getString("t_trabajo"),
+                        rs.getString("t_pintura"),
+                        rs.getInt("d_chapa"),
+                        rs.getFloat("costo_total"),
+                        c,
+                        null
+                );
+
+                lista.add(p);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return lista;
     }
+
+
+
+
 
 }

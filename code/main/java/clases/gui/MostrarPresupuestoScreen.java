@@ -1,0 +1,108 @@
+package clases.gui;
+
+import clases.dao.AutoDAO;
+import clases.dao.ClienteDAO;
+import clases.dao.PresupuestoDAO;
+import clases.model.auto;
+import clases.model.cliente;
+import clases.model.presupuesto;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.Priority;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+public class MostrarPresupuestoScreen {
+
+    public MostrarPresupuestoScreen(Stage stage) {
+
+        // DAOs
+        PresupuestoDAO presupuestoDAO = new PresupuestoDAO();
+        ClienteDAO clienteDAO = new ClienteDAO();
+        AutoDAO autoDao = new AutoDAO();
+
+        // Traer todos los presupuestos
+        List<presupuesto> listaPresupuesto = presupuestoDAO.getAll();
+        ObservableList<presupuesto> data = FXCollections.observableArrayList(listaPresupuesto);
+
+        // Filtro y orden
+        FilteredList<presupuesto> filtroData = new FilteredList<>(data, p -> true);
+        SortedList<presupuesto> sortedData = new SortedList<>(filtroData);
+
+        // TableView
+        TableView<presupuesto> tablaPresupuesto = new TableView<>();
+        sortedData.comparatorProperty().bind(tablaPresupuesto.comparatorProperty());
+
+        // Columnas
+        TableColumn<presupuesto, Integer> nro = new TableColumn<>("Número");
+        nro.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getNumero()));
+
+        TableColumn<presupuesto, LocalDate> fecha = new TableColumn<>("Fecha");
+        fecha.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getFecha()));
+
+        TableColumn<presupuesto, String> colCliente = new TableColumn<>("Cliente");
+        colCliente.setCellValueFactory(cellData -> {
+            cliente c = cellData.getValue().getCliente();
+            return new SimpleStringProperty(c != null ? c.getNombre() : "");
+        });
+
+        TableColumn<presupuesto, String> colRepuestos = new TableColumn<>("Repuestos");
+        colRepuestos.setCellValueFactory(cellData -> {
+            ArrayList<String> lista = cellData.getValue().getRepuestos();
+            return new SimpleStringProperty(lista != null ? String.join(", ", lista) : "");
+        });
+
+        TableColumn<presupuesto, Float> cTotal = new TableColumn<>("Cantidad a abonar");
+        cTotal.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getCostoTotal()));
+
+        TableColumn<presupuesto, String> tipoTr = new TableColumn<>("Tipo de trabajo");
+        tipoTr.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTipoTrabajo()));
+
+        TableColumn<presupuesto, String> tipoPin = new TableColumn<>("Tipo de pintura");
+        tipoPin.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTipoPintura()));
+
+        TableColumn<presupuesto, Integer> cDias = new TableColumn<>("Dias de chapa");
+        cDias.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getDiasChapa()));
+
+        // Agregar columnas a la tabla
+        tablaPresupuesto.getColumns().addAll(nro, fecha, colCliente, colRepuestos, cTotal, tipoTr, tipoPin, cDias);
+
+        // Set items
+        tablaPresupuesto.setItems(sortedData);
+
+        // Barra de búsqueda placeholder
+        HBox barraBusqueda = new HBox(new Region());
+        barraBusqueda.setAlignment(Pos.CENTER);
+
+        // Panel principal
+        VBox panel = new VBox(10, tablaPresupuesto);
+        panel.setStyle("-fx-padding: 20; -fx-background-color: lightgray;");
+
+        BorderPane root = new BorderPane();
+        root.setTop(barraBusqueda);
+        root.setCenter(panel);
+
+        double anchoPantalla = Screen.getPrimary().getBounds().getWidth();
+        double altoPantalla = Screen.getPrimary().getBounds().getHeight();
+        Scene scene = new Scene(root, anchoPantalla * 0.8, altoPantalla * 0.8);
+
+        stage.setScene(scene);
+        stage.show();
+    }
+}
