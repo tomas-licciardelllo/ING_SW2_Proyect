@@ -78,7 +78,7 @@ public class PresupuestoScreen {
             a.setIdBD(1);
             ArrayList<String> par = new ArrayList<>();
             par.add(partes.getValue());
-            presupuesto p = new presupuesto("",0,LocalDate.now(),par,txtTipoTrabajo.getText(),txtTipoPintura.getText(),Integer.parseInt(txtDiasTrabajo.getText()),Integer.parseInt(txtCostoTotal.getText()),c,a);
+            presupuesto p = new presupuesto(0,LocalDate.now(),par,txtTipoTrabajo.getText(),txtTipoPintura.getText(),Integer.parseInt(txtDiasTrabajo.getText()),Integer.parseInt(txtCostoTotal.getText()),c,a);
             pd.create(p);
         });
 

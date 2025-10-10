@@ -129,8 +129,13 @@ public class MainApp extends Application {
             new VehiculosScreen(stage);
         });
 
+        Button btnMostrarPresupuesto = new Button("Mostrar Presupuesto");
+        btnMostrarPresupuesto.setOnAction(e->{
+            new MostrarPresupuestoScreen(stage);
+        });
+
         // Centro con botones
-        VBox centro = new VBox(10, btnClientes, btnPresupuestos,btnVehiculos);
+        VBox centro = new VBox(10, btnClientes, btnPresupuestos,btnVehiculos,btnMostrarPresupuesto);
         centro.setStyle("-fx-padding: 20;");
         root.setCenter(centro);
 
