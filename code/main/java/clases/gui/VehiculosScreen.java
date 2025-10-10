@@ -1,5 +1,6 @@
 package clases.gui;
 import clases.dao.AutoDAO;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -52,6 +53,13 @@ public class VehiculosScreen {
         tabalAutos.setFixedCellSize(25);
         tabalAutos.prefHeightProperty().bind(tabalAutos.fixedCellSizeProperty().multiply( javafx.beans.binding.Bindings.size(tabalAutos.getItems()).add(1)));
 
+        TableColumn<auto, String> colCliente = new TableColumn<>("Cliente");
+        colCliente.setCellValueFactory(cellData -> {
+            cliente c = cellData.getValue().getCliente();
+            return new SimpleStringProperty(c != null ? c.getNombre() : "");
+        });
+        colCliente.prefWidthProperty().bind(tabalAutos.widthProperty().multiply(0.5));
+
         TableColumn<auto, String> colMarca = new TableColumn<>("Marca");
         colMarca.setCellValueFactory(new PropertyValueFactory<>("Marca"));
         colMarca.prefWidthProperty().bind(tabalAutos.widthProperty().multiply(0.5));
@@ -74,7 +82,7 @@ public class VehiculosScreen {
         TableColumn<auto,Integer> colIdes = new TableColumn<>("id");
         colIdes.setCellValueFactory(new PropertyValueFactory<>("id"));
 
-        tabalAutos.getColumns().addAll(colMarca, colModelo,colAnio,colPatente);
+        tabalAutos.getColumns().addAll(colCliente, colMarca, colModelo,colAnio,colPatente);
 
         List<Integer> finalIdes = ides;
 
@@ -83,8 +91,17 @@ public class VehiculosScreen {
                 if(newValue == null || newValue.isEmpty()){
                     return true;
                 }
-                String lowerCaseFilter = newValue.toLowerCase();
-                return auto.getPatente().toLowerCase().contains(lowerCaseFilter);
+                String lowerCaseFilter = newValue.toLowerCase().replace(" ", "");
+
+                // Traigo el nombre del cliente si existe
+                String nombreCliente = (auto.getCliente() != null && auto.getCliente().getNombre() != null)
+                        ? auto.getCliente().getNombre().toLowerCase()
+                        : "";
+
+                return (auto.getPatente().toLowerCase().replace(" ", "").contains(lowerCaseFilter)
+                        || (auto.getMarca().toLowerCase().replace(" ", "").contains(lowerCaseFilter))
+                        || (auto.getModelo().toLowerCase().replace(" ", "").contains(lowerCaseFilter))
+                        || (nombreCliente.contains(lowerCaseFilter)));
             });
         });
 

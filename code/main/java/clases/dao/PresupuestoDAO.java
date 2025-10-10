@@ -82,10 +82,21 @@ public class PresupuestoDAO implements dao<presupuesto>{
                     repuestos.addAll(Arrays.asList(repuestosStr.split(", ")));
                 }
 
+                // Arregla el problema de la fecha
+                String fechaStr = rs.getString("fecha");
+                LocalDate fecha = null;
+                if (fechaStr != null && !fechaStr.isEmpty()) {
+                    try {
+                        fecha = LocalDate.parse(fechaStr);
+                    } catch (Exception e) {
+                        System.out.println("Fecha con formato inesperado: " + fechaStr);
+                    }
+                }
+
                 // Crear presupuesto
                 presupuesto p = new presupuesto(
                         rs.getInt("numero"),
-                        rs.getDate("fecha").toLocalDate(),
+                        fecha,
                         repuestos,
                         rs.getString("t_trabajo"),
                         rs.getString("t_pintura"),

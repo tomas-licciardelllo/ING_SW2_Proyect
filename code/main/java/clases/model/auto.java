@@ -11,6 +11,7 @@ public class auto {
     private seguro seguro;
     private List<parte> partes;
     private int IdBD;
+    private cliente cliente;
 
     //Constructor 1 sin el Seguro
     public auto(String tipo, List<parte> partes, String patente, int anio, String marca, String modelo) {
@@ -92,4 +93,8 @@ public class auto {
     public  void setIdBD(int id){this.IdBD = id;}
 
     public int getIdBD(){return IdBD;}
+
+    public cliente getCliente() {return cliente;}
+
+    public void setCliente(cliente cliente) {this.cliente = cliente;}
 }

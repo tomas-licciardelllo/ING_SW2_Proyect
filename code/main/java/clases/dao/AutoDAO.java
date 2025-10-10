@@ -50,21 +50,36 @@ public class AutoDAO implements dao<auto>{
     @Override
     public List<auto> getAll(){
         List<auto> lista = new ArrayList<>();
-        String sql = "SELECT aID, marca, modelo, anio, patente FROM auto";
+        String sql = "SELECT a.aID, a.marca, a.modelo, a.anio, a.patente, a.duenioID, " +
+                "c.id AS idCliente, c.nombre AS nombreCliente, c.telefono AS telCliente " +
+                "FROM auto a " +
+                "LEFT JOIN persona c ON a.duenioID = c.id";
 
         try (Connection conn = Conexion.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                lista.add(new auto(
+                // Crear cliente
+                cliente c = new cliente(
+                        rs.getString("nombreCliente"),
+                        rs.getString("telCliente"),
+                        new ArrayList<>(),
+                        new ArrayList<>()
+                );
+
+                auto a = new auto(
                         rs.getString("marca"),
                         new ArrayList<>(),
                         rs.getString("patente"),
                         rs.getInt("anio"),
                         rs.getString("marca"),
                         rs.getString("modelo")
-                ));
+                );
+
+                a.setCliente(c);
+                a.setIdBD(rs.getInt("aID"));
+                lista.add(a);
             }
 
         } catch (SQLException e) {
