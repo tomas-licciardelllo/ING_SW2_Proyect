@@ -51,7 +51,9 @@ public class PresupuestoScreen {
         TextField txtTipoTrabajo = new TextField();
 
         Label lblTipoPintura = new Label("Tipo de pintura:");
-        TextField txtTipoPintura = new TextField();
+        ComboBox<String> cmbTipoPintura = new ComboBox<>();
+        cmbTipoPintura.getItems().addAll("Bicapa", "Tricapa");
+        cmbTipoPintura.setPromptText("Seleccionar tipo");
 
         Label lblDiasTrabajo = new Label("Dias de chapa:");
         TextField txtDiasTrabajo = new TextField();
@@ -71,8 +73,10 @@ public class PresupuestoScreen {
         ComboBox<String> partes = new ComboBox<>();
         partes.getItems().addAll("Puerta","Espejo","Retrovisor");
         partes.setPromptText("Seleccionar Parte");
-        CheckBox opcion = new CheckBox("Reparacion");
-        CheckBox opcion2 = new CheckBox("Cambio");
+        TextField txtPanosPintura = new TextField();
+        txtPanosPintura.setPromptText("Paños");
+        txtPanosPintura.setPrefWidth(70);
+        CheckBox chkCambio = new CheckBox("Cambio");
         Button btnAgregar = new Button("Agregar");
         Button btnEliminar = new Button("Eliminar");
 
@@ -81,16 +85,6 @@ public class PresupuestoScreen {
         lista.setPrefHeight(200);
         lista.setMaxHeight(250);
 
-        opcion.selectedProperty().addListener((obs, ant, nuevo) -> {
-            if(nuevo){
-                opcion2.setSelected(false);
-            }
-        });
-        opcion2.selectedProperty().addListener((obs, ant, nuevo) -> {
-            if(nuevo){
-                opcion.setSelected(false);
-            }
-        });
         listaPartes.addListener((javafx.collections.ListChangeListener<parte>) c -> {
             calcularYActualizarTotal(listaPartes, txtCostoTotal, txtCostoDia, txtDiasTrabajo);
         });
@@ -103,22 +97,37 @@ public class PresupuestoScreen {
 
         btnAgregar.setOnAction(e->{
             String nombre = partes.getSelectionModel().getSelectedItem();
-            boolean reparacion = opcion.isSelected();
-            boolean cambio = opcion2.isSelected();
+            boolean esCambio = chkCambio.isSelected();
 
             if(nombre == null || nombre.isEmpty()){
                 mostrarAlertaAux(Alert.AlertType.WARNING, "ERROR", "Error de Selección", "Debe seleccionar una Parte");
+                return;
             }
-            if(!reparacion && !cambio){
-                mostrarAlertaAux(Alert.AlertType.WARNING, "ERROR", "Error de Selección", "Debe Seleccionar si es Cambio o Reparacion");
+
+            String panosStr = txtPanosPintura.getText().trim();
+            if (panosStr.isEmpty()) {
+                mostrarAlertaAux(Alert.AlertType.WARNING, "ERROR", "Campo Vacío", "Debe ingresar la cantidad de paños de pintura.");
+                return;
             }
+
+            float panos;
+            try {
+                panos = Float.parseFloat(panosStr);
+                if (panos < 0) {
+                    mostrarAlertaAux(Alert.AlertType.WARNING, "ERROR", "Valor Inválido", "La cantidad de paños debe ser un número positivo.");
+                    return;
+                }
+            } catch (NumberFormatException ex) {
+                mostrarAlertaAux(Alert.AlertType.WARNING, "ERROR", "Formato Inválido", "Ingrese un número válido para los paños (ej: 1 o 2.5).");
+                return;
+            }
+
             parteDAO parteDAO = new parteDAO();
-            float precio = parteDAO.obtenerPrecio(nombre);
-            parte aux = new parte(nombre, precio, reparacion, cambio);
+            parte aux = new parte(nombre, panos, esCambio);
             listaPartes.add(aux);
             partes.getSelectionModel().clearSelection();
-            opcion.setSelected(false);
-            opcion2.setSelected(false);
+            txtPanosPintura.clear();
+            chkCambio.setSelected(false);
         });
 
         btnEliminar.setOnAction(e->{
@@ -133,11 +142,8 @@ public class PresupuestoScreen {
         Button btnGuardar = new Button("Guardar");
         Button btnCancelar = new Button("Cancelar");
         Button btnAtras = new Button("Atras");
-        VBox opc = new VBox(5, opcion,opcion2);
-        opc.setPadding(new Insets(5, 0, 0, 0));
-        opc.setAlignment(Pos.CENTER);
 
-        HBox Rep = new HBox(15, partes, opc, btnAgregar);
+        HBox Rep = new HBox(10, partes, txtPanosPintura, chkCambio, btnAgregar);
         Rep.setAlignment(Pos.CENTER);
 
         HBox controlLista = new HBox(10, lista, btnEliminar);
@@ -151,8 +157,8 @@ public class PresupuestoScreen {
         Button agrCliente = new Button("Asignar Cliente");
 
         btnGuardar.setOnAction(e->{
-            if (listaPartes.isEmpty() || txtTipoTrabajo.getText().isEmpty() || txtTipoPintura.getText().isEmpty() || txtDiasTrabajo.getText().isEmpty()) {
-                mostrarAlertaAux(Alert.AlertType.ERROR, "ERROR", "Campos Faltantes", "Complete todos los campos y agregue al menos una parte.");
+            if (listaPartes.isEmpty() || txtTipoTrabajo.getText().isEmpty() || cmbTipoPintura.getValue() == null || txtDiasTrabajo.getText().isEmpty()) {
+                mostrarAlertaAux(Alert.AlertType.ERROR, "ERROR", "Campos Faltantes", "Complete todos los campos (incluyendo tipo de pintura) y agregue al menos una parte.");
                 return;
             }
 
@@ -206,7 +212,7 @@ public class PresupuestoScreen {
         contenedorCosto.getChildren().add(txtCostoTotal);
 
         formulario.getChildren().addAll(lblFecha,lblRepuestos,Rep, controlLista,
-                lblTipoTrabajo,txtTipoTrabajo,lblTipoPintura,txtTipoPintura,
+                lblTipoTrabajo,txtTipoTrabajo,lblTipoPintura,cmbTipoPintura,
                 lblDiasTrabajo,txtDiasTrabajo,lblCostoDia,txtCostoDia,
                 lblCostoTotal,contenedorCosto, acciones);
         HBox.setMargin(btnAtras, new Insets(0,8,8,0));
@@ -221,7 +227,7 @@ public class PresupuestoScreen {
     }
 
     private void calcularYActualizarTotal(ObservableList<parte> listaPartes, TextField txtTotal, TextField txtCostoChapa, TextField txtDias) {
-        float totalRepuestos = 0.0f;
+        /*float totalRepuestos = 0.0f;
         float costoManoObra = 0.0f;
         float diasChapa = 0.0f;
 
@@ -242,7 +248,7 @@ public class PresupuestoScreen {
 
         } catch (NumberFormatException ex) {
             txtTotal.setText("ERROR");
-        }
+        }*/
     }
 
     private void mostrarAlertaAux (Alert.AlertType tipo, String titulo, String encabezado, String contenido){
