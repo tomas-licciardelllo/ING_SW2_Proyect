@@ -12,6 +12,7 @@ import org.w3c.dom.Text;
 import clases.model.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import clases.dao.*;
 
@@ -80,6 +81,29 @@ public class PresupuestoScreen {
             par.add(partes.getValue());
             presupuesto p = new presupuesto(0,LocalDate.now(),par,txtTipoTrabajo.getText(),txtTipoPintura.getText(),Integer.parseInt(txtDiasTrabajo.getText()),Integer.parseInt(txtCostoTotal.getText()),c,a);
             pd.create(p);
+
+            /*
+            //EJEMPLO PARA MOSTRAR SI ACEPTA O NO EL PRESUPUESTO
+            float total = 0;
+            for(int i = 0; i < par.getItems().size(); i++){
+                total += par.get(i).
+            }
+
+            Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
+            alerta.setTitle("Confirmar Presupuesto");
+            alerta.setHeaderText("Precio del Presupuesto: $" + );
+            alerta.setContentText("¿Acepta el Presupuesto?");
+            Optional<ButtonType> resultado = alerta.showAndWait();
+
+            if(resultado.isPresent() && resultado.get() == ButtonType.OK){
+                presupuesto p = new presupuesto(0,LocalDate.now(),par,txtTipoTrabajo.getText(),txtTipoPintura.getText(),Integer.parseInt(txtDiasTrabajo.getText()),Integer.parseInt(txtCostoTotal.getText()),c,a);
+                pd.create(p);
+                OrdenScreen ordentrabajo = new OrdenScreen(stage);
+            }else{
+                stage.setScene(MainApp.mAppVolver(stage));
+            }
+            */
+
         });
 
         agrCliente.setOnAction(e-> {

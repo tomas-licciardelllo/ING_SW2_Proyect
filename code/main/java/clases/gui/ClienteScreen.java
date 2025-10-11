@@ -40,13 +40,13 @@ public class ClienteScreen {
         txtBuscar.setPromptText("Buscar cliente...");
 
         Button btnBuscar = new Button("Buscar");
-        btnBuscar.getStyleClass().add("botonbuscar");
+        btnBuscar.getStyleClass().add("btnormal");
 
-        Button btnAgregar = new Button("Agregar cliente");
-        btnAgregar.getStyleClass().add("botonHeader");
+        Button btnAgregar = new Button("Agregar");
+        btnAgregar.getStyleClass().add("btnormal");
 
-        Button btnVolver = new Button("Voler");
-        btnVolver.getStyleClass().add("botonvolver");
+        Button btnVolver = new Button("Volver");
+        btnVolver.getStyleClass().add("btnormal");
 
         btnBuscar.setOnAction(e->{
             auto nuevo = new auto("Camioneta",new ArrayList<parte>(),"HG 234 UH",2003,"Toyota", "Corolla");
@@ -142,7 +142,7 @@ public class ClienteScreen {
                 Integer id = tablaClientes.getSelectionModel().getSelectedIndex();
                 Integer idSeleccionado = finalIdes.get(id);
                 System.out.println("SE ENTRO"+id);
-                btnModificar.setOnAction(e->root.setCenter(crearPanelModificacion(root,idSeleccionado)));
+                btnModificar.setOnAction(e->root.setCenter(crearPanelModificacion(root,idSeleccionado, barraBusqueda,panel)));
 
             }
         });
@@ -153,49 +153,59 @@ public class ClienteScreen {
     }
 
 
-    private VBox crearPanelModificacion(BorderPane root, int idClienteBuscado){
-            Node aux = root.getTop();
-            root.setTop(null);
-            ClienteDAO cl = new ClienteDAO();
-            AutoDAO au = new AutoDAO();
-            //auto auxAuto = au.read()
-            cliente auxCliente = cl.read(idClienteBuscado);
-            VBox pantalla = new VBox();
-            pantalla.setMinSize(300,200);
-            pantalla.setMaxSize(600,400);
+
+    private VBox crearPanelModificacion(BorderPane root, int idClienteBuscado, HBox anterior, VBox pantallaant) {
+        Node aux = root.getTop();
+        root.setTop(null);
+        ClienteDAO cl = new ClienteDAO();
+        AutoDAO au = new AutoDAO();
+        //auto auxAuto = au.read()
+        cliente auxCliente = cl.read(idClienteBuscado);
+        VBox pantalla = new VBox();
+        pantalla.setMinSize(300,200);
+        pantalla.setMaxSize(600,400);
 
 
 
 
-            pantalla.setAlignment(Pos.CENTER);
-            Label nombre = new Label("Nombre");
-            Label telefono = new Label("Telefono");
-            Label Tipo = new Label("Tipo");
-            Label Marca = new Label("Marca");
-            Label Modelo = new Label("Modelo");
-            Label Año = new Label("Año");
-            Label Patente = new Label("Patente");
-            Label Auto = new Label("Auto");
+        pantalla.setAlignment(Pos.CENTER);
+        Label nombre = new Label("Nombre");
+        Label telefono = new Label("Telefono");
+        Label Tipo = new Label("Tipo");
+        Label Marca = new Label("Marca");
+        Label Modelo = new Label("Modelo");
+        Label Año = new Label("Año");
+        Label Patente = new Label("Patente");
+        Label Auto = new Label("Auto");
 
-            TextField nombreField = new TextField(auxCliente.getNombre());
-            TextField telefonoField = new TextField(auxCliente.getTelefono());
-            TextField tipoField = new TextField();
-            TextField marcaField = new TextField();
-            TextField modeloField = new TextField();
-            TextField añoField = new TextField();
-            TextField patenteField = new TextField();
+        TextField nombreField = new TextField(auxCliente.getNombre());
+        TextField telefonoField = new TextField(auxCliente.getTelefono());
+        TextField tipoField = new TextField();
+        TextField marcaField = new TextField();
+        TextField modeloField = new TextField();
+        TextField añoField = new TextField();
+        TextField patenteField = new TextField();
 
 
-            Button btnGuardar = new Button("Agregar +");
+        Button btnGuardar = new Button("Modificar");
+        Button btnCancelar = new Button("Cancelar");
 
-            HBox acciones = new HBox(10);
+        //Aca Guardariamos los cambios hechos
+        //btnGuardar.setOnAction(e->{})
 
-            acciones.setAlignment(Pos.CENTER);
-            pantalla.getChildren().addAll(nombre,nombreField,telefono,telefonoField,Auto,Tipo,tipoField,Marca,marcaField,Modelo,modeloField,Año,añoField,Patente,patenteField);
-            pantalla.getStyleClass().add("formulario");
-            return pantalla;
+        btnCancelar.setOnAction(e->{
+            root.setTop(anterior);
+            root.setCenter(pantallaant);
+
+        });
+
+        HBox acciones = new HBox(20, btnGuardar,btnCancelar);
+
+        acciones.setAlignment(Pos.CENTER);
+        pantalla.getChildren().addAll(nombre,nombreField,telefono,telefonoField,Auto,Tipo,tipoField,Marca,marcaField,Modelo,modeloField,Año,añoField,Patente,patenteField, acciones);
+        pantalla.getStyleClass().add("formulario");
+        return pantalla;
     }
-
     /*private VBox crearFormulario(Stage stage) {
         ClienteDAO clienteD = new ClienteDAO();
         Node n = root.getTop();

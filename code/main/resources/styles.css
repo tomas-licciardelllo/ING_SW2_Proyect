@@ -29,6 +29,7 @@
                 -fx-padding: 10;
                 -fx-background-color: white;
     }
+
     .barraprogreso {
         -fx-accent: -fx-azul;
         -fx-control-inner-background: transparent;
@@ -38,10 +39,12 @@
 
     .header {
         -fx-background-color: -fx-grisclaro;
+        -fx-min-width: 220px;
+        -fx-alignment: top-center;
     }
 
     .fondo {
-        -fx-background-color: #898989;
+        -fx-background-color: white;
     }
 
     .button:hover {
@@ -49,13 +52,26 @@
     }
 
     .botonHeader{
-        -fx-padding: 5;
+        -fx-padding: 20;
         -fx-cursor: hand;
         -fx-background-color: black;
         -fx-text-fill: #ffffff;
-        -fx-font-size: 10px;
-        -fx-background-radius: 10px;
+        -fx-font-size: 20px;
+        -fx-font-color: white;
+        -fx-background-radius: 5px;
         -fx-font-family: "Livvic Regular";
+        -fx-pref-width: 180px;
+        -fx-min-width: 180px;
+        -fx-max-width: 180px;
+        -fx-pref-height: 50px;
+    }
+
+    .btnormal{
+        -fx-cursor: hand;
+        -fx-pref-width: 70px;
+        -fx-min-width: 70px;
+        -fx-max-width: 70px;
+        -fx-pref-height: 40px;
     }
 
     .titulo{
@@ -68,6 +84,7 @@
     .img-cont{
         -fx-alignment: TOP_LEFT;
         -fx-padding: 10px;
+        -fx-border-color: black;
     }
 
     .img-logo {
