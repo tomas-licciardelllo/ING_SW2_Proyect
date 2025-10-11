@@ -4,16 +4,14 @@ import java.util.List;
 
 public class parte {
     private String nombre;
-    private float precio;
-    private boolean reparacion;
     private boolean cambio;
+    private float panioPintura;
     private presupuesto presupuesto;
     private int idPresupuesto;  //Para la base de Datos
 
-    public parte(String nombre, float precio, boolean reparacion, boolean cambio) {
+    public parte(String nombre, float panioPintura, boolean cambio) {
         this.nombre = nombre;
-        this.precio = precio;
-        this.reparacion = reparacion;
+        this.panioPintura = panioPintura;
         this.cambio = cambio;
     }
 
@@ -25,13 +23,9 @@ public class parte {
         this.nombre = nombre;
     }
 
-    public float getPrecio() {
-        return precio;
-    }
+    public float getPanioPintura(){ return panioPintura; }
 
-    public void setPrecio(float precio) {
-        this.precio = precio;
-    }
+    public void setPanioPintura(float panioPintura){ this.panioPintura = panioPintura; }
 
     public presupuesto getPresupuesto() {
         return presupuesto;
@@ -41,19 +35,16 @@ public class parte {
         this.presupuesto = presupuesto;
     }
 
-    public boolean isReparacion() {
-        return reparacion;
-    }
-
-    public void setReparacion(boolean reparacion) {
-        this.reparacion = reparacion;
-    }
-
     public boolean isCambio() {
         return cambio;
     }
 
     public void setCambio(boolean cambio) {
         this.cambio = cambio;
+    }
+
+    @Override
+    public String toString() {
+        return this.nombre; // Devuelve solo el nombre
     }
 }
