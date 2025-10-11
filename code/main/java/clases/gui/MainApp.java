@@ -43,8 +43,8 @@ public class MainApp extends Application {
         load.getStylesheets().add(getClass().getResource("/resources/styles.css").toExternalForm());
 
         // --- Animación texto ---
-        FadeTransition transicion = new FadeTransition(Duration.seconds(2), cargando);
-        transicion.setFromValue(0.2);
+        FadeTransition transicion = new FadeTransition(Duration.seconds(1), cargando);
+        transicion.setFromValue(0.1);
         transicion.setToValue(1.0);
         transicion.setCycleCount(FadeTransition.INDEFINITE);
         transicion.setAutoReverse(true);
@@ -96,8 +96,7 @@ public class MainApp extends Application {
         List<parte> l2 = new ArrayList<>();
         List<auto> l3 = new ArrayList<>();
         List<presupuesto> l4 = new ArrayList<>();
-        l2.add(new parte(l3,"Manija"));
-        l1.add(new auto("Toyota", l2,"Corolla",2003, "css", "2993"));
+        l1.add(new auto("Toyota","Corolla",2003, "css", "2993"));
         cliente c1 = new cliente("Jorge", "1124233",l1,l4);
         Connection conn = Conexion.getConnection();
 

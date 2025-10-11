@@ -9,7 +9,7 @@ public class presupuesto {
     private String membrete;
     private int numero;
     private LocalDate fecha;
-    private ArrayList<String> repuestos;
+    private List<parte> repuestos;
     private String tipoTrabajo;
     private String tipoPintura;
     private int diasChapa;
@@ -18,6 +18,7 @@ public class presupuesto {
     private ordentrabajo ordentrabajo;
     private cliente cliente;
     private auto auto;
+    private pago pago;
     //estos atributos son solo para la base de datos y el manejo de la clase en la base de datos
     private int idPresupuesto;
     private int id_cliente;
@@ -25,7 +26,7 @@ public class presupuesto {
 
 
     //En el constructor no esta ni la orden ni la factura porque es 0 o más
-    public presupuesto(int numero, LocalDate fecha, ArrayList<String> repuestos, String tipoTrabajo, String tipoPintura, int diasChapa, float costoTotal, cliente cliente, auto auto) {
+    public presupuesto(int numero, LocalDate fecha, List<parte> repuestos, String tipoTrabajo, String tipoPintura, int diasChapa, float costoTotal, cliente cliente, auto auto, pago pago) {
         this.numero = numero;
         this.fecha = fecha;
         this.repuestos = repuestos;
@@ -35,6 +36,7 @@ public class presupuesto {
         this.costoTotal = costoTotal;
         this.cliente = cliente;
         this.auto = auto;
+        this.pago = pago;
     }
 
  /*   public String getMembrete() {
@@ -101,11 +103,11 @@ public class presupuesto {
         this.diasChapa = diasChapa;
     }
 
-    public ArrayList<String> getRepuestos() {
+    public List<parte> getRepuestos() {
         return repuestos;
     }
 
-    public void setRepuestos(ArrayList<String> repuestos) {
+    public void setRepuestos(List<parte> repuestos) {
         this.repuestos = repuestos;
     }
 
@@ -131,5 +133,21 @@ public class presupuesto {
 
     public void setNumero(int numero) {
         this.numero = numero;
+    }
+
+    public pago getPago() {
+        return pago;
+    }
+
+    public void setPago(pago pago) {
+        this.pago = pago;
+    }
+
+    public String getMembrete() {
+        return membrete;
+    }
+
+    public void setMembrete(String membrete) {
+        this.membrete = membrete;
     }
 }

@@ -27,6 +27,7 @@ import javafx.stage.Stage;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MostrarPresupuestoScreen {
 
@@ -64,8 +65,12 @@ public class MostrarPresupuestoScreen {
 
         TableColumn<presupuesto, String> colRepuestos = new TableColumn<>("Repuestos");
         colRepuestos.setCellValueFactory(cellData -> {
-            ArrayList<String> lista = cellData.getValue().getRepuestos();
-            return new SimpleStringProperty(lista != null ? String.join(", ", lista) : "");
+            List<clases.model.parte> listaPartes = cellData.getValue().getRepuestos();
+            if (listaPartes == null || listaPartes.isEmpty()) {
+                return new SimpleStringProperty("");
+            }
+            String repuestosStr = listaPartes.stream().map(clases.model.parte::toString).collect(Collectors.joining(" | "));
+            return new SimpleStringProperty(repuestosStr);
         });
 
         TableColumn<presupuesto, Float> cTotal = new TableColumn<>("Cantidad a abonar");

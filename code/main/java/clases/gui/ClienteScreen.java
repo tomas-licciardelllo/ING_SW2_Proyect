@@ -49,7 +49,7 @@ public class ClienteScreen {
         btnVolver.getStyleClass().add("btnormal");
 
         btnBuscar.setOnAction(e->{
-            auto nuevo = new auto("Camioneta",new ArrayList<parte>(),"HG 234 UH",2003,"Toyota", "Corolla");
+            auto nuevo = new auto("Camioneta","HG 234 UH",2003,"Toyota", "Corolla");
             autoDao.create(nuevo);
         });
 

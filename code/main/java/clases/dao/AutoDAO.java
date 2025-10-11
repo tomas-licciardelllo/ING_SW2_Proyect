@@ -43,7 +43,7 @@ public class AutoDAO implements dao<auto>{
     @Override
     public auto read(int id){
 
-        auto aux = new auto("f",new ArrayList<>(),"p", 23,"j","d");
+        auto aux = new auto("f","p", 23,"j","d");
         return  aux;
     }
 
@@ -70,7 +70,6 @@ public class AutoDAO implements dao<auto>{
 
                 auto a = new auto(
                         rs.getString("marca"),
-                        new ArrayList<>(),
                         rs.getString("patente"),
                         rs.getInt("anio"),
                         rs.getString("marca"),

@@ -9,14 +9,12 @@ public class auto {
     private int anio;
     private String patente;
     private seguro seguro;
-    private List<parte> partes;
     private int IdBD;
     private cliente cliente;
 
     //Constructor 1 sin el Seguro
-    public auto(String tipo, List<parte> partes, String patente, int anio, String marca, String modelo) {
+    public auto(String tipo, String patente, int anio, String marca, String modelo) {
         this.tipo = tipo;
-        this.partes = partes;
         this.patente = patente;
         this.anio = anio;
         this.marca = marca;
@@ -24,9 +22,8 @@ public class auto {
     }
 
     //Constructor 2 con el Seguro
-    public auto(String tipo, List<parte> partes, seguro seguro, String patente, int anio, String modelo, String marca) {
+    public auto(String tipo, seguro seguro, String patente, int anio, String modelo, String marca) {
         this.tipo = tipo;
-        this.partes = partes;
         this.seguro = seguro;
         this.patente = patente;
         this.anio = anio;
@@ -80,14 +77,6 @@ public class auto {
 
     public void setSeguro(seguro seguro) {
         this.seguro = seguro;
-    }
-
-    public List<parte> getPartes() {
-        return partes;
-    }
-
-    public void setPartes(List<parte> partes) {
-        this.partes = partes;
     }
 
     public  void setIdBD(int id){this.IdBD = id;}
