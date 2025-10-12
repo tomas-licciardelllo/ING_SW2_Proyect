@@ -44,8 +44,9 @@ public class OrdenDAO implements dao<ordentrabajo> {
             if (rs.next()) {
                 c = new ordentrabajo(
                         estado,
-                        rs.getDate("fecha_In").toLocalDate(),
-                        rs.getDate("fecha_Fin").toLocalDate(),
+                        rs.getDate("fecha").toLocalDate(), //Le cambie el nombre
+                        //rs.getDate("fecha_Fin").toLocalDate(),
+                        LocalDate.now(),
                         p,
                         new ArrayList<tarea>()
                 );

@@ -140,7 +140,7 @@ public class PresupuestoScreen {
         });
 
         Button btnGuardar = new Button("Guardar");
-        Button btnCancelar = new Button("Cancelar");
+        Button btnLimpiar = new Button("Limpiar");
         Button btnAtras = new Button("Atras");
 
         HBox Rep = new HBox(10, partes, txtPanosPintura, chkCambio, btnAgregar);
@@ -155,6 +155,16 @@ public class PresupuestoScreen {
         });
 
         Button agrCliente = new Button("Asignar Cliente");
+
+        btnLimpiar.setOnAction(e->{
+           txtCostoTotal.clear();
+           txtCostoDia.clear();
+           txtDiasTrabajo.clear();
+           txtPanosPintura.clear();
+           txtDiasTrabajo.clear();
+           chkCambio.setSelected(false);
+           listaPartes.clear();
+        });
 
         btnGuardar.setOnAction(e->{
             if (listaPartes.isEmpty() || txtTipoTrabajo.getText().isEmpty() || cmbTipoPintura.getValue() == null || txtDiasTrabajo.getText().isEmpty()) {
@@ -173,11 +183,28 @@ public class PresupuestoScreen {
             Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
             alerta.setTitle("CONFIRMACIÓN");
             alerta.setHeaderText("Precio del Presupuesto: $" + String.format("%.2f", costoFinal));
-            alerta.setContentText("¿El CLiente acepta el Presupuesto?");
+            alerta.setContentText("¿El Cliente acepta el Presupuesto?");
             Optional<ButtonType> resultado = alerta.showAndWait();
 
             if(resultado.isPresent() && resultado.get() == ButtonType.OK){
-                //Aca ponemos la lógica para cargar todo el presupuesto nuevo
+                /*
+
+
+                Aca ponemos la lógica para cargar todo el presupuesto nuevo
+                a la Base de Datos
+
+
+                */
+                List<parte> partesnuevas = new ArrayList<>();
+                for(int i = 0; i < listaPartes.size(); i++){
+                    partesnuevas.add(listaPartes.get(i));
+                }
+
+                cliente c = new cliente("jose", "222", new ArrayList<>(), new ArrayList<>());
+                auto a = new auto("auto", "222", 2024, "audi", "tt");
+                pago p = new pago(0);
+                presupuesto presu = new presupuesto(0, LocalDate.now(), partesnuevas, txtTipoTrabajo.getText(), txtPanosPintura.getText(), Integer.parseInt(txtDiasTrabajo.getText()), Float.parseFloat(txtCostoTotal.getText()), c, a, p);
+                GenOrdenScreen generarOrden = new GenOrdenScreen(stage, presu);
             }else{ //No Acepto, volvemos al Menú
                 stage.setScene(MainApp.mAppVolver(stage));
             }
@@ -202,7 +229,7 @@ public class PresupuestoScreen {
         agrCliente.setOnAction(e-> {
             new ClienteScreen(stage);
         });
-        HBox acciones = new HBox(10, btnGuardar, btnCancelar,agrCliente);
+        HBox acciones = new HBox(10, btnGuardar, btnLimpiar,agrCliente);
         acciones.setAlignment(Pos.CENTER);
         HBox inferior = new HBox();
         Region espacio= new Region();

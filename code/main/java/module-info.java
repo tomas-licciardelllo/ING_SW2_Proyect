@@ -7,6 +7,7 @@ module taller {
     requires com.google.gson;
     requires javafx.graphics;
     requires javafx.base;
+    requires aspose.pdf;
 
     opens clases.model to javafx.fxml;
     opens clases.gui to javafx.fxml;
