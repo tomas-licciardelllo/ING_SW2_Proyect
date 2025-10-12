@@ -13,21 +13,10 @@
         -fx-background-color: white;
     }
 
-   .botonbuscar{
-        -fx-cursor: hand;
-   }
     .textocarga{
         -fx-text-fill: black;
         -fx-font-size: 20px;
         -fx-font-family: "Livvic Regular"
-    }
-    .grillacliente{
-                -fx-border-color: black;
-                -fx-border-width: 2;
-                -fx-border-radius: 10;
-                -fx-background-radius: 10;
-                -fx-padding: 10;
-                -fx-background-color: white;
     }
     .barraprogreso {
         -fx-accent: -fx-azul;
@@ -41,7 +30,6 @@
     }
 
     .fondo {
-        -fx-background-color: #898989;
     }
 
     .button:hover {
@@ -49,11 +37,7 @@
     }
 
     .botonHeader{
-        -fx-padding: 5;
-        -fx-cursor: hand;
-        -fx-background-color: black;
         -fx-text-fill: #ffffff;
-        -fx-font-size: 10px;
         -fx-background-radius: 10px;
         -fx-font-family: "Livvic Regular";
     }
@@ -72,35 +56,4 @@
 
     .img-logo {
         -fx-effect: dropshadow(gaussian, #ADADAD, 5, 0.0, 0.0, 1.0);
-    }
-
-    /* Redondear toda la TableView */
-    .table-view {
-        -fx-border-color: gray;
-        -fx-border-width: 1;
-        -fx-border-radius: 10;       /* radio del borde */
-        -fx-background-radius: 10;   /* radio del fondo */
-        -fx-background-color: white; /* color de fondo */
-    }
-
-    /* Redondear las celdas también, opcional */
-    .table-view .cell {
-        -fx-border-color: gray gray gray gray;
-        -fx-border-width: 0 1 1 0;  /* derecha y abajo */
-        -fx-background-radius: 10;  /* mismo radio que la tabla */
-    }
-    .caja{
-        -fx-padding: 10;
-         -fx-background-color: #cccccc;
-    }
-
-
-    .formulario{
-       -fx-padding: 20;
-       -fx-background-color: #ffffff;
-       -fx-background-radius: 15;
-       -fx-border-radius: 15;
-       -fx-border-color: #cccccc;
-       -fx-border-width: 1;
-       -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 10, 0, 0, 4);
     }
