@@ -106,7 +106,8 @@ public class VehiculosScreen {
         });
 
         Button btnModificar = new Button("Modificar");
-        HBox inferior = new HBox(btnModificar);
+        Button btnVolver = new Button("Volver");
+        HBox inferior = new HBox(btnModificar, btnVolver);
         inferior.setAlignment(Pos.CENTER_RIGHT);
         inferior.setPrefHeight(40);
         inferior.setSpacing(10);
@@ -138,6 +139,10 @@ public class VehiculosScreen {
                 //btnModificar.setOnAction(e->root.setCenter(crearPanelModificacion(root,idSeleccionado)));
 
             }
+        });
+
+        btnVolver.setOnAction(e -> {
+            stage.setScene(MainApp.mAppVolver(stage));
         });
 
 

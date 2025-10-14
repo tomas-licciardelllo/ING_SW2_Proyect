@@ -13,6 +13,11 @@ public class tarea {
         this.empleado = empleado;
     }
 
+    public tarea(String descripcion, empleado empleado) {
+        this.descripcion = descripcion;
+        this.empleado = empleado;
+    }
+
     public String getDescripcion() {
         return descripcion;
     }

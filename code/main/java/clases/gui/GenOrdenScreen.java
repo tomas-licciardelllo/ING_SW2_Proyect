@@ -1,7 +1,6 @@
 package clases.gui;
 import clases.dao.OrdenDAO;
-import clases.model.parte;
-import clases.model.tarea;
+import clases.model.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -12,8 +11,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import clases.model.ordentrabajo;
-import clases.model.presupuesto;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,20 +65,30 @@ public class GenOrdenScreen {
         panelBotones.setAlignment(Pos.CENTER);
 
         btnConfirmar.setOnAction(e -> {
-            /*
-
-            -- Aca creamos la orden y la guardamos en la base de datos
-
-             */
+            OrdenDAO ordenDAO = new OrdenDAO();
             List<tarea> tareas = new ArrayList<>();
-            ordentrabajo ordennueva = new ordentrabajo(ordentrabajo.Estado.Pendiente, presupuestoAprobado.getFecha(), LocalDate.now(), presupuestoAprobado, tareas);
-            generarPDF aux = new generarPDF();
-            aux.generarpdf(ordennueva);
-            Alert alerta = new Alert(Alert.AlertType.INFORMATION);
-            alerta.setTitle("Éxito");
-            alerta.setContentText("La orden de trabajo fue generada correctamente.");
-            alerta.showAndWait();
-            stage.setScene(MainApp.mAppVolver(stage));
+            //Orden de Prueba
+            empleado emp =  new empleado("Juan", 11222333);
+            tarea t = new tarea("hacer", emp);
+            tareas.add(t);
+            ordentrabajo nueva = new ordentrabajo(ordentrabajo.Estado.Pendiente, presupuestoAprobado.getFecha(), LocalDate.now(), presupuestoAprobado, tareas);
+            if(nueva.getEstado() == ordentrabajo.Estado.Pendiente && !tareas.isEmpty()){
+                ordenDAO.create(nueva);
+                generarPDF aux = new generarPDF();
+                aux.generarpdf(nueva);
+                Alert alerta = new Alert(Alert.AlertType.INFORMATION);
+                alerta.setTitle("Éxito");
+                alerta.setContentText("La orden de trabajo fue generada correctamente.");
+                alerta.showAndWait();
+                stage.setScene(MainApp.mAppVolver(stage));
+            }
+            else{
+                Alert alerta = new Alert(Alert.AlertType.ERROR);
+                alerta.setTitle("ERROR!");
+                alerta.setContentText("Hubo un problema al Cargar la Orden de Trabajo. Regresando al Menú...");
+                alerta.showAndWait();
+                stage.setScene(MainApp.mAppVolver(stage));
+            }
         });
 
         btnCancelar.setOnAction(e -> {

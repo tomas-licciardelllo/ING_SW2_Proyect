@@ -1,11 +1,8 @@
 package clases.control;
 import clases.model.ordentrabajo;
-import clases.dao.OrdenDAO;
 import clases.model.tarea;
 import com.aspose.pdf.*;
 import com.aspose.pdf.TextSegment;
-import org.w3c.dom.Text;
-import javax.swing.text.Segment;
 import java.time.format.DateTimeFormatter;
 
 public class generarPDF {
@@ -48,13 +45,11 @@ public class generarPDF {
             }
             pagina.getParagraphs().add(tablaTareas);
 
-
-
             // Aca ponemos la ruta alla en el taller, yo puse para probar
             String rutaDeGuardado = "C:\\Users\\ibane\\Desktop\\Leo\\Universidad\\Orden-" + orden.getPresupuesto().getNumero() + ".pdf"; // Ejemplo de ruta
             doc.save(rutaDeGuardado);
-
-            System.out.println("PDF generado exitosamente en: " + rutaDeGuardado);
+            // Para test
+            // System.out.println("PDF generado exitosamente en: " + rutaDeGuardado);
 
         } catch (Exception ex) {
             System.out.println("Error al generar el PDF: " + ex.getMessage());

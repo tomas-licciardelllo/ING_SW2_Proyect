@@ -67,5 +67,41 @@ public class ordentrabajo {
     public void setTareas(List<tarea> tareas) {
         this.tareas = tareas;
     }
+
+    public int getNumero() {
+        return switch(this.estado){
+            case Pendiente -> 1;
+            case Desarrollo -> 2;
+            case Finalizada -> 3;
+        };
+    }
+
+    /*
+    GETTERS Y SETTERS UNICAMENTE PARA MOSTRAR
+     */
+
+    public int getNumeroOrden() {
+        return this.presupuesto.getNumero();
+    }
+
+    public LocalDate getFechaIngreso() {
+        return this.fecha_inicio;
+    }
+
+    public String getClienteNombre() {
+        return this.presupuesto.getCliente().getNombre();
+    }
+
+    public String getVehiculoMarca() {
+        return this.presupuesto.getAuto().getMarca();
+    }
+
+    public String getVehiculoModelo() {
+        return this.presupuesto.getAuto().getModelo();
+    }
+
+    public String getVehiculoPat() {
+        return this.presupuesto.getAuto().getPatente();
+    }
 }
 

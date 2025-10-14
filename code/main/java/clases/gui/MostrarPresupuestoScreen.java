@@ -12,8 +12,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
@@ -95,9 +97,18 @@ public class MostrarPresupuestoScreen {
         HBox barraBusqueda = new HBox(new Region());
         barraBusqueda.setAlignment(Pos.CENTER);
 
+        HBox panelInferior = new HBox();
+        panelInferior.setPadding(new Insets(10, 0, 0, 0));
+        Button btnVolver = new Button("Volver");
+        btnVolver.setOnAction(event -> {
+            stage.setScene(MainApp.mAppVolver(stage));
+        });
+        panelInferior.getChildren().addAll(btnVolver);
+
         // Panel principal
         VBox panel = new VBox(10, tablaPresupuesto);
         panel.setStyle("-fx-padding: 20; -fx-background-color: lightgray;");
+        panel.getChildren().addAll(barraBusqueda, panelInferior);
 
         BorderPane root = new BorderPane();
         root.setTop(barraBusqueda);

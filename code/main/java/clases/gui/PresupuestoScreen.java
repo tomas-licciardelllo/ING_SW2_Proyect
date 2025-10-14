@@ -1,5 +1,6 @@
 package clases.gui;
 
+import clases.control.Navegar;
 import clases.dao.PresupuestoDAO;
 import clases.model.*;
 import javafx.collections.FXCollections;
@@ -264,7 +265,10 @@ public class PresupuestoScreen {
             }
         });
 
-        btnAtras.setOnAction(e -> stage.setScene(MainApp.mAppVolver(stage)));
+        btnAtras.setOnAction(e ->{
+            Scene volver = MainApp.mAppVolver(stage);
+            Navegar.volver(stage, volver, "ChapAPP");
+        });
 
         // --- ENSAMBLADO FINAL DE LA PANTALLA ---
         formulario.getChildren().addAll(
@@ -322,8 +326,10 @@ public class PresupuestoScreen {
             costoTotal = costoTotalPanos + costoChapa;
 
             // --- ACTUALIZAR CAMPOS DE TEXTO ---
-            txtTotal.setText(String.format("%.2f", costoTotal));
-            txtTotalPanos.setText(String.format("%.1f", totalPanos)); // Muestra el total de paños
+            txtTotal.setText(Float.toString(costoTotal));
+            txtTotalPanos.setText(Float.toString(totalPanos)); // Muestra el total de paños
+            //txtTotal.setText(String.format("%.2f", costoTotal));
+            //txtTotalPanos.setText(String.format("%.1f", totalPanos));
 
         } catch (NumberFormatException ex) {
             txtTotal.setText("Error");

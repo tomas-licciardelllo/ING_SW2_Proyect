@@ -14,6 +14,11 @@ public class empleado {
         this.documento = documento;
     }
 
+    public empleado(String nombre, long documento) {
+        this.nombre = nombre;
+        this.documento = documento;
+    }
+
     public String getNombre() {
         return nombre;
     }

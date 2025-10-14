@@ -3,11 +3,14 @@ package clases.gui;
 import clases.dao.OrdenDAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
@@ -33,10 +36,18 @@ public class OrdenScreen {
         tablaOrdenes.getColumns().addAll(colEstado, colFecha);
         tablaOrdenes.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
+        HBox panelInferior = new HBox();
+        panelInferior.setPadding(new Insets(10, 0, 0, 0));
+        Button btnVolver = new Button("Volver");
+        btnVolver.setOnAction(event -> {
+            stage.setScene(MainApp.mAppVolver(stage));
+        });
+        panelInferior.getChildren().addAll(btnVolver);
 
         VBox panel = new VBox(10, tablaOrdenes);
         panel.setStyle("-fx-padding: 20; -fx-background-color: lightgray;");
         VBox.setVgrow(tablaOrdenes, Priority.ALWAYS);
+        panel.getChildren().addAll(panelInferior    );
         BorderPane root = new BorderPane();
         root.setCenter(panel);
         root.getStyleClass().add("fondo");

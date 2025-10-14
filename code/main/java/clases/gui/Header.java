@@ -60,11 +60,15 @@ public class Header {
         MenuItem mostrarPresu = new MenuItem("Mostrar");
         mostrarPresu.setOnAction(ev -> new MostrarPresupuestoScreen(stage));
 
+        MenuItem impagosPresu = new MenuItem("Sin Pagar");
+        //impagosPresu.setOnAction(ev -> {});
+
         generarPresu.getStyleClass().add("botonHeader");
         mostrarPresu.getStyleClass().add("botonHeader");
+        impagosPresu.getStyleClass().add("botonHeader");
         presupuestoContexto.setStyle("-fx-background-color: transparent;");
 
-        presupuestoContexto.getItems().addAll(generarPresu, mostrarPresu);
+        presupuestoContexto.getItems().addAll(generarPresu, mostrarPresu, impagosPresu);
 
         btnPresupuestos.setOnAction(e -> {
             var bounds = btnPresupuestos.localToScreen(btnPresupuestos.getBoundsInLocal());
@@ -82,10 +86,14 @@ public class Header {
 
         ContextMenu ordenContexto = new ContextMenu();
         MenuItem mostrarOrdenes = new MenuItem("Mostrar Todas");
-        //mostrarOrdenes.setOnAction(ev -> new PresupuestoScreen(stage));
+        mostrarOrdenes.setOnAction(e -> {
+            new OrdenScreen(stage);
+        });
 
         MenuItem pendientesOrdenes = new MenuItem("Ver Pendientes");
-        //pendientesOrdenes.setOnAction(ev -> new MostrarPresupuestoScreen(stage));
+        pendientesOrdenes.setOnAction(e -> {
+            new OrdenPendienteScreen(stage);
+        });
 
         mostrarOrdenes.getStyleClass().add("botonHeader");
         pendientesOrdenes.getStyleClass().add("botonHeader");
