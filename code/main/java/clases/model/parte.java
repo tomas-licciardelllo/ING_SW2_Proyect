@@ -47,4 +47,11 @@ public class parte {
     public String toString() {
         return this.nombre; // Devuelve solo el nombre
     }
+
+    public boolean isEmpty() {
+        return false;
+    }
+    public static boolean intToBoolean (int i){
+        return i==1;
+    }
 }

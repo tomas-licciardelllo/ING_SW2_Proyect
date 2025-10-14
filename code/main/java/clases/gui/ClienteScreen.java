@@ -131,7 +131,11 @@ public class ClienteScreen {
         // 🔹 Mostrar la tabla como vista inicial
         root.setCenter(panel);
 
-        //btnAgregar.setOnAction(e->root.setCenter(crearFormulario(root,data)));
+        btnAgregar.setOnAction(e -> {
+            // Ocultamos la barra superior mientras estamos en el formulario
+            root.setTop(null);
+            root.setCenter(crearFormulario(root, data, barraBusqueda, panel));
+        });
         root.getStyleClass().add("fondo");
         // Crear escena
         Scene scene = new Scene(root, anchoPantalla * 0.8, altoPantalla * 0.8);
@@ -165,9 +169,6 @@ public class ClienteScreen {
         pantalla.setMinSize(300,200);
         pantalla.setMaxSize(600,400);
 
-
-
-
         pantalla.setAlignment(Pos.CENTER);
         Label nombre = new Label("Nombre");
         Label telefono = new Label("Telefono");
@@ -186,7 +187,6 @@ public class ClienteScreen {
         TextField añoField = new TextField();
         TextField patenteField = new TextField();
 
-
         Button btnGuardar = new Button("Modificar");
         Button btnCancelar = new Button("Cancelar");
 
@@ -199,6 +199,8 @@ public class ClienteScreen {
 
         });
 
+
+
         HBox acciones = new HBox(20, btnGuardar,btnCancelar);
 
         acciones.setAlignment(Pos.CENTER);
@@ -206,61 +208,76 @@ public class ClienteScreen {
         pantalla.getStyleClass().add("formulario");
         return pantalla;
     }
-    /*private VBox crearFormulario(Stage stage) {
+    private VBox crearFormulario(BorderPane root, ObservableList<cliente> data, Node topBar, VBox panelTabla) {
         ClienteDAO clienteD = new ClienteDAO();
-        Node n = root.getTop();
-        root.setTop(null);
-        VBox formulario = new VBox(10);
-        formulario.setMinSize(300, 200);
-        formulario.setMaxSize(600, 400);
 
+        VBox formulario = new VBox(15); // Aumenté el espaciado
+        formulario.setMaxSize(400, 300);
+        formulario.setAlignment(Pos.CENTER);
         formulario.setStyle(
                 "-fx-padding: 20;" +
-                        "-fx-background-color: #847770;" + // blanco
-                        "-fx-background-radius: 15;" +     // bordes redondeados
+                        "-fx-background-color: #f4f4f4;" +
+                        "-fx-background-radius: 15;" +
                         "-fx-border-radius: 15;" +
-                        "-fx-border-color: #cccccc;" +     // borde gris
+                        "-fx-border-color: #cccccc;" +
                         "-fx-border-width: 1;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 10, 0, 0, 4);" // sombra
+                        "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0, 0, 4);"
         );
-        formulario.setAlignment(Pos.CENTER);
 
-        Label lblNombre = new Label("Nombre:");
+        Label lblTitulo = new Label("Nuevo Cliente");
+        lblTitulo.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+
         TextField txtNombre = new TextField();
+        txtNombre.setPromptText("Nombre y Apellido");
 
-        Label lblTelefono = new Label("Teléfono:");
         TextField txtTelefono = new TextField();
+        txtTelefono.setPromptText("Número de teléfono");
 
         Button btnGuardar = new Button("Guardar");
+        btnGuardar.getStyleClass().add("btn-success"); // Un estilo diferente para guardar
+
         Button btnCancelar = new Button("Cancelar");
-        Button btnAtras = new Button("Atras");
+        btnCancelar.getStyleClass().add("btn-danger"); // Y para cancelar
 
-        HBox acciones = new HBox(10, btnGuardar, btnCancelar);
+        HBox acciones = new HBox(20, btnGuardar, btnCancelar);
         acciones.setAlignment(Pos.CENTER);
-        HBox inferior = new HBox();
-        Region espacio= new Region();
-        HBox.setHgrow(espacio,Priority.ALWAYS);
-        formulario.getChildren().addAll(lblNombre, txtNombre, lblTelefono, txtTelefono, acciones);
-        HBox.setMargin(btnAtras, new Insets(0,8,8,0));
-        inferior.getChildren().addAll(espacio,btnAtras);
 
-        root.setBottom(inferior);
+        formulario.getChildren().addAll(lblTitulo, new Label("Nombre:"), txtNombre, new Label("Teléfono:"), txtTelefono, acciones);
 
-        // Acción guardar
         btnGuardar.setOnAction(e -> {
-            cliente nuevo = new cliente(txtNombre.getText(), txtTelefono.getText(), new ArrayList<>(),new ArrayList<>());
-            // Agregar al DAO y refrescar la tabla
-            data.add(nuevo);
-            // acá también podés llamar a clienteDAO.insert(nuevo);
-            clienteD.create(nuevo);
-            // Volver a mostrar la tabla
-            root.setCenter(ClienteScreen());
+            String nombre = txtNombre.getText();
+            String telefono = txtTelefono.getText();
+
+            // Validación simple para no guardar clientes vacíos
+            if (nombre == null || nombre.trim().isEmpty() || telefono == null || telefono.trim().isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error de Validación");
+                alert.setHeaderText(null);
+                alert.setContentText("El nombre y el teléfono no pueden estar vacíos.");
+                alert.showAndWait();
+                return; // Detiene la ejecución si hay un error
+            }
+
+            cliente nuevoCliente = new cliente(nombre, telefono, new ArrayList<>(), new ArrayList<>());
+
+            // 1. Guardar en la base de datos
+            clienteD.create(nuevoCliente);
+
+            // 2. Agregar a la lista observable (esto refresca la tabla automáticamente)
+            data.add(nuevoCliente);
+
+            // 3. Restaurar la vista principal
+            root.setTop(topBar);
+            root.setCenter(panelTabla);
         });
 
-        // Acción cancelar → volver a la tabla
-        btnCancelar.setOnAction(e ->  {root.setCenter(crearPanelCentral(data, root)); root.setBottom(null);root.setTop(n);});
-        btnAtras.setOnAction(e -> {root.setCenter(crearPanelCentral(data, root)); root.setBottom(null);root.setTop(n);});
+        btnCancelar.setOnAction(e -> {
+            // Simplemente restauramos la vista principal sin guardar nada
+            root.setTop(topBar);
+            root.setCenter(panelTabla);
+        });
+
         return formulario;
-    }*/
+    }
 
 }

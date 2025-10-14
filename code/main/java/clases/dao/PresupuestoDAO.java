@@ -12,19 +12,18 @@ public class PresupuestoDAO implements dao<presupuesto>{
 
     @Override
     public boolean create(presupuesto p){
-        String sql = "INSERT INTO presupuesto(numero,fecha,repuestos,t_trabajo,t_pintura,d_chapa,costo_total,id_cliente,id_auto) VALUES (?,?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO presupuesto(fecha,repuestos,t_trabajo,t_pintura,d_chapa,costo_total,id_cliente,id_auto) VALUES (?,?,?,?,?,?,?,?)";
 
         try (Connection conn = Conexion.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)){
-            pstmt.setInt(1,p.getNumero());
-            pstmt.setString(2, String.valueOf(Date.valueOf(p.getFecha())));
-            pstmt.setString(3,p.getRepuestos().toString());
-            pstmt.setString(4,p.getTipoTrabajo());
-            pstmt.setString(5,p.getTipoPintura());
-            pstmt.setString(6, String.valueOf(p.getDiasChapa()));
-            pstmt.setFloat(7,p.getCostoTotal());
-            pstmt.setInt(8,p.getCliente().getIdBD());
-            pstmt.setInt(9,p.getAuto().getIdBD());
+            pstmt.setString(1, String.valueOf(Date.valueOf(p.getFecha())));
+            pstmt.setString(2,p.getRepuestos().toString());
+            pstmt.setString(3,p.getTipoTrabajo());
+            pstmt.setString(4,p.getTipoPintura());
+            pstmt.setString(5, String.valueOf(p.getDiasChapa()));
+            pstmt.setFloat(6,p.getCostoTotal());
+            pstmt.setInt(7,p.getCliente().getIdBD());
+            pstmt.setInt(8,p.getAuto().getIdBD());
             pstmt.executeUpdate();
             return  true;
 
@@ -57,16 +56,24 @@ public class PresupuestoDAO implements dao<presupuesto>{
     }
 
     @Override
-    public List<presupuesto> getAll(){
+    /*public List<presupuesto> getAll(){
         return null;
-    }
-    /*
+    }*/
+
     public List<presupuesto> getAll() {
         List<presupuesto> lista = new ArrayList<>();
-        String sql = "SELECT p.numero, p.fecha, p.repuestos, p.t_trabajo, p.t_pintura, p.d_chapa, p.costo_total, " +
-                "c.id AS idCliente, c.nombre AS nombreCliente, c.telefono AS telCliente " +
-                "FROM presupuesto p " +
-                "LEFT JOIN persona c ON p.id_cliente = c.id";
+        String sql = """
+        SELECT 
+        p.idPresupuesto, p.fecha, p.t_trabajo, p.t_pintura, p.d_chapa, p.costo_total,
+        c.id AS idCliente, c.nombre AS nombreCliente, c.telefono AS telCliente,
+        au.aID AS idAuto, au.tipo AS tipoAuto, au.patente AS patenteAuto, 
+        au.anio AS anioAuto, au.marca AS marcaAuto, au.modelo AS modeloAuto,
+        pa.nombre AS nombreParte, pa.paniopint AS panioPint, pa.cambio AS cambioParte
+        FROM presupuesto p
+        LEFT JOIN persona c ON p.id_cliente = c.id
+        LEFT JOIN auto au ON au.aID = p.id_auto
+        LEFT JOIN parte pa ON pa.idPresupuesto = p.idPresupuesto
+        """;
 
         try (Connection conn = Conexion.getConnection();
              Statement stmt = conn.createStatement();
@@ -80,15 +87,22 @@ public class PresupuestoDAO implements dao<presupuesto>{
                         new ArrayList<>(),
                         new ArrayList<>()
                 );
-
-                 Parsear repuestos
-                parte repuestosStr = new parte(rs.getString("repuestos"));
-                ArrayList<String> repuestos = new ArrayList<>();
-                if (repuestosStr != null && !repuestosStr.isEmpty()) {
-                    repuestosStr = repuestosStr.replaceAll("\\[|\\]", "");
-                    repuestos.addAll(Arrays.asList(repuestosStr.split(", ")));
-                }
-
+                // Crear parte
+                List <parte> par = new ArrayList<>();
+                parte repuestosStr = new parte(
+                        rs.getString("nombreParte"),
+                        rs.getFloat("panioPint"),
+                        parte.intToBoolean(rs.getInt("cambioParte"))
+                );
+                par.add(repuestosStr);
+                //
+                auto au = new auto(
+                        rs.getString("tipoAuto"),
+                        rs.getString("patenteAuto"),
+                        rs.getInt("anioAuto"),
+                        rs.getString("marcaAuto"),
+                        rs.getString("modeloAuto")
+                );
                 // Arregla el problema de la fecha
                 String fechaStr = rs.getString("fecha");
                 LocalDate fecha = null;
@@ -102,14 +116,15 @@ public class PresupuestoDAO implements dao<presupuesto>{
 
                 // Crear presupuesto
                 presupuesto p = new presupuesto(
-                        rs.getInt("numero"),
+                        rs.getInt("idPresupuesto"),
                         fecha,
-                        repuestos,
+                        par,
                         rs.getString("t_trabajo"),
                         rs.getString("t_pintura"),
                         rs.getInt("d_chapa"),
                         rs.getFloat("costo_total"),
                         c,
+                        au,
                         null
                 );
 
@@ -119,10 +134,9 @@ public class PresupuestoDAO implements dao<presupuesto>{
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return lista;
     }
-*/
+
 
 
 

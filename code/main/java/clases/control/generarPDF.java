@@ -3,10 +3,8 @@ import clases.model.ordentrabajo;
 import clases.dao.OrdenDAO;
 import clases.model.tarea;
 import com.aspose.pdf.*;
-
 import com.aspose.pdf.TextSegment;
 import org.w3c.dom.Text;
-
 import javax.swing.text.Segment;
 import java.time.format.DateTimeFormatter;
 
