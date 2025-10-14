@@ -278,7 +278,8 @@ public class PresupuestoScreen {
 
                     PresupuestoDAO pdao = new PresupuestoDAO();
                     pdao.create(presu);
-
+                    presu.setNumero(pdao.GetLastInsert());
+                    System.out.print(presu.getNumero());
                     new GenOrdenScreen(stage, presu);
                 } else {
                     stage.setScene(MainApp.mAppVolver(stage));

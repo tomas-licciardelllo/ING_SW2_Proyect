@@ -13,7 +13,7 @@ import java.util.List;
 public class OrdenDAO implements dao<ordentrabajo> {
     @Override
     public boolean create(ordentrabajo o) {
-        String sql = "INSERT INTO orden_trabajo(fecha_inicio,fecha_fin, tareas, estado, pID) VALUES (?,?,?,?)";
+        String sql = "INSERT INTO orden_trabajo(fecha_inicio,fecha_fin, tareas, estado, pID) VALUES (?,?,?,?,?)";
 
         try (Connection conn = Conexion.getConnection();
              PreparedStatement prep = conn.prepareStatement(sql)){
@@ -21,7 +21,7 @@ public class OrdenDAO implements dao<ordentrabajo> {
             prep.setString(1, String.valueOf(Date.valueOf(o.getFecha_inicio())));
             prep.setString(2,String.valueOf(Date.valueOf(o.getFecha_final())));
             prep.setString(3, o.getTareas().toString());
-            prep.setInt(4, o.getNumero());
+            prep.setInt(4, o.getEstado().toInt());
             prep.setInt(5, o.getPresupuesto().getNumero());
             prep.executeUpdate();
             return  true;
@@ -61,7 +61,7 @@ public class OrdenDAO implements dao<ordentrabajo> {
             if (rs.next()) {
                 c = new ordentrabajo(
                         estado,
-                        rs.getDate("fecha").toLocalDate(), //Le cambie el nombre
+                        LocalDate.parse(rs.getString("fecha_inicio")), //Le cambie el nombre
                         //rs.getDate("fecha_Fin").toLocalDate(),
                         LocalDate.now(),
                         p,
@@ -87,9 +87,10 @@ public class OrdenDAO implements dao<ordentrabajo> {
                 int presupuestoId = rs.getInt("pID");
                 presupuesto p = new PresupuestoDAO().read(presupuestoId);
                 lista.add(new ordentrabajo(
+                                rs.getInt("id"),
                                 estado,
-                                rs.getDate("fecha_inicio").toLocalDate(),
-                                rs.getDate("fecha_fin").toLocalDate(),
+                                LocalDate.parse(rs.getString("fecha_inicio")),
+                                LocalDate.parse(rs.getString("fecha_fin")),
                                 p,
                                 new ArrayList<tarea>()
                         )
@@ -104,7 +105,7 @@ public class OrdenDAO implements dao<ordentrabajo> {
 
     public List<ordentrabajo> getPendientes() {
         List<ordentrabajo> lista = new ArrayList<>();
-        String sql = "SELECT id, fecha_inicio,fecha_fin, tareas, estado, pID FROM orden_trabajo WHERE estado = 1";
+        String sql = "SELECT id, fecha_inicio,fecha_fin, tareas, estado, pID FROM orden_trabajo WHERE estado = 0";
         try (Connection conn = Conexion.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -113,10 +114,10 @@ public class OrdenDAO implements dao<ordentrabajo> {
                 ordentrabajo.Estado estado = ordentrabajo.Estado.fromInt(estadoNum);
                 int presupuestoId = rs.getInt("pID");
                 presupuesto p = new PresupuestoDAO().read(presupuestoId);
-
                 lista.add(new ordentrabajo(
+                                rs.getInt("id"),
                                 estado,
-                                rs.getDate("fecha_inicio").toLocalDate(),
+                                LocalDate.parse(rs.getString("fecha_inicio")),
                                 LocalDate.now(),
                                 p,
                                 new ArrayList<tarea>()

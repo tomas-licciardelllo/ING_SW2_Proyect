@@ -72,6 +72,7 @@ public class GenOrdenScreen {
             tarea t = new tarea("hacer", emp);
             tareas.add(t);
             ordentrabajo nueva = new ordentrabajo(ordentrabajo.Estado.Pendiente, presupuestoAprobado.getFecha(), LocalDate.now(), presupuestoAprobado, tareas);
+            System.out.print(nueva.getEstado());
             if(nueva.getEstado() == ordentrabajo.Estado.Pendiente && !tareas.isEmpty()){
                 ordenDAO.create(nueva);
                 generarPDF aux = new generarPDF();

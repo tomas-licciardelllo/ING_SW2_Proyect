@@ -138,7 +138,18 @@ public class PresupuestoDAO implements dao<presupuesto>{
     }
 
 
-
-
+    public int GetLastInsert()
+    {
+        int id=0;
+        String sql = "SELECT last_insert_rowid();";
+        try (Connection con = Conexion.getConnection();
+             Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)){
+                id = rs.getRow();
+        }catch (SQLException e) {
+            e.printStackTrace();
+    }
+        return id;
+    }
 
 }

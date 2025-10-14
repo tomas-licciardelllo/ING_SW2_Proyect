@@ -12,8 +12,11 @@ public class ordentrabajo {
                 default -> throw new IllegalArgumentException("Valor inválido para Estado: " + value);
             };
         }
+        public int toInt() {
+            return this.ordinal();
+        }
     };
-
+    private int id;
     private Estado estado;
     private LocalDate fecha_inicio;
     private LocalDate fecha_final;
@@ -28,6 +31,14 @@ public class ordentrabajo {
         this.tareas = tareas;
     }
 
+    public ordentrabajo(int id, Estado estado, LocalDate fecha_inicio, LocalDate fecha_final, presupuesto presupuesto, List<tarea> tareas) {
+        this.id = id;
+        this.estado = estado;
+        this.fecha_inicio = fecha_inicio;
+        this.fecha_final = fecha_final;
+        this.presupuesto = presupuesto;
+        this.tareas = tareas;
+    }
     public Estado getEstado() {
         return estado;
     }
@@ -84,6 +95,8 @@ public class ordentrabajo {
         return this.presupuesto.getNumero();
     }
 
+    public int getID(){return id;}
+
     public LocalDate getFechaIngreso() {
         return this.fecha_inicio;
     }
@@ -102,6 +115,11 @@ public class ordentrabajo {
 
     public String getVehiculoPat() {
         return this.presupuesto.getAuto().getPatente();
+    }
+
+    public int getId()
+    {
+        return this.id;
     }
 }
 
