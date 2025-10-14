@@ -20,6 +20,7 @@ import java.util.Optional;
 public class PresupuestoScreen {
 
     private float costoTotal;
+    private cliente clienteSeleccionado;
     // La variable clienteSeleccionado ya no es necesaria a nivel de clase
     // private cliente clienteSeleccionado;
 
@@ -155,6 +156,26 @@ public class PresupuestoScreen {
 
         TitledPane detallesPane = new TitledPane("Detalles del Trabajo", detallesGrid);
         detallesPane.setCollapsible(false);
+        //SELECT CLIENTE
+        Label lblClienteInfo = new Label("Ningún cliente seleccionado");
+        lblClienteInfo.setStyle("-fx-font-style: italic; -fx-text-fill: #546E7A;");
+        Button btnAsignarCliente = new Button("Asignar Cliente...");
+        HBox clienteBox = new HBox(10, new Label("Cliente:"), lblClienteInfo, btnAsignarCliente);
+        clienteBox.setAlignment(Pos.CENTER_LEFT);
+
+        TitledPane clientePane = new TitledPane("Datos del Cliente", clienteBox);
+        clientePane.setCollapsible(false);
+
+        btnAsignarCliente.setOnAction(e -> {
+            SeleccionCliente dialog = new SeleccionCliente();
+            Optional<cliente> resultado = dialog.showAndWait();
+
+            resultado.ifPresent(cliente -> {
+                this.clienteSeleccionado = cliente; // Guardamos el cliente seleccionado
+                lblClienteInfo.setText(cliente.getNombre()); // Actualizamos la etiqueta
+                lblClienteInfo.setStyle("-fx-font-weight: bold; -fx-text-fill: #000;");
+            });
+        });
 
         // Sección Costo Total
         Label lblCostoTotal = new Label("COSTO TOTAL:");
@@ -248,7 +269,9 @@ public class PresupuestoScreen {
                 if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
                     // Creamos un cliente por defecto aquí, ya que no hay interfaz para seleccionarlo
                     cliente clienteDePrueba = new cliente("Cliente Genérico", "00000000", new ArrayList<>(), new ArrayList<>());
-
+                    if (clienteSeleccionado != null) {
+                        clienteDePrueba = clienteSeleccionado;
+                    }
                     auto a = new auto(txtTipoAuto.getText(), txtPatenteAuto.getText(), Integer.parseInt(txtAnioAuto.getText()), txtMarcaAuto.getText(), txtModeloAuto.getText());
                     pago p = new pago(0);
                     presupuesto presu = new presupuesto(0, LocalDate.now(), new ArrayList<>(listaPartes), txtTipoTrabajo.getText(), cmbTipoPintura.getValue(), Integer.parseInt(txtDiasTrabajo.getText()), costoFinal, clienteDePrueba, a, p);
@@ -274,6 +297,7 @@ public class PresupuestoScreen {
         formulario.getChildren().addAll(
                 fechaBox,
                 new Separator(),
+                clientePane,
                 vehiculoPane,
                 repuestosPane,
                 detallesPane,
@@ -343,4 +367,5 @@ public class PresupuestoScreen {
         alerta.setContentText(contenido);
         alerta.showAndWait();
     }
+
 }

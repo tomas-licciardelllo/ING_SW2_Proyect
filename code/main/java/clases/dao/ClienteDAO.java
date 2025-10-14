@@ -116,6 +116,29 @@ public class ClienteDAO implements dao<cliente> {
         return lista;
     }
 
+    public List<cliente> getAllwID() {
+        List<cliente> lista = new ArrayList<>();
+        String sql = "SELECT id, nombre, telefono FROM persona";
+
+        try (Connection conn = Conexion.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                lista.add(new cliente(
+                        rs.getInt("id"),
+                        rs.getString("nombre"),
+                        rs.getString("telefono"),
+                        new ArrayList<>(),
+                        new ArrayList<>()
+                ));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al obtener clientes: " + e.getMessage());
+        }
+
+        return lista;
+    }
 
     public List<Integer> getAllId(){
         List<Integer> arr = new ArrayList<>();

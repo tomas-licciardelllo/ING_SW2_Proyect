@@ -6,9 +6,9 @@ public class ordentrabajo {
     public enum Estado {Pendiente, Desarrollo, Finalizada;
         public static Estado fromInt(int value) {
             return switch (value) {
-                case 1 -> Pendiente;
-                case 2 -> Desarrollo;
-                case 3 -> Finalizada;
+                case 0 -> Pendiente;
+                case 1 -> Desarrollo;
+                case 2 -> Finalizada;
                 default -> throw new IllegalArgumentException("Valor inválido para Estado: " + value);
             };
         }

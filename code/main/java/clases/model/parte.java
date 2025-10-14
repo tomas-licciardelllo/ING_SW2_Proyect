@@ -15,6 +15,10 @@ public class parte {
         this.cambio = cambio;
     }
 
+    public parte(String nombre){
+        this.nombre = nombre;
+    }
+
     public String getNombre() {
         return nombre;
     }

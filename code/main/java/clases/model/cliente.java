@@ -15,6 +15,13 @@ public class cliente {
         this.autos = autos;
         this.presupuestos = presupuestos;
     }
+    public cliente(int id, String nombre, String telefono, List<auto> autos, List<presupuesto> presupuestos) {
+        this.idBD = id;
+        this.nombre = nombre;
+        this.telefono = telefono;
+        this.autos = autos;
+        this.presupuestos = presupuestos;
+    }
 
     public String getNombre() {
         return nombre;

@@ -88,7 +88,7 @@ public class MostrarPresupuestoScreen {
         cDias.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getDiasChapa()));
 
         // Agregar columnas a la tabla
-        tablaPresupuesto.getColumns().addAll(nro, fecha, colCliente, colRepuestos, cTotal, tipoTr, tipoPin, cDias);
+        tablaPresupuesto.getColumns().addAll(nro, fecha, colCliente, cTotal, tipoTr, tipoPin, cDias);
 
         // Set items
         tablaPresupuesto.setItems(sortedData);

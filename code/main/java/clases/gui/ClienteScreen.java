@@ -91,13 +91,10 @@ public class ClienteScreen {
         colTelefono.prefWidthProperty().bind(tablaClientes.widthProperty().multiply(0.5));
         tablaClientes.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-
         TableColumn<cliente,Integer> colIdes = new TableColumn<>("id");
         colIdes.setCellValueFactory(new PropertyValueFactory<>("id"));
 
         tablaClientes.getColumns().addAll(colNombre, colTelefono);
-
-
 
         Button btnModificar = new Button("Modificar");
         HBox inferior = new HBox(btnModificar);
@@ -150,7 +147,6 @@ public class ClienteScreen {
 
             }
         });
-
 
         stage.setScene(scene);
         stage.show();
