@@ -75,7 +75,7 @@ public class generarPDF {
             pagina.getParagraphs().add(tablaTareas);
 
             // Aca ponemos la ruta alla en el taller, yo puse para probar
-            String rutaDeGuardado = "C:\\Users\\ibane\\Desktop\\Leo\\Universidad\\Orden-" + orden.getPresupuesto().getNumero() + ".pdf"; // Ejemplo de ruta
+            String rutaDeGuardado = "C:\\Users\\Ryzen\\Downloads\\Orden-" + orden.getPresupuesto().getNumero() + ".pdf"; // Ejemplo de ruta
             doc.save(rutaDeGuardado);
             // Para test
             // System.out.println("PDF generado exitosamente en: " + rutaDeGuardado);

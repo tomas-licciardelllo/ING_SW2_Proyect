@@ -87,6 +87,38 @@ public class MostrarPresupuestoScreen {
         TableColumn<presupuesto, Integer> cDias = new TableColumn<>("Dias de chapa");
         cDias.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getDiasChapa()));
 
+
+        nro.prefWidthProperty().bind(
+                tablaPresupuesto.widthProperty().multiply(0.14)
+        );
+
+        fecha.prefWidthProperty().bind(
+                tablaPresupuesto.widthProperty().multiply(0.14)
+        );
+
+        colCliente.prefWidthProperty().bind(
+                tablaPresupuesto.widthProperty().multiply(0.14)
+        );
+
+        colRepuestos.prefWidthProperty().bind(
+                tablaPresupuesto.widthProperty().multiply(0.14)
+        );
+
+        cTotal.prefWidthProperty().bind(
+                tablaPresupuesto.widthProperty().multiply(0.14)
+        );
+
+        tipoTr.prefWidthProperty().bind(
+                tablaPresupuesto.widthProperty().multiply(0.14)
+        );
+
+        tipoPin.prefWidthProperty().bind(
+                tablaPresupuesto.widthProperty().multiply(0.14)
+        );
+
+        cDias.prefWidthProperty().bind(
+                tablaPresupuesto.widthProperty().multiply(0.14)
+        );
         // Agregar columnas a la tabla
         tablaPresupuesto.getColumns().addAll(nro, fecha, colCliente, cTotal, tipoTr, tipoPin, cDias);
 

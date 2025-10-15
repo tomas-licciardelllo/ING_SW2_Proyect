@@ -1,11 +1,13 @@
 package clases.gui;
 import clases.dao.AutoDAO;
+import com.aspose.pdf.Table;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -46,10 +48,6 @@ public class VehiculosScreen {
 
         TableView<auto> tabalAutos = new TableView<>(data);
         AutoDAO auxCDAO = new AutoDAO();
-
-        List<Integer> ides = new ArrayList<>();
-        ides = auxCDAO.getAllId();
-        System.out.println("IDES"+ides);
         tabalAutos.setFixedCellSize(25);
         tabalAutos.prefHeightProperty().bind(tabalAutos.fixedCellSizeProperty().multiply( javafx.beans.binding.Bindings.size(tabalAutos.getItems()).add(1)));
 
@@ -84,7 +82,6 @@ public class VehiculosScreen {
 
         tabalAutos.getColumns().addAll(colCliente, colMarca, colModelo,colAnio,colPatente);
 
-        List<Integer> finalIdes = ides;
 
         txtBuscar.textProperty().addListener((obs,oldValue,newValue)->{
             filtroData.setPredicate(auto->{
@@ -133,10 +130,9 @@ public class VehiculosScreen {
 
         tabalAutos.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection)->{
             if(newSelection != null){
-                Integer id = tabalAutos.getSelectionModel().getSelectedIndex();
-                Integer idSeleccionado = finalIdes.get(id);
+                Integer id = tabalAutos.getSelectionModel().getSelectedItem().getIdBD();
                 System.out.println("SE ENTRO"+id);
-                //btnModificar.setOnAction(e->root.setCenter(crearPanelModificacion(root,idSeleccionado)));
+                btnModificar.setOnAction(e->root.setCenter(ModificarAuto(root,id,barraBusqueda,panel)));
 
             }
         });
@@ -148,5 +144,56 @@ public class VehiculosScreen {
 
         stage.setScene(scene);
         stage.show();
+    }
+
+    private VBox ModificarAuto(BorderPane root, int idAutoBuscado, HBox anterior, VBox pantallaant){
+        Node aux = root.getTop();
+        root.setTop(null);
+        AutoDAO au = new AutoDAO();
+        auto auxAuto = au.read(idAutoBuscado);
+        VBox pantalla = new VBox();
+        pantalla.setMinSize(300,200);
+        pantalla.setMaxSize(600,400);
+        pantalla.setSpacing(10);
+        pantalla.setAlignment(Pos.CENTER);
+
+        Label marca = new Label("Marca");
+        Label modelo= new Label("Modelo");
+        Label anio = new Label("Año");
+        Label  patente = new Label("Patente");
+
+
+        TextField marcaField = new TextField(auxAuto.getMarca());
+        TextField modeloField = new TextField(auxAuto.getModelo());
+        TextField anioField = new TextField(Integer.toString(auxAuto.getAnio()));
+        TextField patenteField = new TextField(auxAuto.getPatente());
+
+        Button btnGuardar = new Button("Modificar");
+        Button btnCancelar = new Button("Cancelar");
+        btnGuardar.setStyle("-fx-cursor: hand;");
+        btnCancelar.setStyle("-fx-cursor: hand;");
+        btnCancelar.setOnAction(e->{
+            root.setTop(anterior);
+            root.setCenter(pantallaant);
+
+        });
+
+
+
+        HBox acciones = new HBox(20, btnGuardar,btnCancelar);
+
+        acciones.setAlignment(Pos.CENTER);
+        pantalla.getChildren().addAll(marca,marcaField,modelo,modeloField, anio,anioField,patente,patenteField, acciones);
+        pantalla.getStyleClass().add("formulario");
+
+        btnGuardar.setOnAction(e->{
+            auxAuto.setMarca(marcaField.getText());
+            auxAuto.setModelo(modeloField.getText());
+            auxAuto.setAnio(Integer.parseInt(anioField.getText()));
+            auxAuto.setPatente(patenteField.getText());
+            System.out.println(auxAuto.toString());
+            au.update(auxAuto);
+        });
+        return pantalla;
     }
 }

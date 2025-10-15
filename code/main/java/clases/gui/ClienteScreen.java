@@ -97,6 +97,7 @@ public class ClienteScreen {
         tablaClientes.getColumns().addAll(colNombre, colTelefono);
 
         Button btnModificar = new Button("Modificar");
+        btnModificar.setStyle("-fx-cursor: hand;");
         HBox inferior = new HBox(btnModificar);
         inferior.setAlignment(Pos.CENTER_RIGHT);
         inferior.setPrefHeight(40);
@@ -138,6 +139,9 @@ public class ClienteScreen {
         Scene scene = new Scene(root, anchoPantalla * 0.8, altoPantalla * 0.8);
         scene.getStylesheets().add(getClass().getResource("/resources/styles.css").toExternalForm());
 
+        btnModificar.setOnAction(e->{if(tablaClientes.getSelectionModel().getSelectedItem() == null){
+            mostrarAlertaAux(Alert.AlertType.ERROR, "Error", "Sin seleccion","Debe seleccionar un cliente para poder modificar");
+        }});
         tablaClientes.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection)->{
             if(newSelection != null){
                 Integer id = tablaClientes.getSelectionModel().getSelectedIndex();
@@ -152,43 +156,36 @@ public class ClienteScreen {
         stage.show();
     }
 
-
+    private void mostrarAlertaAux(Alert.AlertType tipo, String titulo, String encabezado, String contenido) {
+        Alert alerta = new Alert(tipo);
+        alerta.setTitle(titulo);
+        alerta.setHeaderText(encabezado);
+        alerta.setContentText(contenido);
+        alerta.showAndWait();
+    }
 
     private VBox crearPanelModificacion(BorderPane root, int idClienteBuscado, HBox anterior, VBox pantallaant) {
         Node aux = root.getTop();
         root.setTop(null);
         ClienteDAO cl = new ClienteDAO();
-        AutoDAO au = new AutoDAO();
-        //auto auxAuto = au.read()
         cliente auxCliente = cl.read(idClienteBuscado);
         VBox pantalla = new VBox();
         pantalla.setMinSize(300,200);
         pantalla.setMaxSize(600,400);
-
+        pantalla.setSpacing(10);
         pantalla.setAlignment(Pos.CENTER);
         Label nombre = new Label("Nombre");
         Label telefono = new Label("Telefono");
-        Label Tipo = new Label("Tipo");
-        Label Marca = new Label("Marca");
-        Label Modelo = new Label("Modelo");
-        Label Año = new Label("Año");
-        Label Patente = new Label("Patente");
-        Label Auto = new Label("Auto");
+
 
         TextField nombreField = new TextField(auxCliente.getNombre());
         TextField telefonoField = new TextField(auxCliente.getTelefono());
-        TextField tipoField = new TextField();
-        TextField marcaField = new TextField();
-        TextField modeloField = new TextField();
-        TextField añoField = new TextField();
-        TextField patenteField = new TextField();
+
 
         Button btnGuardar = new Button("Modificar");
         Button btnCancelar = new Button("Cancelar");
-
-        //Aca Guardariamos los cambios hechos
-        //btnGuardar.setOnAction(e->{})
-
+        btnGuardar.setStyle("-fx-cursor: hand;");
+        btnCancelar.setStyle("-fx-cursor: hand;");
         btnCancelar.setOnAction(e->{
             root.setTop(anterior);
             root.setCenter(pantallaant);
@@ -200,8 +197,15 @@ public class ClienteScreen {
         HBox acciones = new HBox(20, btnGuardar,btnCancelar);
 
         acciones.setAlignment(Pos.CENTER);
-        pantalla.getChildren().addAll(nombre,nombreField,telefono,telefonoField,Auto,Tipo,tipoField,Marca,marcaField,Modelo,modeloField,Año,añoField,Patente,patenteField, acciones);
+        pantalla.getChildren().addAll(nombre,nombreField,telefono,telefonoField, acciones);
         pantalla.getStyleClass().add("formulario");
+
+        btnGuardar.setOnAction(e->{
+            System.out.println(auxCliente.getIdBD());
+            auxCliente.setNombre(nombreField.getText());
+            auxCliente.setTelefono(telefonoField.getText());
+            cl.update(auxCliente);
+        });
         return pantalla;
     }
     private VBox crearFormulario(BorderPane root, ObservableList<cliente> data, Node topBar, VBox panelTabla) {

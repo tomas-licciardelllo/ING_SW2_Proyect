@@ -42,6 +42,7 @@ public class ClienteDAO implements dao<cliente> {
 
             if (rs.next()) {
                 c = new cliente(
+                        rs.getInt("Id"),
                         rs.getString("nombre"),
                         rs.getString("telefono"),
                         new ArrayList<>(),
@@ -65,7 +66,7 @@ public class ClienteDAO implements dao<cliente> {
             pstmt.setString(1, c.getNombre());
             pstmt.setString(2, c.getTelefono());
             // ⚠️ Ojo: tu clase cliente no tiene `id`, deberías agregárselo
-            pstmt.setInt(3, /* c.getId() */ 1);
+            pstmt.setInt(3, c.getIdBD());
             pstmt.executeUpdate();
             return true;
 

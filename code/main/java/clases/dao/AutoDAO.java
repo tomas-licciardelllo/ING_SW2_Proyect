@@ -32,7 +32,22 @@ public class AutoDAO implements dao<auto>{
 
     @Override
     public boolean update(auto a){
-        return true;
+        String sql = "UPDATE auto SET marca = ?, modelo = ?, anio = ?, patente = ? WHERE aID = ?";
+
+        try (Connection conn = Conexion.getConnection();
+            PreparedStatement pstmt =  conn.prepareStatement(sql)){
+                pstmt.setString(1,a.getMarca());
+                pstmt.setString(2,a.getModelo());
+                pstmt.setInt(3,a.getAnio());
+                pstmt.setString(4,a.getPatente());
+                pstmt.setInt(5,a.getIdBD());
+                pstmt.executeUpdate();
+                return true;
+        }
+        catch (SQLException e){
+            System.out.println("Error al actualizar cliente: " + e.getMessage());
+            return false;
+        }
     }
 
     @Override
@@ -42,9 +57,33 @@ public class AutoDAO implements dao<auto>{
 
     @Override
     public auto read(int id){
+        String sql = "SELECT aID,marca,modelo,anio,patente FROM auto WHERE aID = ?";
+        auto a =null;
 
-        auto aux = new auto("f","p", 23,"j","d");
-        return  aux;
+        try(Connection conn = Conexion.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)
+        )
+        {
+            pstmt.setInt(1,id);
+            ResultSet rs = pstmt.executeQuery();
+
+            if(rs.next()){
+                a = new auto(
+                        rs.getInt("aID"),
+                        "camioneta" ,
+                        rs.getString("patente"),
+                        rs.getInt("anio"),
+                        rs.getString("marca"),
+                        rs.getString("modelo")
+                );
+            }
+
+        }
+        catch(SQLException e){
+            System.out.println("Error al leer cliente: " + e.getMessage());
+        }
+        //auto aux = new auto("f","p", 23,"j","d");
+        return  a;
     }
 
     @Override
@@ -69,6 +108,7 @@ public class AutoDAO implements dao<auto>{
                 );
 
                 auto a = new auto(
+                        rs.getInt("aID"),
                         rs.getString("marca"),
                         rs.getString("patente"),
                         rs.getInt("anio"),
@@ -77,7 +117,6 @@ public class AutoDAO implements dao<auto>{
                 );
 
                 a.setCliente(c);
-                a.setIdBD(rs.getInt("aID"));
                 lista.add(a);
             }
 

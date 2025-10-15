@@ -9,10 +9,17 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
+import javafx.stage.FileChooser;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-
+import javafx.scene.image.ImageView;
+import javafx.scene.image.Image;
+import java.awt.*;
+import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -125,6 +132,32 @@ public class PresupuestoScreen {
         repuestosPane.setContent(repuestosContent);
 
 
+
+        //Seccion imagenes
+        /*ImageView imageView = new ImageView();
+        imageView.setFitHeight(200); // Alto máximo
+        imageView.setFitWidth(200);  // Ancho máximo
+        imageView.setPreserveRatio(true);
+        FileChooser elegirfoto = new FileChooser();
+        elegirfoto.setTitle("Eliga una imagen.");
+        elegirfoto.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Archivos de imagen","*.png","*.jpg","*.gif","*.bmp"),
+                new FileChooser.ExtensionFilter("Todos los archivos",".")
+        );
+        Button btnImg = new Button("Agregar imagenes");
+
+
+        btnImg.setOnAction(e->{
+            File selectedFile = elegirfoto.showOpenDialog(stage);
+            if (selectedFile != null) {
+                // Si el usuario seleccionó un archivo, crear un objeto Image
+                // Es importante usar toURI().toString() para que la ruta sea correcta
+                Image image = new Image(selectedFile.toURI().toString());
+
+                // Mostrar la imagen en el ImageView
+                imageView.setImage(image);
+            }
+        });*/
         // Sección Detalles del Trabajo
         GridPane detallesGrid = new GridPane();
         detallesGrid.setHgap(20);

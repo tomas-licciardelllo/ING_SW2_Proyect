@@ -1,10 +1,13 @@
 package clases.gui;
 
 import clases.dao.AutoDAO;
+import clases.dao.ClienteDAO;
 import clases.model.auto;
+import clases.model.cliente;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -14,6 +17,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import org.w3c.dom.Text;
 
 import java.awt.*;
 import java.util.List;
@@ -94,9 +98,61 @@ public class AutoScreen {
         root.setCenter(panel);
         root.getStyleClass().add("fondo");
 
+
         Scene scene = new Scene(root,anchoPantalla,altoPantalla);
         scene.getStylesheets().add(getClass().getResource("/resources/styles.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
+    }
+
+
+    private VBox ModificarAuto(BorderPane root, int idAutoBuscado, HBox anterior, VBox pantallaant){
+        Node aux = root.getTop();
+        root.setTop(null);
+        AutoDAO au = new AutoDAO();
+        auto auxAuto = au.read(idAutoBuscado);
+        VBox pantalla = new VBox();
+        pantalla.setMinSize(300,200);
+        pantalla.setMaxSize(600,400);
+        pantalla.setSpacing(10);
+        pantalla.setAlignment(Pos.CENTER);
+
+        Label marca = new Label("Marca");
+        Label modelo= new Label("Modelo");
+        Label anio = new Label("Año");
+        Label  patente = new Label("Patente");
+
+
+        TextField marcaField = new TextField(auxAuto.getMarca());
+        TextField modeloField = new TextField(auxAuto.getModelo());
+        TextField anioField = new TextField(Integer.toString(auxAuto.getAnio()));
+        TextField patenteField = new TextField(auxAuto.getPatente());
+
+        Button btnGuardar = new Button("Modificar");
+        Button btnCancelar = new Button("Cancelar");
+        btnGuardar.setStyle("-fx-cursor: hand;");
+        btnCancelar.setStyle("-fx-cursor: hand;");
+        btnCancelar.setOnAction(e->{
+            root.setTop(anterior);
+            root.setCenter(pantallaant);
+
+        });
+
+
+
+        HBox acciones = new HBox(20, btnGuardar,btnCancelar);
+
+        acciones.setAlignment(Pos.CENTER);
+        pantalla.getChildren().addAll(marca,marcaField,modelo,modeloField, anio,anioField,patente,patenteField, acciones);
+        pantalla.getStyleClass().add("formulario");
+
+        btnGuardar.setOnAction(e->{
+            auxAuto.setMarca(marcaField.getText());
+            auxAuto.setModelo(modeloField.getText());
+            auxAuto.setAnio(Integer.parseInt(anioField.getText()));
+            auxAuto.setPatente(patenteField.getText());
+            au.update(auxAuto);
+        });
+        return pantalla;
     }
 }
