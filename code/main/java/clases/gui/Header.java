@@ -111,7 +111,7 @@ public class Header {
         Button btnFacturas = new Button("Facturas");
         btnFacturas.getStyleClass().add("botonHeader");
 
-        barra.getChildren().addAll(btnClientes, btnPresupuestos, btnVehiculos, btnOrdenes,  btnFacturas);
+        barra.getChildren().addAll(btnPresupuestos, btnOrdenes, btnClientes, btnVehiculos, btnFacturas);
 
         return barra;
     }
