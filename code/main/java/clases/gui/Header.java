@@ -1,12 +1,10 @@
 package clases.gui;
 
+import clases.dao.OrdenDAO;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -92,7 +90,16 @@ public class Header {
 
         MenuItem pendientesOrdenes = new MenuItem("Ver Pendientes");
         pendientesOrdenes.setOnAction(e -> {
-            new OrdenPendienteScreen(stage);
+            OrdenDAO ordenDAO = new OrdenDAO();
+            if(ordenDAO.getAll().isEmpty()){
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Atención!");
+                alert.setHeaderText("No hay ninguna Orden de Trabajo Registrada por el momento!");
+                alert.showAndWait();
+            }
+            else {
+                new OrdenPendienteScreen(stage);
+            }
         });
 
         mostrarOrdenes.getStyleClass().add("botonHeader");
