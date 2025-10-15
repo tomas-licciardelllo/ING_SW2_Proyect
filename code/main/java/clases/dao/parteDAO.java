@@ -1,5 +1,6 @@
 package clases.dao;
 
+import clases.model.ordentrabajo;
 import clases.model.parte;
 
 import java.util.List;
@@ -31,4 +32,5 @@ public class parteDAO implements  dao<parte>{
     public float obtenerPrecio(String nombre){
         return 10;
     }
+    public int createAndGetID(parte o){return 1;}
 }

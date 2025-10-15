@@ -1,6 +1,7 @@
 package clases.dao;
 
 import clases.model.empleado;
+import clases.model.ordentrabajo;
 
 import java.util.List;
 
@@ -29,4 +30,5 @@ public class empleadoDAO implements dao<empleado>{
     public List<empleado> getAll() {
         return List.of();
     }
+    public int createAndGetID(empleado o){return 1;}
 }

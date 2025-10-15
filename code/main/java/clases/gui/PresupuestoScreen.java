@@ -1,6 +1,7 @@
 package clases.gui;
 
 import clases.control.Navegar;
+import clases.dao.AutoDAO;
 import clases.dao.PresupuestoDAO;
 import clases.model.*;
 import javafx.collections.FXCollections;
@@ -9,25 +10,21 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
-import javafx.stage.FileChooser;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.Image;
-import java.awt.*;
-import java.io.File;
+
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class PresupuestoScreen {
 
     private float costoTotal;
     private cliente clienteSeleccionado;
+    private auto autoSeleccionado;
     // La variable clienteSeleccionado ya no es necesaria a nivel de clase
     // private cliente clienteSeleccionado;
 
@@ -62,30 +59,30 @@ public class PresupuestoScreen {
         autoGrid.setVgap(10);
         autoGrid.setAlignment(Pos.CENTER);
 
-        autoGrid.add(new Label("Tipo:"), 0, 0);
+        ComboBox<auto> cmbAutosCliente = new ComboBox<>();
+        cmbAutosCliente.setPromptText("Seleccionar vehículo");
+        cmbAutosCliente.setPrefWidth(200);
+        Button btnNuevoVehiculo = new Button("Ingresar Vehículo Nuevo");
+
+        autoGrid.add(new Label("Vehículo del Cliente:"), 0, 0);
+        autoGrid.add(cmbAutosCliente, 1, 0, 2, 1); // Ocupa 2 columnas
+        autoGrid.add(btnNuevoVehiculo, 3, 0);
+
+        autoGrid.add(new Label("Tipo:"), 0, 1);
         TextField txtTipoAuto = new TextField();
-        txtTipoAuto.setPromptText("Ej: Auto, Camioneta");
-        autoGrid.add(txtTipoAuto, 1, 0);
-
-        autoGrid.add(new Label("Marca:"), 2, 0);
+        autoGrid.add(txtTipoAuto, 1, 1);
+        autoGrid.add(new Label("Marca:"), 2, 1);
         TextField txtMarcaAuto = new TextField();
-        txtMarcaAuto.setPromptText("Ej: Audi");
-        autoGrid.add(txtMarcaAuto, 3, 0);
-
-        autoGrid.add(new Label("Modelo:"), 0, 1);
+        autoGrid.add(txtMarcaAuto, 3, 1);
+        autoGrid.add(new Label("Modelo:"), 0, 2);
         TextField txtModeloAuto = new TextField();
-        txtModeloAuto.setPromptText("Ej: A4");
-        autoGrid.add(txtModeloAuto, 1, 1);
-
-        autoGrid.add(new Label("Año:"), 2, 1);
+        autoGrid.add(txtModeloAuto, 1, 2);
+        autoGrid.add(new Label("Año:"), 2, 2);
         TextField txtAnioAuto = new TextField();
-        txtAnioAuto.setPromptText("Ej: 2024");
-        autoGrid.add(txtAnioAuto, 3, 1);
-
-        autoGrid.add(new Label("Patente:"), 0, 2);
+        autoGrid.add(txtAnioAuto, 3, 2);
+        autoGrid.add(new Label("Patente:"), 0, 3);
         TextField txtPatenteAuto = new TextField();
-        txtPatenteAuto.setPromptText("Ej: AA123BB");
-        autoGrid.add(txtPatenteAuto, 1, 2);
+        autoGrid.add(txtPatenteAuto, 1, 3);
 
         TitledPane vehiculoPane = new TitledPane("Datos del Vehículo", autoGrid);
         vehiculoPane.setCollapsible(false);
@@ -132,32 +129,6 @@ public class PresupuestoScreen {
         repuestosPane.setContent(repuestosContent);
 
 
-
-        //Seccion imagenes
-        /*ImageView imageView = new ImageView();
-        imageView.setFitHeight(200); // Alto máximo
-        imageView.setFitWidth(200);  // Ancho máximo
-        imageView.setPreserveRatio(true);
-        FileChooser elegirfoto = new FileChooser();
-        elegirfoto.setTitle("Eliga una imagen.");
-        elegirfoto.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Archivos de imagen","*.png","*.jpg","*.gif","*.bmp"),
-                new FileChooser.ExtensionFilter("Todos los archivos",".")
-        );
-        Button btnImg = new Button("Agregar imagenes");
-
-
-        btnImg.setOnAction(e->{
-            File selectedFile = elegirfoto.showOpenDialog(stage);
-            if (selectedFile != null) {
-                // Si el usuario seleccionó un archivo, crear un objeto Image
-                // Es importante usar toURI().toString() para que la ruta sea correcta
-                Image image = new Image(selectedFile.toURI().toString());
-
-                // Mostrar la imagen en el ImageView
-                imageView.setImage(image);
-            }
-        });*/
         // Sección Detalles del Trabajo
         GridPane detallesGrid = new GridPane();
         detallesGrid.setHgap(20);
@@ -204,11 +175,36 @@ public class PresupuestoScreen {
             Optional<cliente> resultado = dialog.showAndWait();
 
             resultado.ifPresent(cliente -> {
-                this.clienteSeleccionado = cliente; // Guardamos el cliente seleccionado
-                lblClienteInfo.setText(cliente.getNombre()); // Actualizamos la etiqueta
+                this.clienteSeleccionado = cliente;
+                lblClienteInfo.setText(cliente.getNombre());
                 lblClienteInfo.setStyle("-fx-font-weight: bold; -fx-text-fill: #000;");
+
+                // Cargar los autos del cliente seleccionado en el ComboBox
+                AutoDAO autoDao = new AutoDAO();
+                List<auto> autosDelCliente = autoDao.getAutosByClienteId(cliente.getIdBD());
+                cmbAutosCliente.setItems(FXCollections.observableArrayList(autosDelCliente));
+
+                // Limpiar la selección anterior del auto
+                btnNuevoVehiculo.fire();
             });
         });
+
+        cmbAutosCliente.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                this.autoSeleccionado = newVal;
+                // Rellenar y deshabilitar los campos
+                configurarCamposAuto(newVal, txtTipoAuto, txtMarcaAuto, txtModeloAuto, txtAnioAuto, txtPatenteAuto, false);
+            }
+        });
+
+        // Acción para el botón "Nuevo Vehículo"
+        btnNuevoVehiculo.setOnAction(e -> {
+            this.autoSeleccionado = null;
+            cmbAutosCliente.getSelectionModel().clearSelection();
+            // Limpiar y habilitar los campos
+            configurarCamposAuto(null, txtTipoAuto, txtMarcaAuto, txtModeloAuto, txtAnioAuto, txtPatenteAuto, true);
+        });
+
 
         // Sección Costo Total
         Label lblCostoTotal = new Label("COSTO TOTAL:");
@@ -307,13 +303,16 @@ public class PresupuestoScreen {
                     }
                     auto a = new auto(txtTipoAuto.getText(), txtPatenteAuto.getText(), Integer.parseInt(txtAnioAuto.getText()), txtMarcaAuto.getText(), txtModeloAuto.getText());
                     pago p = new pago(0);
+                    AutoDAO aDAO = new AutoDAO();
+                    int ida = aDAO.obtenerOcrearAutoPorPatente(a);
+                    tarea t = new tarea(txtTipoTrabajo.getText());
+                    a.setIdBD(ida);
                     presupuesto presu = new presupuesto(0, LocalDate.now(), new ArrayList<>(listaPartes), txtTipoTrabajo.getText(), cmbTipoPintura.getValue(), Integer.parseInt(txtDiasTrabajo.getText()), costoFinal, clienteDePrueba, a, p);
-
                     PresupuestoDAO pdao = new PresupuestoDAO();
-                    pdao.create(presu);
-                    presu.setNumero(pdao.GetLastInsert());
+                    int l = pdao.createAndGetID(presu);
+                    presu.setNumero(l);
                     System.out.print(presu.getNumero());
-                    new GenOrdenScreen(stage, presu);
+                    new GenOrdenScreen(stage, presu,l,t);
                 } else {
                     stage.setScene(MainApp.mAppVolver(stage));
                 }
@@ -402,4 +401,47 @@ public class PresupuestoScreen {
         alerta.showAndWait();
     }
 
+    private void rellenarCamposAuto(auto a, TextField tipo, TextField marca, TextField modelo, TextField anio, TextField patente, boolean editable) {
+        if (a != null) {
+            tipo.setText(a.getTipo());
+            marca.setText(a.getMarca());
+            modelo.setText(a.getModelo());
+            anio.setText(String.valueOf(a.getAnio()));
+            patente.setText(a.getPatente());
+        } else {
+            tipo.clear();
+            marca.clear();
+            modelo.clear();
+            anio.clear();
+            patente.clear();
+        }
+
+        tipo.setEditable(editable);
+        marca.setEditable(editable);
+        modelo.setEditable(editable);
+        anio.setEditable(editable);
+        patente.setEditable(editable);
+    }
+
+    private void configurarCamposAuto(auto a, TextField tipo, TextField marca, TextField modelo, TextField anio, TextField patente, boolean editable) {
+        if (a != null) {
+            tipo.setText(a.getTipo());
+            marca.setText(a.getMarca());
+            modelo.setText(a.getModelo());
+            anio.setText(String.valueOf(a.getAnio()));
+            patente.setText(a.getPatente());
+        } else {
+            tipo.clear();
+            marca.clear();
+            modelo.clear();
+            anio.clear();
+            patente.clear();
+        }
+
+        tipo.setEditable(editable);
+        marca.setEditable(editable);
+        modelo.setEditable(editable);
+        anio.setEditable(editable);
+        patente.setEditable(editable);
+    }
 }

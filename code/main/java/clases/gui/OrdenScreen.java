@@ -32,7 +32,7 @@ public class OrdenScreen {
         TableColumn<ordentrabajo, String> colEstado = new TableColumn<>("Estado");
         colEstado.setCellValueFactory(new PropertyValueFactory<>("Estado"));
         TableColumn<ordentrabajo, LocalDate> colFecha = new TableColumn<>("Fecha");
-        colFecha.setCellValueFactory(new PropertyValueFactory<>("Fecha"));
+        colFecha.setCellValueFactory(new PropertyValueFactory<>("fecha_inicio"));
         tablaOrdenes.getColumns().addAll(colEstado, colFecha);
         tablaOrdenes.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
@@ -47,7 +47,7 @@ public class OrdenScreen {
         VBox panel = new VBox(10, tablaOrdenes);
         panel.setStyle("-fx-padding: 20; -fx-background-color: lightgray;");
         VBox.setVgrow(tablaOrdenes, Priority.ALWAYS);
-        panel.getChildren().addAll(panelInferior    );
+        panel.getChildren().addAll(panelInferior);
         BorderPane root = new BorderPane();
         root.setCenter(panel);
         root.getStyleClass().add("fondo");

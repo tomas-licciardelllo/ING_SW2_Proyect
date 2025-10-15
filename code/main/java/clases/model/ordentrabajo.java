@@ -1,8 +1,10 @@
 package clases.model;
 import java.time.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ordentrabajo {
+
     public enum Estado {Pendiente, Desarrollo, Finalizada;
         public static Estado fromInt(int value) {
             return switch (value) {
@@ -98,23 +100,34 @@ public class ordentrabajo {
     public int getID(){return id;}
 
     public LocalDate getFechaIngreso() {
-        return this.fecha_inicio;
+        return fecha_inicio;
     }
 
     public String getClienteNombre() {
-        return this.presupuesto.getCliente().getNombre();
+        return presupuesto.getCliente().getNombre();
     }
 
     public String getVehiculoMarca() {
-        return this.presupuesto.getAuto().getMarca();
+        return presupuesto.getAuto().getMarca();
     }
 
     public String getVehiculoModelo() {
-        return this.presupuesto.getAuto().getModelo();
+        return presupuesto.getAuto().getModelo();
     }
 
     public String getVehiculoPat() {
-        return this.presupuesto.getAuto().getPatente();
+        return presupuesto.getAuto().getPatente();
+    }
+
+    public String getTareasDesc() {
+        if (tareas == null || tareas.isEmpty()) {
+            return "Sin tareas asignadas.";
+        }
+
+        // Usamos Streams para convertir cada tarea a su String y unirlas con una coma
+        return tareas.stream()
+                .map(tarea::toString) // Llama al método toString() de cada tarea
+                .collect(Collectors.joining(", "));
     }
 
     public int getId()

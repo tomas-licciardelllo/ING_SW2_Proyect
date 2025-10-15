@@ -58,7 +58,7 @@ public class OrdenPendienteScreen {
 
         TableColumn<ordentrabajo, Integer> colNumero = new TableColumn<>("Número de Orden");
         colNumero.setCellValueFactory(new PropertyValueFactory<>("Id"));
-        TableColumn<ordentrabajo, Date> colFecha = new TableColumn<>("Fecha");
+        TableColumn<ordentrabajo, Date> colFecha = new TableColumn<>("fecha_inicio");
         colFecha.setCellValueFactory(new PropertyValueFactory<>("fechaIngreso"));
         TableColumn<ordentrabajo, String> colCliente = new TableColumn<>("Cliente");
         colCliente.setCellValueFactory(new PropertyValueFactory<>("clienteNombre"));
@@ -68,6 +68,8 @@ public class OrdenPendienteScreen {
         colModelo.setCellValueFactory(new PropertyValueFactory<>("vehiculoModelo"));
         TableColumn<ordentrabajo, String> colPatente = new TableColumn<>("Patente");
         colPatente.setCellValueFactory(new PropertyValueFactory<>("vehiculoPat"));
+        TableColumn<ordentrabajo, String> colTareas = new TableColumn<>("Tareas");
+        colTareas.setCellValueFactory(new PropertyValueFactory<>("TareasDesc"));
         TableColumn<ordentrabajo, Void> colAcciones = new TableColumn<>("Acciones");
 
         colAcciones.setCellFactory(param -> new TableCell<>() {
@@ -151,7 +153,7 @@ public class OrdenPendienteScreen {
             });
         });
 
-        tabla.getColumns().addAll(colNumero, colFecha, colCliente, colMarca, colModelo, colPatente, colAcciones);
+        tabla.getColumns().addAll(colNumero, colFecha, colCliente, colMarca, colModelo, colPatente, colAcciones,colTareas);
         VBox.setVgrow(tabla, Priority.ALWAYS);
 
         HBox panelInferior = new HBox();

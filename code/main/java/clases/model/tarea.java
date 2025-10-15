@@ -45,4 +45,25 @@ public class tarea {
     public void setEmpleado(empleado empleado) {
         this.empleado = empleado;
     }
+
+    public String getTareasComoString(List<tarea> tareas) {
+        if (tareas == null || tareas.isEmpty()) {
+            return "No hay tareas asignadas.";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < tareas.size(); i++) {
+            sb.append(tareas.get(i).toString());
+            if (i < tareas.size() - 1) {
+                sb.append(", ");
+            }
+        }
+
+        return sb.toString();
+    }
+
+    public String toString() {
+        // Ejemplo: "Lijar puerta (Reparación general)"
+        return this.getDescripcion();
+    }
 }

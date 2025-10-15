@@ -20,7 +20,7 @@ import clases.control.generarPDF;
 import javafx.util.StringConverter;
 
 public class GenOrdenScreen {
-    public GenOrdenScreen(Stage stage, presupuesto presupuestoAprobado){
+    public GenOrdenScreen(Stage stage, presupuesto presupuestoAprobado, int l,tarea ta){
         BorderPane root = new BorderPane();
         VBox panelCentral = new VBox(20);
         panelCentral.setPadding(new Insets(25));

@@ -4,6 +4,7 @@ import java.util.List;
 
 public interface dao<T> {
     public boolean create(T t);
+    public int createAndGetID(T t);
     public boolean update(T t);
     public boolean delete(int id);
     public T read(int id);

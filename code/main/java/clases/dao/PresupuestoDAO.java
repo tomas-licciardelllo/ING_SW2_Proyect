@@ -137,19 +137,36 @@ public class PresupuestoDAO implements dao<presupuesto>{
         return lista;
     }
 
+    public int createAndGetID(presupuesto p){
+        String sql = "INSERT INTO presupuesto(fecha,repuestos,t_trabajo,t_pintura,d_chapa,costo_total,id_cliente,id_auto) VALUES (?,?,?,?,?,?,?,?)";
+        int nuevoId = -1;
+        try (Connection conn = Conexion.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);){
+            pstmt.setString(1, String.valueOf(Date.valueOf(p.getFecha())));
+            pstmt.setString(2,p.getRepuestos().toString());
+            pstmt.setString(3,p.getTipoTrabajo());
+            pstmt.setString(4,p.getTipoPintura());
+            pstmt.setString(5, String.valueOf(p.getDiasChapa()));
+            pstmt.setFloat(6,p.getCostoTotal());
+            pstmt.setInt(7,p.getCliente().getIdBD());
+            pstmt.setInt(8,p.getAuto().getIdBD());
+            pstmt.executeUpdate();
 
-    public int GetLastInsert()
-    {
-        int id=0;
-        String sql = "SELECT last_insert_rowid();";
-        try (Connection con = Conexion.getConnection();
-             Statement stmt = con.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)){
-                id = rs.getRow();
-        }catch (SQLException e) {
-            e.printStackTrace();
-    }
-        return id;
-    }
+            int affectedRows = pstmt.executeUpdate();
 
+            if (affectedRows > 0) {
+                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        nuevoId = generatedKeys.getInt(1); // Obtenemos el ID de la primera columna
+                    }
+                }
+            }
+
+        }catch (SQLException e)
+        {
+            System.out.println("Error al insertar presupuesto: " + e.getMessage());
+            return nuevoId;
+        }
+        return nuevoId;
+    }
 }

@@ -3,6 +3,7 @@ package clases.dao;
 import clases.control.Conexion;
 import clases.gui.ClienteScreen;
 import clases.model.cliente;
+import clases.model.ordentrabajo;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -161,4 +162,5 @@ public class ClienteDAO implements dao<cliente> {
 
         return arr;
      }
+    public int createAndGetID(cliente o){return 1;}
 }

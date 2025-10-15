@@ -3,6 +3,7 @@ package clases.dao;
 import clases.control.Conexion;
 import clases.model.auto;
 import clases.model.cliente;
+import clases.model.ordentrabajo;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -148,4 +149,132 @@ public class AutoDAO implements dao<auto>{
         return arr;
     }
 
+    public int obtenerOcrearAutoPorPatente(auto auto) {
+        String sqlSelect = "SELECT aID FROM auto WHERE patente = ?";
+        try (Connection conn = Conexion.getConnection();
+             PreparedStatement stmtSelect = conn.prepareStatement(sqlSelect)) {
+
+            stmtSelect.setString(1, auto.getPatente());
+            ResultSet rs = stmtSelect.executeQuery();
+
+            if (rs.next()) {
+                System.out.println("Auto encontrado. ID: " + rs.getInt("aID"));
+                return rs.getInt("aID");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error al buscar el auto: " + e.getMessage());
+            e.printStackTrace();
+            return -1; // Devolvemos -1 para indicar un error
+        }
+        String sqlInsert = "INSERT INTO auto (marca, modelo, anio, patente, tipo) VALUES (?, ?, ?, ?, ?)";
+
+        try (Connection conn = Conexion.getConnection();
+             // Pedimos que nos devuelva las claves generadas (el nuevo ID)
+             PreparedStatement stmtInsert = conn.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)) {
+
+            stmtInsert.setString(1, auto.getMarca());
+            stmtInsert.setString(2, auto.getModelo());
+            stmtInsert.setInt(3, auto.getAnio());
+            stmtInsert.setString(4, auto.getPatente());
+            stmtInsert.setString(5, auto.getTipo());
+
+            int affectedRows = stmtInsert.executeUpdate();
+
+            if (affectedRows > 0) {
+                // Obtenemos el ID del auto recién creado
+                try (ResultSet generatedKeys = stmtInsert.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        int nuevoId = generatedKeys.getInt(1);
+                        System.out.println("Auto nuevo creado. ID: " + nuevoId);
+                        return nuevoId;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al crear el auto: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return -1;
+    }
+
+    public List<auto> getAutosByClienteId(int clienteId) {
+        List<auto> lista = new ArrayList<>();
+        String sql = "SELECT aID, marca, modelo, anio, patente, tipo FROM auto WHERE duenioID = ?";
+
+        try (Connection conn = Conexion.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, clienteId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                lista.add(new auto(
+                        rs.getString("tipo"),
+                        rs.getString("patente"),
+                        rs.getInt("anio"),
+                        rs.getString("marca"),
+                        rs.getString("modelo")
+                ));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al obtener autos por cliente: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
+    public int createAndGetID(auto a){
+        String sqlSelect = "SELECT aID FROM auto WHERE patente = ?";
+
+        try (Connection conn = Conexion.getConnection();
+             PreparedStatement stmtSelect = conn.prepareStatement(sqlSelect)) {
+
+            stmtSelect.setString(1, a.getPatente());
+            ResultSet rs = stmtSelect.executeQuery();
+
+            // 2. Si se encuentra, devolvemos su ID y terminamos el método.
+            if (rs.next()) {
+                int idExistente = rs.getInt("aID");
+                System.out.println("Vehículo encontrado con patente " + a.getPatente() + ". ID: " + idExistente);
+                return idExistente;
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error al buscar el auto: " + e.getMessage());
+            e.printStackTrace();
+            return -1; // Devolvemos -1 para indicar un error
+        }
+
+        // 3. Si llegamos a este punto, el auto no existe. Procedemos a insertarlo.
+        // Asegúrate de que tu tabla 'auto' y las columnas sean correctas.
+        String sqlInsert = "INSERT INTO auto (marca, modelo, anio, patente, tipo, duenioID) VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = Conexion.getConnection();
+             // Le pedimos a JDBC que nos devuelva las claves generadas (el nuevo aID)
+             PreparedStatement stmtInsert = conn.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)) {
+
+                stmtInsert.setString(1,a.getMarca());
+                stmtInsert.setString(2,a.getModelo());
+                stmtInsert.setInt(3, a.getAnio());
+                stmtInsert.setString(4,a.getPatente());
+                int affectedRows = stmtInsert.executeUpdate();
+            if (affectedRows > 0) {
+                // Obtenemos el ID del auto recién insertado
+                try (ResultSet generatedKeys = stmtInsert.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        int nuevoId = generatedKeys.getInt(1);
+                        System.out.println("Vehículo nuevo insertado con patente " + a.getPatente() + ". Nuevo ID: " + nuevoId);
+                        return nuevoId; // Devolvemos el nuevo ID
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al crear el auto: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return -1;
+    }
 }
