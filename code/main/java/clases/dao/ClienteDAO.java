@@ -105,6 +105,7 @@ public class ClienteDAO implements dao<cliente> {
 
             while (rs.next()) {
                 lista.add(new cliente(
+                        rs.getInt("id"),
                         rs.getString("nombre"),
                         rs.getString("telefono"),
                         new ArrayList<>(),
@@ -163,4 +164,33 @@ public class ClienteDAO implements dao<cliente> {
         return arr;
      }
     public int createAndGetID(cliente o){return 1;}
+
+     //create auxiliar para poder usarlo en el modificar luego
+     public cliente createMOD(cliente c) {
+         String sql = "INSERT INTO persona(nombre, telefono) VALUES (?, ?)";
+
+         try (Connection conn = Conexion.getConnection();
+              PreparedStatement pstmt = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS)) {
+
+             pstmt.setString(1, c.getNombre());
+             pstmt.setString(2, c.getTelefono());
+             int columnasafectadas = pstmt.executeUpdate();
+             if(columnasafectadas > 0){
+                 try(ResultSet generatedKeys = pstmt.getGeneratedKeys()){
+                     if(generatedKeys.next()){
+                         c.setIdBD(generatedKeys.getInt(1));
+                     }
+                     else
+                     {
+                         throw new SQLException("Fallo al crear el cliente, no se obtuvo el id");
+                     }
+                 }
+
+             }
+         } catch (SQLException e) {
+             System.out.println("Error al insertar cliente: " + e.getMessage());
+         }
+         return c;
+     }
+
 }

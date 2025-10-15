@@ -31,6 +31,13 @@ public class auto {
         this.marca = marca;
     }
 
+    public auto(int id, String tipo, String patente, int anio, String marca, String modelo) {
+        this.tipo = tipo;
+        this.patente = patente;
+        this.anio = anio;
+        this.marca = marca;
+        this.modelo = modelo;
+    }
     public String getTipo() {
         return tipo;
     }

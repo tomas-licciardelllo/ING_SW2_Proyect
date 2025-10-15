@@ -37,8 +37,7 @@ public class MostrarPresupuestoScreen {
 
         // DAOs
         PresupuestoDAO presupuestoDAO = new PresupuestoDAO();
-        ClienteDAO clienteDAO = new ClienteDAO();
-        AutoDAO autoDao = new AutoDAO();
+
 
         // Traer todos los presupuestos
         List<presupuesto> listaPresupuesto = presupuestoDAO.getAll();

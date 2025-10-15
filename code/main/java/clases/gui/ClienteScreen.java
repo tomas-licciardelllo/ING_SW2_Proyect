@@ -1,4 +1,5 @@
 package clases.gui;
+import clases.control.Conexion;
 import clases.dao.AutoDAO;
 import clases.dao.ClienteDAO;
 import clases.model.auto;
@@ -19,6 +20,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import javax.swing.*;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +31,7 @@ public class ClienteScreen {
         AutoDAO autoDao = new AutoDAO();
         List<cliente> listaClientes = clienteDAO.getAll();
         ObservableList<cliente> data = FXCollections.observableArrayList(listaClientes);
+
 
 
         FilteredList<cliente> filtroData = new FilteredList<>(data,p->true);
@@ -77,9 +80,6 @@ public class ClienteScreen {
         TableView<cliente> tablaClientes = new TableView<>(data);
         ClienteDAO auxCDAO = new ClienteDAO();
 
-        List<Integer> ides = new ArrayList<>();
-        ides = auxCDAO.getAllId();
-        System.out.println("IDES"+ides);
         tablaClientes.setFixedCellSize(25);
         tablaClientes.prefHeightProperty().bind(tablaClientes.fixedCellSizeProperty().multiply( javafx.beans.binding.Bindings.size(tablaClientes.getItems()).add(1)));
         TableColumn<cliente, String> colNombre = new TableColumn<>("Nombre");
@@ -103,7 +103,6 @@ public class ClienteScreen {
         inferior.setPrefHeight(40);
         inferior.setSpacing(10);
 
-        List<Integer> finalIdes = ides;
 
 
         txtBuscar.textProperty().addListener((obs,oldValue,newValue)->{
@@ -134,6 +133,8 @@ public class ClienteScreen {
             root.setTop(null);
             root.setCenter(crearFormulario(root, data, barraBusqueda, panel));
         });
+
+
         root.getStyleClass().add("fondo");
         // Crear escena
         Scene scene = new Scene(root, anchoPantalla * 0.8, altoPantalla * 0.8);
@@ -144,10 +145,9 @@ public class ClienteScreen {
         }});
         tablaClientes.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection)->{
             if(newSelection != null){
-                Integer id = tablaClientes.getSelectionModel().getSelectedIndex();
-                Integer idSeleccionado = finalIdes.get(id);
+                Integer id = tablaClientes.getSelectionModel().getSelectedItem().getIdBD();
                 System.out.println("SE ENTRO"+id);
-                btnModificar.setOnAction(e->root.setCenter(crearPanelModificacion(root,idSeleccionado, barraBusqueda,panel)));
+                btnModificar.setOnAction(e->root.setCenter(crearPanelModificacion(root,id, barraBusqueda,panel)));
 
             }
         });
@@ -261,7 +261,7 @@ public class ClienteScreen {
             cliente nuevoCliente = new cliente(nombre, telefono, new ArrayList<>(), new ArrayList<>());
 
             // 1. Guardar en la base de datos
-            clienteD.create(nuevoCliente);
+            cliente clienteGuardadoenlaBD = clienteD.createMOD(nuevoCliente);
 
             // 2. Agregar a la lista observable (esto refresca la tabla automáticamente)
             data.add(nuevoCliente);
