@@ -1,5 +1,6 @@
 package clases.gui;
 import clases.dao.OrdenDAO;
+import clases.dao.empleadoDAO;
 import clases.model.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import clases.control.generarPDF;
+import javafx.util.StringConverter;
 
 public class GenOrdenScreen {
     public GenOrdenScreen(Stage stage, presupuesto presupuestoAprobado){
@@ -25,6 +27,7 @@ public class GenOrdenScreen {
         panelCentral.setStyle("-fx-background-color: #E0E0E0; -fx-background-radius: 15;");
         panelCentral.setAlignment(Pos.TOP_CENTER);
         panelCentral.setMaxWidth(800);
+        List<tarea> tareas = new ArrayList<>();
 
         Label lblTitulo = new Label("ORDEN DE TRABAJO DEL PRESUPUESTO N°" + presupuestoAprobado.getNumero());
         lblTitulo.setStyle("-fx-font-size: 25pt; -fx-font-weight: bold;");
@@ -51,11 +54,42 @@ public class GenOrdenScreen {
         grid.add(lblFechaTitulo, 0, 2);
         grid.add(lblFecha, 1, 2);
 
-        Label lblPartesTitulo = new Label("Repuestos y Tareas:");
+        String descPresu = "Tipo: "+presupuestoAprobado.getTipoTrabajo();
+        String capasPresu = "Capas: " + presupuestoAprobado.getTipoPintura();
+        tarea t1 = new tarea(descPresu);
+        tarea t2 = new tarea(capasPresu);
+        tareas.add(t1);
+        tareas.add(t2);
+
+        for (parte parte : presupuestoAprobado.getRepuestos()) {
+            String descripcion = parte.parteRepuesto();
+            tarea tareita = new tarea(descripcion);
+            tareas.add(tareita);
+        }
+
+        Label lblPartesTitulo = new Label("Tareas y Repuestos:");
         lblPartesTitulo.setStyle("-fx-font-weight: bold;");
-        ListView<parte> listaRepuestos = new ListView<>();
-        listaRepuestos.getItems().setAll(presupuestoAprobado.getRepuestos());
-        listaRepuestos.setPrefHeight(150);
+        ListView<String> listaTareas = new ListView<>();
+        for(tarea t : tareas){
+            listaTareas.getItems().add(t.getDescripcion());
+        }
+        listaTareas.setPrefHeight(150);
+
+        Label lblEmpleado =  new Label("Asignar Empleado a Cargo:");
+        lblEmpleado.setStyle("-fx-font-weight: bold;");
+        ComboBox<empleado> comboEmpleado = new ComboBox<>();
+        comboEmpleado.setPromptText("Seleccione un Empleado...");
+        comboEmpleado.setPrefWidth(250);
+        HBox empleados = new HBox(10, lblEmpleado, comboEmpleado);
+        empleados.setAlignment(Pos.CENTER);
+
+        empleadoDAO eDao = new empleadoDAO();
+        comboEmpleado.getItems().addAll(eDao.getAll());
+        comboEmpleado.getItems().add(new empleado("Juan", 11222333)); //ESTE ES DE PRUEBA Y FUNCIONA
+        comboEmpleado.setConverter(new StringConverter<empleado>() {
+            @Override public String toString(empleado e) { return e == null ? null : e.getNombre(); }
+            @Override public empleado fromString(String s) { return null; }
+        });
 
         Button btnConfirmar = new Button("Confirmar");
         Button btnCancelar = new Button("Cancelar");
@@ -65,14 +99,18 @@ public class GenOrdenScreen {
         panelBotones.setAlignment(Pos.CENTER);
 
         btnConfirmar.setOnAction(e -> {
+            empleado empleadito = comboEmpleado.getValue();
+            if(empleadito == null){
+                Alert alerta = new Alert(Alert.AlertType.WARNING);
+                alerta.setTitle("Atención");
+                alerta.setHeaderText("Debe asignar un empleado");
+                alerta.setContentText("Por favor, seleccione un empleado a cargo para continuar con la carga...");
+                alerta.showAndWait();
+                return;
+            }
+
             OrdenDAO ordenDAO = new OrdenDAO();
-            List<tarea> tareas = new ArrayList<>();
-            //Orden de Prueba
-            empleado emp =  new empleado("Juan", 11222333);
-            tarea t = new tarea("hacer", emp);
-            tareas.add(t);
             ordentrabajo nueva = new ordentrabajo(ordentrabajo.Estado.Pendiente, presupuestoAprobado.getFecha(), LocalDate.now(), presupuestoAprobado, tareas);
-            System.out.print(nueva.getEstado());
             if(nueva.getEstado() == ordentrabajo.Estado.Pendiente && !tareas.isEmpty()){
                 ordenDAO.create(nueva);
                 generarPDF aux = new generarPDF();
@@ -100,7 +138,7 @@ public class GenOrdenScreen {
             stage.setScene(MainApp.mAppVolver(stage));
         });
 
-        panelCentral.getChildren().addAll(lblTitulo, grid, lblPartesTitulo, listaRepuestos, panelBotones);
+        panelCentral.getChildren().addAll(lblTitulo, grid, empleados, lblPartesTitulo, listaTareas, panelBotones);
 
         StackPane fondo = new StackPane(panelCentral);
         fondo.setStyle("-fx-background-color: #AEAEAE;");

@@ -18,6 +18,10 @@ public class tarea {
         this.empleado = empleado;
     }
 
+    public tarea(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
     public String getDescripcion() {
         return descripcion;
     }

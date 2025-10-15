@@ -17,7 +17,7 @@ public class OrdenDAO implements dao<ordentrabajo> {
 
         try (Connection conn = Conexion.getConnection();
              PreparedStatement prep = conn.prepareStatement(sql)){
-            //prep.setInt(1, o.getPresupuesto().getNumero());
+            prep.setInt(1, o.getNumeroOrden());
             prep.setString(1, String.valueOf(Date.valueOf(o.getFecha_inicio())));
             prep.setString(2,String.valueOf(Date.valueOf(o.getFecha_final())));
             prep.setString(3, o.getTareas().toString());

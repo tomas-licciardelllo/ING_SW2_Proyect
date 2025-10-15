@@ -58,4 +58,16 @@ public class parte {
     public static boolean intToBoolean (int i){
         return i==1;
     }
+
+    public String parteRepuesto(){
+        if (this.cambio){
+            String respuesta = "Cambio de " + this.nombre;
+            return respuesta;
+        }
+        else{
+            String respuesta = "Reparación de " + this.nombre;
+            return respuesta;
+        }
+    }
+
 }

@@ -54,6 +54,7 @@ public class OrdenPendienteScreen {
         SortedList<ordentrabajo> sortedData = new SortedList<>(filtroData);
         sortedData.comparatorProperty().bind(tabla.comparatorProperty());
         tabla.setItems(sortedData);
+        tabla.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         TableColumn<ordentrabajo, Integer> colNumero = new TableColumn<>("Número de Orden");
         colNumero.setCellValueFactory(new PropertyValueFactory<>("Id"));
