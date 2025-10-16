@@ -1,8 +1,10 @@
 package clases.gui;
 
+import clases.Manger.autoManager;
+import clases.Manger.presupuestoManager;
 import clases.control.Navegar;
-import clases.dao.AutoDAO;
-import clases.dao.PresupuestoDAO;
+
+
 import clases.model.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -180,8 +182,8 @@ public class PresupuestoScreen {
                 lblClienteInfo.setStyle("-fx-font-weight: bold; -fx-text-fill: #000;");
 
                 // Cargar los autos del cliente seleccionado en el ComboBox
-                AutoDAO autoDao = new AutoDAO();
-                List<auto> autosDelCliente = autoDao.getAutosByClienteId(cliente.getIdBD());
+                autoManager manager = new autoManager();
+                List<auto> autosDelCliente = manager.traerAutos(cliente.getIdBD());
                 cmbAutosCliente.setItems(FXCollections.observableArrayList(autosDelCliente));
 
                 // Limpiar la selección anterior del auto
@@ -303,13 +305,14 @@ public class PresupuestoScreen {
                     }
                     auto a = new auto(txtTipoAuto.getText(), txtPatenteAuto.getText(), Integer.parseInt(txtAnioAuto.getText()), txtMarcaAuto.getText(), txtModeloAuto.getText());
                     pago p = new pago(0);
-                    AutoDAO aDAO = new AutoDAO();
-                    int ida = aDAO.obtenerOcrearAutoPorPatente(a);
+                    autoManager manager = new autoManager();
+                    int ida = manager.crearOtraerAutoXpatente(a);
                     tarea t = new tarea(txtTipoTrabajo.getText());
                     a.setIdBD(ida);
                     presupuesto presu = new presupuesto(0, LocalDate.now(), new ArrayList<>(listaPartes), txtTipoTrabajo.getText(), cmbTipoPintura.getValue(), Integer.parseInt(txtDiasTrabajo.getText()), costoFinal, clienteDePrueba, a, p);
-                    PresupuestoDAO pdao = new PresupuestoDAO();
-                    int l = pdao.createAndGetID(presu);
+
+                    presupuestoManager managerPresupuesto = new presupuestoManager();
+                    int l = managerPresupuesto.crearYobtenerID(presu);
                     presu.setNumero(l);
                     System.out.print(presu.getNumero());
                     new GenOrdenScreen(stage, presu,l,t);

@@ -14,7 +14,7 @@ public class AutoDAO implements dao<auto>{
     @Override
     public boolean create (auto a){
         String sql = "INSERT INTO auto(marca,modelo,anio, patente, duenioID) VALUES (?,?,?,?,?)";
-        try(Connection conn = Conexion.getConnection();
+        try(Connection conn = Conexion.getInstance().getConnection();
             PreparedStatement pstmt = conn.prepareStatement(sql))
         {
             pstmt.setString(1,a.getMarca());
@@ -35,7 +35,8 @@ public class AutoDAO implements dao<auto>{
     public boolean update(auto a){
         String sql = "UPDATE auto SET marca = ?, modelo = ?, anio = ?, patente = ? WHERE aID = ?";
 
-        try (Connection conn = Conexion.getConnection();
+        Connection conn = Conexion.getInstance().getConnection(); try(
+
             PreparedStatement pstmt =  conn.prepareStatement(sql)){
                 pstmt.setString(1,a.getMarca());
                 pstmt.setString(2,a.getModelo());
@@ -61,7 +62,7 @@ public class AutoDAO implements dao<auto>{
         String sql = "SELECT aID,marca,modelo,anio,patente FROM auto WHERE aID = ?";
         auto a =null;
 
-        try(Connection conn = Conexion.getConnection();
+        try(Connection conn = Conexion.getInstance().getConnection();
             PreparedStatement pstmt = conn.prepareStatement(sql)
         )
         {
@@ -95,7 +96,8 @@ public class AutoDAO implements dao<auto>{
                 "FROM auto a " +
                 "LEFT JOIN persona c ON a.duenioID = c.id";
 
-        try (Connection conn = Conexion.getConnection();
+        Connection conn = Conexion.getInstance().getConnection(); try(
+
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
@@ -132,7 +134,7 @@ public class AutoDAO implements dao<auto>{
         List<Integer> arr = new ArrayList<>();
         String sql = "SELECT aID FROM auto";
 
-        try(Connection conn = Conexion.getConnection();
+        try(Connection conn = Conexion.getInstance().getConnection();
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql))
         {
@@ -151,7 +153,8 @@ public class AutoDAO implements dao<auto>{
 
     public int obtenerOcrearAutoPorPatente(auto auto) {
         String sqlSelect = "SELECT aID FROM auto WHERE patente = ?";
-        try (Connection conn = Conexion.getConnection();
+        Connection conn = Conexion.getInstance().getConnection(); try(
+
              PreparedStatement stmtSelect = conn.prepareStatement(sqlSelect)) {
 
             stmtSelect.setString(1, auto.getPatente());
@@ -169,7 +172,9 @@ public class AutoDAO implements dao<auto>{
         }
         String sqlInsert = "INSERT INTO auto (marca, modelo, anio, patente, tipo) VALUES (?, ?, ?, ?, ?)";
 
-        try (Connection conn = Conexion.getConnection();
+        //Connection conn = Conexion.getInstance().getConnection();
+        try(
+
              // Pedimos que nos devuelva las claves generadas (el nuevo ID)
              PreparedStatement stmtInsert = conn.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -203,7 +208,8 @@ public class AutoDAO implements dao<auto>{
         List<auto> lista = new ArrayList<>();
         String sql = "SELECT aID, marca, modelo, anio, patente, tipo FROM auto WHERE duenioID = ?";
 
-        try (Connection conn = Conexion.getConnection();
+        Connection conn = Conexion.getInstance().getConnection(); try(
+
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, clienteId);
@@ -228,7 +234,9 @@ public class AutoDAO implements dao<auto>{
     public int createAndGetID(auto a){
         String sqlSelect = "SELECT aID FROM auto WHERE patente = ?";
 
-        try (Connection conn = Conexion.getConnection();
+        Connection conn = Conexion.getInstance().getConnection();
+        try(
+
              PreparedStatement stmtSelect = conn.prepareStatement(sqlSelect)) {
 
             stmtSelect.setString(1, a.getPatente());
@@ -251,7 +259,9 @@ public class AutoDAO implements dao<auto>{
         // Asegúrate de que tu tabla 'auto' y las columnas sean correctas.
         String sqlInsert = "INSERT INTO auto (marca, modelo, anio, patente, tipo, duenioID) VALUES (?, ?, ?, ?, ?, ?)";
 
-        try (Connection conn = Conexion.getConnection();
+        //Connection conn = Conexion.getInstance().getConnection();
+        try(
+
              // Le pedimos a JDBC que nos devuelva las claves generadas (el nuevo aID)
              PreparedStatement stmtInsert = conn.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)) {
 

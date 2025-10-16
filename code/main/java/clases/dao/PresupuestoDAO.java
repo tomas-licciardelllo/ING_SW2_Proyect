@@ -14,7 +14,8 @@ public class PresupuestoDAO implements dao<presupuesto>{
     public boolean create(presupuesto p){
         String sql = "INSERT INTO presupuesto(fecha,repuestos,t_trabajo,t_pintura,d_chapa,costo_total,id_cliente,id_auto) VALUES (?,?,?,?,?,?,?,?)";
 
-        try (Connection conn = Conexion.getConnection();
+        Connection conn = Conexion.getInstance().getConnection(); try(
+
              PreparedStatement pstmt = conn.prepareStatement(sql)){
             pstmt.setString(1, String.valueOf(Date.valueOf(p.getFecha())));
             pstmt.setString(2,p.getRepuestos().toString());
@@ -75,7 +76,8 @@ public class PresupuestoDAO implements dao<presupuesto>{
         LEFT JOIN parte pa ON pa.idPresupuesto = p.idPresupuesto
         """;
 
-        try (Connection conn = Conexion.getConnection();
+        Connection conn = Conexion.getInstance().getConnection(); try(
+
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
@@ -140,7 +142,8 @@ public class PresupuestoDAO implements dao<presupuesto>{
     public int createAndGetID(presupuesto p){
         String sql = "INSERT INTO presupuesto(fecha,repuestos,t_trabajo,t_pintura,d_chapa,costo_total,id_cliente,id_auto) VALUES (?,?,?,?,?,?,?,?)";
         int nuevoId = -1;
-        try (Connection conn = Conexion.getConnection();
+        Connection conn = Conexion.getInstance().getConnection(); try(
+
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);){
             pstmt.setString(1, String.valueOf(Date.valueOf(p.getFecha())));
             pstmt.setString(2,p.getRepuestos().toString());

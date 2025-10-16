@@ -16,7 +16,8 @@ public class OrdenDAO implements dao<ordentrabajo> {
     public boolean create(ordentrabajo o) {
         String sql = "INSERT INTO orden_trabajo(fecha_inicio,fecha_fin, tareas, estado, pID) VALUES (?,?,?,?,?)";
 
-        try (Connection conn = Conexion.getConnection();
+        Connection conn = Conexion.getInstance().getConnection(); try(
+
              PreparedStatement prep = conn.prepareStatement(sql)){
             prep.setInt(1, o.getNumeroOrden());
             prep.setString(1, String.valueOf(Date.valueOf(o.getFecha_inicio())));
@@ -49,7 +50,8 @@ public class OrdenDAO implements dao<ordentrabajo> {
         String sql = "SELECT id, fecha_inicio,fecha_fin, tareas, estado, pID FROM orden_trabajo WHERE id = ?";
         ordentrabajo c = null;
 
-        try (Connection conn = Conexion.getConnection();
+        Connection conn = Conexion.getInstance().getConnection(); try(
+
              PreparedStatement pstmt = conn.prepareStatement(sql);) {
             pstmt.setInt(1, id);
             ResultSet rs = pstmt.executeQuery();
@@ -79,7 +81,8 @@ public class OrdenDAO implements dao<ordentrabajo> {
     public List<ordentrabajo> getAll() {
         List<ordentrabajo> lista = new ArrayList<>();
         String sql = "SELECT id,fecha_inicio,fecha_fin, tareas, estado, pID FROM orden_trabajo";
-        try (Connection conn = Conexion.getConnection();
+        Connection conn = Conexion.getInstance().getConnection(); try(
+
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
@@ -109,7 +112,8 @@ public class OrdenDAO implements dao<ordentrabajo> {
     public List<ordentrabajo> getPendientes() {
         List<ordentrabajo> lista = new ArrayList<>();
         String sql = "SELECT id, fecha_inicio,fecha_fin, tareas, estado, pID FROM orden_trabajo WHERE estado = 0";
-        try (Connection conn = Conexion.getConnection();
+        Connection conn = Conexion.getInstance().getConnection(); try(
+();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
@@ -154,7 +158,8 @@ public class OrdenDAO implements dao<ordentrabajo> {
                 "JOIN auto a ON p.id_auto = a.aID " +
                 "WHERE ot.estado = 0";
 
-        try (Connection conn = Conexion.getConnection();
+        Connection conn = Conexion.getInstance().getConnection(); try(
+
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 

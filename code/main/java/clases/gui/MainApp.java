@@ -98,7 +98,7 @@ public class MainApp extends Application {
         List<presupuesto> l4 = new ArrayList<>();
         l1.add(new auto("Toyota","Corolla",2003, "css", "2993"));
         cliente c1 = new cliente("Jorge", "1124233",l1,l4);
-        Connection conn = Conexion.getConnection();
+       // Connection conn = Conexion.getInstance().getConnection();
 
     }
 }

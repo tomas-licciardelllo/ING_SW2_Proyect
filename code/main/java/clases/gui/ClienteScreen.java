@@ -1,15 +1,10 @@
 package clases.gui;
-import clases.control.Conexion;
-import clases.dao.AutoDAO;
-import clases.dao.ClienteDAO;
-import clases.model.auto;
+import clases.Manger.clienteManager;
 import clases.model.cliente;
-import clases.model.parte;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -27,12 +22,9 @@ import java.util.List;
 public class ClienteScreen {
 
     public ClienteScreen(Stage stage) {
-        ClienteDAO clienteDAO = new ClienteDAO();
-        AutoDAO autoDao = new AutoDAO();
-        List<cliente> listaClientes = clienteDAO.getAll();
+        clienteManager manager = new clienteManager();
+        List<cliente> listaClientes = manager.traerCLientes();
         ObservableList<cliente> data = FXCollections.observableArrayList(listaClientes);
-
-
 
         FilteredList<cliente> filtroData = new FilteredList<>(data,p->true);
         double anchoPantalla = Screen.getPrimary().getBounds().getWidth();
@@ -50,11 +42,6 @@ public class ClienteScreen {
 
         Button btnVolver = new Button("Volver");
         btnVolver.getStyleClass().add("btnormal");
-
-        btnBuscar.setOnAction(e->{
-            auto nuevo = new auto("Camioneta","HG 234 UH",2003,"Toyota", "Corolla");
-            autoDao.create(nuevo);
-        });
 
        btnVolver.setOnAction(e->{
            Stage ss = (Stage) btnVolver.getScene().getWindow();
@@ -78,7 +65,7 @@ public class ClienteScreen {
 
 
         TableView<cliente> tablaClientes = new TableView<>(data);
-        ClienteDAO auxCDAO = new ClienteDAO();
+
 
         tablaClientes.setFixedCellSize(25);
         tablaClientes.prefHeightProperty().bind(tablaClientes.fixedCellSizeProperty().multiply( javafx.beans.binding.Bindings.size(tablaClientes.getItems()).add(1)));
@@ -167,8 +154,8 @@ public class ClienteScreen {
     private VBox crearPanelModificacion(BorderPane root, int idClienteBuscado, HBox anterior, VBox pantallaant) {
         Node aux = root.getTop();
         root.setTop(null);
-        ClienteDAO cl = new ClienteDAO();
-        cliente auxCliente = cl.read(idClienteBuscado);
+        clienteManager manager = new clienteManager();
+        cliente auxCliente = manager.traerCLiente(idClienteBuscado);
         VBox pantalla = new VBox();
         pantalla.setMinSize(300,200);
         pantalla.setMaxSize(600,400);
@@ -204,12 +191,12 @@ public class ClienteScreen {
             System.out.println(auxCliente.getIdBD());
             auxCliente.setNombre(nombreField.getText());
             auxCliente.setTelefono(telefonoField.getText());
-            cl.update(auxCliente);
+            manager.actualizarCliente(auxCliente);
         });
         return pantalla;
     }
     private VBox crearFormulario(BorderPane root, ObservableList<cliente> data, Node topBar, VBox panelTabla) {
-        ClienteDAO clienteD = new ClienteDAO();
+        clienteManager manager  = new clienteManager();
 
         VBox formulario = new VBox(15); // Aumenté el espaciado
         formulario.setMaxSize(400, 300);
@@ -261,7 +248,7 @@ public class ClienteScreen {
             cliente nuevoCliente = new cliente(nombre, telefono, new ArrayList<>(), new ArrayList<>());
 
             // 1. Guardar en la base de datos
-            cliente clienteGuardadoenlaBD = clienteD.createMOD(nuevoCliente);
+            cliente clienteGuardadoenlaBD = manager.subirCliente(nuevoCliente);
 
             // 2. Agregar a la lista observable (esto refresca la tabla automáticamente)
             data.add(nuevoCliente);
