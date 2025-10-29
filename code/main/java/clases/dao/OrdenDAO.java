@@ -50,9 +50,9 @@ public class OrdenDAO implements dao<ordentrabajo> {
         String sql = "SELECT id, fecha_inicio,fecha_fin, tareas, estado, pID FROM orden_trabajo WHERE id = ?";
         ordentrabajo c = null;
 
-        Connection conn = Conexion.getInstance().getConnection(); try(
-
-             PreparedStatement pstmt = conn.prepareStatement(sql);) {
+        Connection conn = Conexion.getInstance().getConnection();
+        try(PreparedStatement pstmt = conn.prepareStatement(sql))
+        {
             pstmt.setInt(1, id);
             ResultSet rs = pstmt.executeQuery();
 

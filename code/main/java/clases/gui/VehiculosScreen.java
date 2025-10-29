@@ -1,6 +1,6 @@
 package clases.gui;
 import clases.dao.AutoDAO;
-import com.aspose.pdf.Table;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,7 +16,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import clases.model.*;
 
-import java.util.ArrayList;
+
 import java.util.List;
 
 public class VehiculosScreen {
@@ -27,7 +27,6 @@ public class VehiculosScreen {
         AutoDAO autoDAO = new AutoDAO();
         List<auto> listaAutos = autoDAO.getAll();
         ObservableList<auto> data = FXCollections.observableArrayList(listaAutos);
-        TableView<auto> tablaAuto = new TableView<>(data);
         FilteredList<auto> filtroData = new FilteredList<>(data, p->true);
 
         TextField txtBuscar = new TextField();
@@ -47,7 +46,7 @@ public class VehiculosScreen {
         barraBusqueda.getChildren().addAll(txtBuscar,btnBuscar);
 
         TableView<auto> tabalAutos = new TableView<>(data);
-        AutoDAO auxCDAO = new AutoDAO();
+
         tabalAutos.setFixedCellSize(25);
         tabalAutos.prefHeightProperty().bind(tabalAutos.fixedCellSizeProperty().multiply( javafx.beans.binding.Bindings.size(tabalAutos.getItems()).add(1)));
 

@@ -14,7 +14,8 @@ public class AutoDAO implements dao<auto>{
     @Override
     public boolean create (auto a){
         String sql = "INSERT INTO auto(marca,modelo,anio, patente, duenioID) VALUES (?,?,?,?,?)";
-        try(Connection conn = Conexion.getInstance().getConnection();
+        Connection conn = Conexion.getInstance().getConnection();
+        try(
             PreparedStatement pstmt = conn.prepareStatement(sql))
         {
             pstmt.setString(1,a.getMarca());

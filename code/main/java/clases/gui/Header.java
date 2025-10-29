@@ -44,6 +44,10 @@ public class Header {
         }
 
         // Botones
+        Button btnPartes = new Button("Partes");
+        btnPartes.getStyleClass().add("botonHeader");
+        btnPartes.setOnAction(ev-> new ParteScreen(stage));
+
         Button btnClientes = new Button("Clientes");
         btnClientes.getStyleClass().add("botonHeader");
         btnClientes.setOnAction(ev -> new ClienteScreen(stage));
@@ -118,7 +122,7 @@ public class Header {
         Button btnFacturas = new Button("Facturas");
         btnFacturas.getStyleClass().add("botonHeader");
 
-        barra.getChildren().addAll(btnPresupuestos, btnOrdenes, btnClientes, btnVehiculos, btnFacturas);
+        barra.getChildren().addAll(btnPresupuestos, btnOrdenes, btnClientes, btnVehiculos, btnFacturas,btnPartes);
 
         return barra;
     }

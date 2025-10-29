@@ -8,7 +8,8 @@ module taller {
     requires javafx.graphics;
     requires javafx.base;
     requires aspose.pdf;
-        //requires taller;
+    //requires taller;
+    //requires taller;
 
     opens clases.model to javafx.fxml;
     opens clases.gui to javafx.fxml;
