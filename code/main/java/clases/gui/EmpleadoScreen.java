@@ -7,10 +7,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -19,6 +16,7 @@ import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
 import java.util.List;
+import java.util.Optional;
 
 public class EmpleadoScreen {
 
@@ -81,13 +79,43 @@ public class EmpleadoScreen {
         root.setBottom(botones);
 
         btnAgregar.setOnAction(e -> {
-
+            new empleadoFormScreen(stage, empleadoManager, null);
         });
         btnModificar.setOnAction(e -> {
-
+            empleado seleccionado = empleados.getSelectionModel().getSelectedItem();
+            if (seleccionado == null) {
+                mostrarAlerta("Atención", "Debe seleccionar un empleado para modificar.", Alert.AlertType.WARNING);
+                return;
+            }
+            // Llama a la nueva pantalla de formulario en modo "Modificar" (pasando el empleado)
+            new empleadoFormScreen(stage, empleadoManager, seleccionado);
         });
         btnEliminar.setOnAction(e -> {
+            empleado seleccionado = empleados.getSelectionModel().getSelectedItem();
+            if (seleccionado == null) {
+                mostrarAlerta("Atención", "Debe seleccionar un empleado para eliminar.", Alert.AlertType.WARNING);
+                return;
+            }
 
+            Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmacion.setTitle("Confirmar eliminación");
+            confirmacion.setHeaderText("¿Está seguro de que desea eliminar a " + seleccionado.getNombre() + "?");
+            confirmacion.setContentText("DNI: " + seleccionado.getDocumento() + "\nEsta acción no se puede deshacer.");
+
+            Optional<ButtonType> resultado = confirmacion.showAndWait();
+            if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
+                try {
+                    // Llama al manager para eliminar
+                    if (empleadoManager.eliminarEmpleado(seleccionado.getDocumento())) {
+                        allEmpleados.remove(seleccionado); // Actualiza la UI
+                        mostrarAlerta("Éxito", "Empleado eliminado correctamente.", Alert.AlertType.INFORMATION);
+                    } else {
+                        mostrarAlerta("Error", "No se pudo eliminar el empleado.", Alert.AlertType.ERROR);
+                    }
+                } catch (Exception ex) {
+                    mostrarAlerta("Error", "No se pudo eliminar el empleado. Es posible que esté asignado a otras tareas.", Alert.AlertType.ERROR);
+                }
+            }
         });
         btnVolver.setOnAction(e -> {
             stage.setScene(MainApp.mAppVolver(stage));
@@ -117,5 +145,13 @@ public class EmpleadoScreen {
         stage.setWidth(bounds.getWidth());
         stage.setHeight(bounds.getHeight());
         stage.show();
+    }
+
+    private void mostrarAlerta(String titulo, String contenido, Alert.AlertType tipo) {
+        Alert alert = new Alert(tipo);
+        alert.setTitle(titulo);
+        alert.setHeaderText(null);
+        alert.setContentText(contenido);
+        alert.showAndWait();
     }
 }

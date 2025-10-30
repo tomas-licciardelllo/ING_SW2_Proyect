@@ -30,12 +30,45 @@ public class empleadoDAO implements dao<empleado>{
 
     @Override
     public boolean update(empleado empleado) {
-        return false;
+        return this.update(empleado.getDocumento(), empleado);
+    }
+
+    public boolean update(long dniOriginal, empleado empleadoModificado) {
+        String sql = "UPDATE empleados SET dni = ?, nombre = ? WHERE dni = ?";
+        Connection conn = Conexion.getInstance().getConnection();
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setLong(1, empleadoModificado.getDocumento());
+            pstmt.setString(2, empleadoModificado.getNombre());
+            pstmt.setLong(3, dniOriginal); // Busca por el DNI original
+
+            int affectedRows = pstmt.executeUpdate();
+            return affectedRows > 0; // Verdadero si se actualizó al menos una fila
+
+        } catch (SQLException e) {
+            System.out.println("Error al actualizar empleado: " + e.getMessage());
+            return false;
+        }
     }
 
     @Override
     public boolean delete(int id) {
-        return false;
+        return delete((long) id);
+    }
+
+    public boolean delete(long dni) {
+        String sql = "DELETE FROM empleados WHERE dni = ?";
+        Connection conn = Conexion.getInstance().getConnection();
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setLong(1, dni);
+            int affectedRows = pstmt.executeUpdate();
+            return affectedRows > 0; // Verdadero si se eliminó al menos una fila
+
+        } catch (SQLException e) {
+            System.out.println("Error al eliminar empleado: " + e.getMessage());
+            return false;
+        }
     }
 
     @Override
