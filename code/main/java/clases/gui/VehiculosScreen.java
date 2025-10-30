@@ -31,6 +31,7 @@ public class VehiculosScreen {
 
         TextField txtBuscar = new TextField();
         txtBuscar.setPromptText("Buscar vehículo...");
+        txtBuscar.getStyleClass().add("textoBusqueda");
 
         Button btnBuscar = new Button("Buscar");
         btnBuscar.getStyleClass().add("BotonNormal");

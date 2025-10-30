@@ -314,7 +314,6 @@ public class PresupuestoScreen {
                     tarea t = new tarea(txtTipoTrabajo.getText());
                     a.setIdBD(ida);
                     presupuesto presu = new presupuesto(0, LocalDate.now(), new ArrayList<>(listaPartes), txtTipoTrabajo.getText(), cmbTipoPintura.getValue(), Integer.parseInt(txtDiasTrabajo.getText()), costoFinal, clienteDePrueba, a, p);
-
                     presupuestoManager managerPresupuesto = new presupuestoManager();
                     int l = managerPresupuesto.crearYobtenerID(presu);
                     presu.setNumero(l);

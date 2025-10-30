@@ -1,5 +1,6 @@
 package clases.gui;
 
+import clases.Manager.ordentrabajoManager;
 import clases.control.generarPDF;
 import clases.model.auto;
 import javafx.collections.transformation.FilteredList;
@@ -32,8 +33,8 @@ import java.util.List;
 
 public class OrdenPendienteScreen {
     public OrdenPendienteScreen(Stage stage) {
-        OrdenDAO ordenDAO = new OrdenDAO();
-        List<ordentrabajo> lista = ordenDAO.getPendientes();
+        ordentrabajoManager ordenMan =  new ordentrabajoManager();
+        List<ordentrabajo> lista = ordenMan.obtenerPendientes();
         ObservableList<ordentrabajo> data = FXCollections.observableArrayList(lista);
         FilteredList<ordentrabajo> filtroData = new FilteredList<>(data, p->true);
 
@@ -46,6 +47,7 @@ public class OrdenPendienteScreen {
         panelSup.setAlignment(Pos.CENTER);
         TextField txtBuscar = new TextField();
         txtBuscar.setPromptText("Buscar por patente, cliente, Número de Orden...");
+        txtBuscar.getStyleClass().add("textoBusqueda");
         HBox.setHgrow(txtBuscar, Priority.ALWAYS);
 
         panelSup.getChildren().addAll(txtBuscar);
@@ -167,9 +169,15 @@ public class OrdenPendienteScreen {
 
         principal.getChildren().addAll(lblTitulo, panelSup, tabla, panelInferior);
         Scene scene = new Scene(principal);
-        stage.setTitle("Órdenes Pendientes");
+        scene.getStylesheets().add(getClass().getResource("/resources/styles.css").toExternalForm());
         stage.setScene(scene);
-        stage.setMaximized(true);
+        stage.setTitle("ChapAPP - Órdenes Pendientes");
+        javafx.stage.Screen screen = javafx.stage.Screen.getPrimary();
+        javafx.geometry.Rectangle2D bounds = screen.getVisualBounds();
+        stage.setX(bounds.getMinX());
+        stage.setY(bounds.getMinY());
+        stage.setWidth(bounds.getWidth());
+        stage.setHeight(bounds.getHeight());
         stage.show();
     }
 
@@ -192,6 +200,8 @@ public class OrdenPendienteScreen {
         grid.add(new Label(orden.getPresupuesto().getAuto().getPatente()), 1, 3);
         grid.add(new Label("Fecha Ingreso:"), 0, 4);
         grid.add(new Label(orden.getFecha_inicio().toString()), 1, 4);
+        grid.add(new Label("Tareas:"), 0, 5);
+        grid.add(new Label(orden.getTareas().toString()), 1, 5);
         ventana.getDialogPane().setContent(grid);
         ventana.showAndWait();
     }

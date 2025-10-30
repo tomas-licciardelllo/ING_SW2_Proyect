@@ -54,10 +54,14 @@ public class OrdenScreen {
 
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("/resources/styles.css").toExternalForm());
-
         stage.setScene(scene);
-
-        stage.setMaximized(true);
+        stage.setTitle("ChapAPP - Órdenes de Trabajo");
+        javafx.stage.Screen screen = javafx.stage.Screen.getPrimary();
+        javafx.geometry.Rectangle2D bounds = screen.getVisualBounds();
+        stage.setX(bounds.getMinX());
+        stage.setY(bounds.getMinY());
+        stage.setWidth(bounds.getWidth());
+        stage.setHeight(bounds.getHeight());
         stage.show();
     }
 }

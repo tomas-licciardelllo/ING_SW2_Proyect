@@ -98,10 +98,16 @@ public class AutoScreen {
         root.setCenter(panel);
         root.getStyleClass().add("fondo");
 
-
-        Scene scene = new Scene(root,anchoPantalla,altoPantalla);
+        Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("/resources/styles.css").toExternalForm());
         stage.setScene(scene);
+        stage.setTitle("ChapAPP - Gestión de Vehículos");
+        javafx.stage.Screen screen = javafx.stage.Screen.getPrimary();
+        javafx.geometry.Rectangle2D bounds = screen.getVisualBounds();
+        stage.setX(bounds.getMinX());
+        stage.setY(bounds.getMinY());
+        stage.setWidth(bounds.getWidth());
+        stage.setHeight(bounds.getHeight());
         stage.show();
     }
 

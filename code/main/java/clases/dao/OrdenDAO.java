@@ -1,10 +1,6 @@
 package clases.dao;
 import clases.control.Conexion;
-import clases.model.cliente;
-import clases.model.ordentrabajo;
-import clases.model.presupuesto;
-import clases.model.tarea;
-import clases.model.auto;
+import clases.model.*;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -14,17 +10,15 @@ import java.util.List;
 public class OrdenDAO implements dao<ordentrabajo> {
     @Override
     public boolean create(ordentrabajo o) {
-        String sql = "INSERT INTO orden_trabajo(fecha_inicio,fecha_fin, tareas, estado, pID) VALUES (?,?,?,?,?)";
+        String sql = "INSERT INTO orden_trabajo(fecha_inicio, fecha_fin, estado, pID) VALUES (?,?,?,?)";
 
         Connection conn = Conexion.getInstance().getConnection(); try(
 
              PreparedStatement prep = conn.prepareStatement(sql)){
-            prep.setInt(1, o.getNumeroOrden());
             prep.setString(1, String.valueOf(Date.valueOf(o.getFecha_inicio())));
             prep.setString(2,String.valueOf(Date.valueOf(o.getFecha_final())));
-            prep.setString(3, String.valueOf(o.getTareasDesc()));
-            prep.setInt(4, o.getEstado().toInt());
-            prep.setInt(5, o.getPresupuesto().getNumero());
+            prep.setInt(3, o.getEstado().toInt());
+            prep.setInt(4, o.getPresupuesto().getNumero());
             prep.executeUpdate();
             return  true;
 
@@ -47,7 +41,7 @@ public class OrdenDAO implements dao<ordentrabajo> {
 
     @Override
     public ordentrabajo read(int id) {
-        String sql = "SELECT id, fecha_inicio,fecha_fin, tareas, estado, pID FROM orden_trabajo WHERE id = ?";
+        String sql = "SELECT id, fecha_inicio,fecha_fin, estado, pID FROM orden_trabajo WHERE id = ?";
         ordentrabajo c = null;
 
         Connection conn = Conexion.getInstance().getConnection();
@@ -80,7 +74,7 @@ public class OrdenDAO implements dao<ordentrabajo> {
     @Override
     public List<ordentrabajo> getAll() {
         List<ordentrabajo> lista = new ArrayList<>();
-        String sql = "SELECT id,fecha_inicio,fecha_fin, tareas, estado, pID FROM orden_trabajo";
+        String sql = "SELECT id,fecha_inicio,fecha_fin, estado, pID FROM orden_trabajo";
         Connection conn = Conexion.getInstance().getConnection(); try(
 
              Statement stmt = conn.createStatement();
@@ -90,13 +84,14 @@ public class OrdenDAO implements dao<ordentrabajo> {
                 ordentrabajo.Estado estado = ordentrabajo.Estado.fromInt(estadoNum);
                 int presupuestoId = rs.getInt("pID");
                 presupuesto p = new PresupuestoDAO().read(presupuestoId);
+                List<tarea> tareas = getAllTrabajos(rs.getInt("id"));
                 lista.add(new ordentrabajo(
                                 rs.getInt("id"),
                                 estado,
                                 LocalDate.parse(rs.getString("fecha_inicio")),
                                 LocalDate.parse(rs.getString("fecha_fin")),
                                 p,
-                                new ArrayList<tarea>()
+                                tareas
                         )
                 );
             }
@@ -106,37 +101,6 @@ public class OrdenDAO implements dao<ordentrabajo> {
 
         return lista;
     }
-
-
-    /*
-    public List<ordentrabajo> getPendientes() {
-        List<ordentrabajo> lista = new ArrayList<>();
-        String sql = "SELECT id, fecha_inicio,fecha_fin, tareas, estado, pID FROM orden_trabajo WHERE estado = 0";
-        Connection conn = Conexion.getInstance().getConnection(); try(
-();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-            while (rs.next()) {
-                int estadoNum = rs.getInt("estado");
-                ordentrabajo.Estado estado = ordentrabajo.Estado.fromInt(estadoNum);
-                int presupuestoId = rs.getInt("pID");
-                presupuesto p = new PresupuestoDAO().read(presupuestoId);
-                lista.add(new ordentrabajo(
-                                rs.getInt("id"),
-                                estado,
-                                LocalDate.parse(rs.getString("fecha_inicio")),
-                                LocalDate.now(),
-                                p,
-                                new ArrayList<tarea>()
-                        )
-                );
-            }
-        } catch (SQLException e) {
-            System.out.println("Error al obtener las ordenes de trabajo: " + e.getMessage());
-        }
-
-        return lista;
-    }*/
 
 
     public int createAndGetID(ordentrabajo o){return 1;}
@@ -223,4 +187,57 @@ public class OrdenDAO implements dao<ordentrabajo> {
         }
         return lista;
     }
+
+    public List<tarea> getAllTrabajos(int idOrden) {
+        List<tarea> lista = new ArrayList<>();
+        empleadoDAO empdao = new empleadoDAO();
+
+        String sql = "SELECT T.descripcion, T.empleadoCargo " +
+                "FROM tareas T " +
+                "JOIN trabajos TR ON T.id = TR.tareaRealizar " +
+                "JOIN orden_trabajo OT ON TR.ordenPertenece = OT.id " +
+                "WHERE OT.id = ?;";
+        Connection conn = Conexion.getInstance().getConnection();
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setInt(1, idOrden);
+            try (ResultSet rs = pst.executeQuery()) {
+                while (rs.next()) {
+                    String descripcionTarea = rs.getString("descripcion");
+                    long dniEmp = rs.getLong("empleadoCargo");
+                    empleado emp = empdao.getbyDNI(dniEmp);
+                    tarea t = new tarea(descripcionTarea, new ArrayList<>(), emp);
+                    lista.add(t);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
+    public int createAux(ordentrabajo orden) throws SQLException {
+
+        String sql = "INSERT INTO orden_trabajo (fecha_inicio, fecha_fin, estado, pID) VALUES (?, ?, ?, ?)";
+
+        // El try-with-resources maneja la conexión, el statement y el resultset
+        try (Connection conn = Conexion.getInstance().getConnection();
+             PreparedStatement pst = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            pst.setString(1, String.valueOf(Date.valueOf(orden.getFecha_inicio())));
+            pst.setString(2,String.valueOf(Date.valueOf(orden.getFecha_final())));
+            pst.setInt(3, orden.getEstado().toInt());
+            pst.setInt(4, orden.getPresupuesto().getNumero());
+
+            pst.executeUpdate();
+
+            try (ResultSet rs = pst.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                } else {
+                    throw new SQLException("Fallo al crear la orden, no se obtuvo ID.");
+                }
+            }
+        }
+    }
+
 }

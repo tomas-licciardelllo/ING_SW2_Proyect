@@ -1,4 +1,6 @@
 package clases.gui;
+import clases.Manager.empleadoManager;
+import clases.Manager.ordentrabajoManager;
 import clases.dao.OrdenDAO;
 import clases.dao.empleadoDAO;
 import clases.model.*;
@@ -60,7 +62,6 @@ public class GenOrdenScreen {
         tarea t2 = new tarea(capasPresu);
         tareas.add(t1);
         tareas.add(t2);
-
         for (parte parte : presupuestoAprobado.getRepuestos()) {
             String descripcion = parte.parteRepuesto();
             tarea tareita = new tarea(descripcion);
@@ -69,57 +70,83 @@ public class GenOrdenScreen {
 
         Label lblPartesTitulo = new Label("Tareas y Repuestos:");
         lblPartesTitulo.setStyle("-fx-font-weight: bold;");
-        ListView<String> listaTareas = new ListView<>();
+
+        empleadoManager empleadoManager = new empleadoManager();
+        List<empleado> empleadoResu = empleadoManager.obtenerTodos();
+
+        VBox tareasContenedor = new VBox(10);
+        tareasContenedor.setStyle("-fx-background-color: white; -fx-padding: 10; -fx-border-color: #cccccc; -fx-border-radius: 5;");
         for(tarea t : tareas){
-            listaTareas.getItems().add(t.getDescripcion());
+            Label lblTarea = new Label(t.getDescripcion());
+            lblTarea.setMinWidth(Region.USE_PREF_SIZE);
+            Region espacio = new Region();
+            HBox.setHgrow(espacio, Priority.ALWAYS);
+            ComboBox<empleado> empleados = new ComboBox<>();
+            empleados.setPromptText("Asigne un Empleado...");
+            empleados.getItems().addAll(empleadoResu);
+
+            empleados.setConverter(new StringConverter<empleado>() {
+                @Override public String toString(empleado e) { return e == null ? null : e.getNombre(); }
+                @Override public empleado fromString(String s) { return null; }
+            });
+
+            empleados.valueProperty().addListener((obs, oldVal, newVal) -> {
+                t.setEmpleado(newVal);
+            });
+
+            HBox tareaRow = new HBox(lblTarea,espacio,empleados);
+            tareaRow.setAlignment(Pos.CENTER_LEFT);
+            tareasContenedor.getChildren().add(tareaRow);
         }
-        listaTareas.setPrefHeight(150);
 
-        Label lblEmpleado =  new Label("Asignar Empleado a Cargo:");
-        lblEmpleado.setStyle("-fx-font-weight: bold;");
-        ComboBox<empleado> comboEmpleado = new ComboBox<>();
-        comboEmpleado.setPromptText("Seleccione un Empleado...");
-        comboEmpleado.setPrefWidth(250);
-        HBox empleados = new HBox(10, lblEmpleado, comboEmpleado);
-        empleados.setAlignment(Pos.CENTER);
-
-        empleadoDAO eDao = new empleadoDAO();
-        comboEmpleado.getItems().addAll(eDao.getAll());
-        comboEmpleado.getItems().add(new empleado("Juan", 11222333)); //ESTE ES DE PRUEBA Y FUNCIONA
-        comboEmpleado.setConverter(new StringConverter<empleado>() {
-            @Override public String toString(empleado e) { return e == null ? null : e.getNombre(); }
-            @Override public empleado fromString(String s) { return null; }
-        });
+        ScrollPane scrollPaneTareas = new ScrollPane(tareasContenedor);
+        scrollPaneTareas.setFitToWidth(true);
+        scrollPaneTareas.setPrefHeight(200);
 
         Button btnConfirmar = new Button("Confirmar");
         Button btnCancelar = new Button("Cancelar");
-        btnConfirmar.setStyle("-fx-cursor: hand; -fx-pref-width: 70px;-fx-min-width: 70px;-fx-max-width: 70px; -fx-pref-height: 40px;");
-        btnCancelar.setStyle("-fx-cursor: hand; -fx-pref-width: 70px;-fx-min-width: 70px;-fx-max-width: 70px; -fx-pref-height: 40px;");
+        btnConfirmar.getStyleClass().add("BotonNormal");
+        btnCancelar.getStyleClass().add("BotonNormal");
         HBox panelBotones = new HBox(15, btnConfirmar, btnCancelar);
         panelBotones.setAlignment(Pos.CENTER);
 
         btnConfirmar.setOnAction(e -> {
-            empleado empleadito = comboEmpleado.getValue();
-            if(empleadito == null){
+            boolean auxiliar = true;
+            for (tarea t : tareas) {
+                if (t.getEmpleado() == null) {
+                    auxiliar = false;
+                    break;
+                }
+            }
+            if (!auxiliar) {
                 Alert alerta = new Alert(Alert.AlertType.WARNING);
                 alerta.setTitle("Atención");
-                alerta.setHeaderText("Debe asignar un empleado");
-                alerta.setContentText("Por favor, seleccione un empleado a cargo para continuar con la carga...");
+                alerta.setHeaderText("Faltan empleados por asignar");
+                alerta.setContentText("Por favor, asigne a TODAS las tareas un empleado");
                 alerta.showAndWait();
                 return;
             }
 
-            OrdenDAO ordenDAO = new OrdenDAO();
+            ordentrabajoManager ordenManager = new ordentrabajoManager();
             ordentrabajo nueva = new ordentrabajo(ordentrabajo.Estado.Pendiente, presupuestoAprobado.getFecha(), LocalDate.now(), presupuestoAprobado, tareas);
-            if(nueva.getEstado() == ordentrabajo.Estado.Pendiente && !tareas.isEmpty()){
-                ordenDAO.create(nueva);
-                generarPDF aux = new generarPDF();
-                aux.generarpdf(nueva);
-                Alert alerta = new Alert(Alert.AlertType.INFORMATION);
-                alerta.setTitle("Éxito");
-                alerta.setContentText("La orden de trabajo fue generada correctamente.");
-                alerta.showAndWait();
-                stage.setScene(MainApp.mAppVolver(stage));
+            if(nueva.getEstado() == ordentrabajo.Estado.Pendiente){
+                boolean exito = ordenManager.generarOrdenDeTrabajo(nueva);
+                if(exito) {
+                    generarPDF aux = new generarPDF();
+                    aux.generarpdf(nueva);
+                    Alert alerta = new Alert(Alert.AlertType.INFORMATION);
+                    alerta.setTitle("Éxito");
+                    alerta.setContentText("La orden de trabajo fue generada correctamente.");
+                    alerta.showAndWait();
+                    stage.setScene(MainApp.mAppVolver(stage));
+                }
+                else{
+                    Alert alerta = new Alert(Alert.AlertType.ERROR);
+                    alerta.setTitle("ERROR!");
+                    alerta.setContentText("Hubo un problema al Cargar la Orden de Trabajo. Regresando al Menú...");
+                    alerta.showAndWait();
+                    stage.setScene(MainApp.mAppVolver(stage));
+                }
             }
             else{
                 Alert alerta = new Alert(Alert.AlertType.ERROR);
@@ -138,7 +165,7 @@ public class GenOrdenScreen {
             stage.setScene(MainApp.mAppVolver(stage));
         });
 
-        panelCentral.getChildren().addAll(lblTitulo, grid, empleados, lblPartesTitulo, listaTareas, panelBotones);
+        panelCentral.getChildren().addAll(lblTitulo, grid, lblPartesTitulo, scrollPaneTareas, panelBotones);
 
         StackPane fondo = new StackPane(panelCentral);
         fondo.setStyle("-fx-background-color: #AEAEAE;");

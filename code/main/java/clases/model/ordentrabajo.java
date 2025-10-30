@@ -126,7 +126,7 @@ public class ordentrabajo {
 
         // Usamos Streams para convertir cada tarea a su String y unirlas con una coma
         return tareas.stream()
-                .map(tarea::toString) // Llama al método toString() de cada tarea
+                .map(tarea::toString)
                 .collect(Collectors.joining(", "));
     }
 

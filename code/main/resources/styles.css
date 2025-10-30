@@ -38,7 +38,7 @@
     }
 
     .header {
-        -fx-background-color: -fx-grisclaro;
+        -fx-background-color: -fx-azul;
         -fx-min-width: 220px;
         -fx-alignment: top-center;
     }
@@ -54,7 +54,7 @@
     .botonHeader{
         -fx-padding: 20;
         -fx-cursor: hand;
-        -fx-background-color: black;
+        -fx-background-color: -fx-azul;
         -fx-text-fill: #ffffff;
         -fx-font-size: 20px;
         -fx-font-color: white;
@@ -67,12 +67,12 @@
         -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 5, 0, 0, 2);
     }
     .botonHeader: hover{
-        -fx-background-color: #005A9E;
+        -fx-background-color: -fx-celeste;
         -fx-scale-x: 1.05;
         -fx-scale-y: 1.05;
     }
     .botonHeader: pressed{
-        -fx-background-color: #004C8A;
+        -fx-background-color: -fx-azul;
         -fx-scale-x: 1.0;
         -fx-scale-y: 1.0;
         -fx-translate-y: 1px;
@@ -106,6 +106,23 @@
         -fx-translate-y: 1px
     }
 
+    .botonEliminar{
+        -fx-background-color: -fx-rojo;
+        -fx-text-fill: white;
+        -fx-font-weight: bold;
+        -fx-border-width: 0;
+        -fx-background-radius: 6px;
+        -fx-padding: 6px 14px;
+        -fx-cursor: hand;
+    }
+    .botonEliminar:hover{
+        -fx-background-color: #E53935;
+        -fx-scale-x: 1.05;
+        -fx-scale-y: 1.05;}
+    .botonEliminar: pressed{
+        -fx-background-color: #C62828;
+    }
+
     .titulo{
         -fx-font-size: 30px;
         -fx-font-weight: bold;
@@ -123,7 +140,6 @@
         -fx-effect: dropshadow(gaussian, #ADADAD, 5, 0.0, 0.0, 1.0);
     }
 
-    /* Redondear toda la TableView */
     .table-view {
         -fx-border-color: gray;
         -fx-border-width: 1;
@@ -132,7 +148,6 @@
         -fx-background-color: white; /* color de fondo */
     }
 
-    /* Redondear las celdas también, opcional */
     .table-view .cell {
         -fx-border-color: gray gray gray gray;
         -fx-border-width: 0 1 1 0;  /* derecha y abajo */
@@ -152,4 +167,28 @@
        -fx-border-color: #cccccc;
        -fx-border-width: 1;
        -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 10, 0, 0, 4);
+    }
+
+    .contenedores{
+        -fx-background-color: #E8E8E8;
+    }
+
+    .textoBusqueda{
+        -fx-font-size: 14px;
+        -fx-background-radius: 20px;
+        -fx-border-radius: 20px;
+        -fx-border-color: #cccccc;
+        -fx-padding: 4px 12px;
+    }
+    .textoBusqueda:focused{
+        -fx-border-color: -fx-azul;
+        -fx-border-width: 2px;
+    }
+
+    .barraArriba{
+        -fx-background-color: #FFFFFF;
+        -fx-padding: 10px;
+        -fx-spacing: 10px;
+        -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);
+        -fx-alignment: CENTER_LEFT;
     }

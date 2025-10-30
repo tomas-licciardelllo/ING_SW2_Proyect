@@ -5,7 +5,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -86,9 +85,6 @@ public class Header {
         Button btnOrdenes = new Button("Ordenes");
         btnOrdenes.getStyleClass().add("botonHeader");
 
-        Button btnEmpleados = new Button("Empleados");
-        btnEmpleados.getStyleClass().add("botonHeader");
-
         ContextMenu ordenContexto = new ContextMenu();
         MenuItem mostrarOrdenes = new MenuItem("Mostrar Todas");
         mostrarOrdenes.setOnAction(e -> {
@@ -122,8 +118,15 @@ public class Header {
             ordenContexto.show(btnOrdenes, x, y);
         });
 
+
         Button btnFacturas = new Button("Facturas");
         btnFacturas.getStyleClass().add("botonHeader");
+
+        Button btnEmpleados = new Button("Empleados");
+        btnEmpleados.getStyleClass().add("botonHeader");
+        btnEmpleados.setOnAction(e -> {
+            new EmpleadoScreen(stage);
+        });
 
         barra.getChildren().addAll(btnPresupuestos, btnOrdenes, btnClientes, btnVehiculos, btnFacturas,btnPartes, btnEmpleados);
 

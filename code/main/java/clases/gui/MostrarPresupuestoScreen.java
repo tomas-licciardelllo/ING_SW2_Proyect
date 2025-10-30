@@ -147,9 +147,10 @@ public class MostrarPresupuestoScreen {
 
         double anchoPantalla = Screen.getPrimary().getBounds().getWidth();
         double altoPantalla = Screen.getPrimary().getBounds().getHeight();
-        Scene scene = new Scene(root, anchoPantalla * 0.8, altoPantalla * 0.8);
-
+        Scene scene = new Scene(root, anchoPantalla, altoPantalla);
+        scene.getStylesheets().add(getClass().getResource("/resources/styles.css").toExternalForm());
         stage.setScene(scene);
+        stage.setTitle("ChapAPP - Presupuestos");
         stage.show();
     }
 }
