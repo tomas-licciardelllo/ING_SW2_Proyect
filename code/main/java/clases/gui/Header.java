@@ -86,6 +86,9 @@ public class Header {
         Button btnOrdenes = new Button("Ordenes");
         btnOrdenes.getStyleClass().add("botonHeader");
 
+        Button btnEmpleados = new Button("Empleados");
+        btnEmpleados.getStyleClass().add("botonHeader");
+
         ContextMenu ordenContexto = new ContextMenu();
         MenuItem mostrarOrdenes = new MenuItem("Mostrar Todas");
         mostrarOrdenes.setOnAction(e -> {
@@ -122,7 +125,7 @@ public class Header {
         Button btnFacturas = new Button("Facturas");
         btnFacturas.getStyleClass().add("botonHeader");
 
-        barra.getChildren().addAll(btnPresupuestos, btnOrdenes, btnClientes, btnVehiculos, btnFacturas,btnPartes);
+        barra.getChildren().addAll(btnPresupuestos, btnOrdenes, btnClientes, btnVehiculos, btnFacturas,btnPartes, btnEmpleados);
 
         return barra;
     }

@@ -1,7 +1,6 @@
 package clases.gui;
 
-import clases.Manger.parteManager;
-import clases.model.auto;
+import clases.Manager.parteManager;
 import clases.model.parte;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

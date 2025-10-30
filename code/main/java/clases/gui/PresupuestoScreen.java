@@ -1,7 +1,7 @@
 package clases.gui;
 
-import clases.Manger.autoManager;
-import clases.Manger.presupuestoManager;
+import clases.Manager.autoManager;
+import clases.Manager.presupuestoManager;
 import clases.control.Navegar;
 
 
@@ -16,7 +16,6 @@ import javafx.scene.layout.*;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -295,6 +294,11 @@ public class PresupuestoScreen {
                 alerta.setTitle("Confirmar Presupuesto");
                 alerta.setHeaderText("Precio Final: $" + String.format("%.2f", costoFinal));
                 alerta.setContentText("¿El cliente acepta el presupuesto?");
+                Optional<ButtonType> respuesta = alerta.showAndWait();
+
+                Alert alertaOrden = new Alert(Alert.AlertType.CONFIRMATION);
+                alertaOrden.setTitle("ORDEN DE TRABAJO");
+                alertaOrden.setContentText("¿Desea generar la Orden de Trabajo?");
                 Optional<ButtonType> resultado = alerta.showAndWait();
 
                 if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
@@ -314,7 +318,6 @@ public class PresupuestoScreen {
                     presupuestoManager managerPresupuesto = new presupuestoManager();
                     int l = managerPresupuesto.crearYobtenerID(presu);
                     presu.setNumero(l);
-                    System.out.print(presu.getNumero());
                     new GenOrdenScreen(stage, presu,l,t);
                 } else {
                     stage.setScene(MainApp.mAppVolver(stage));

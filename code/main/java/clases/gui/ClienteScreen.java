@@ -1,5 +1,5 @@
 package clases.gui;
-import clases.Manger.clienteManager;
+import clases.Manager.clienteManager;
 import clases.model.cliente;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,8 +14,6 @@ import javafx.scene.layout.*;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
-import javax.swing.*;
-import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,13 +33,13 @@ public class ClienteScreen {
         txtBuscar.setPromptText("Buscar cliente...");
 
         Button btnBuscar = new Button("Buscar");
-        btnBuscar.getStyleClass().add("btnormal");
+        btnBuscar.getStyleClass().add("botonNormal");
 
         Button btnAgregar = new Button("Agregar");
-        btnAgregar.getStyleClass().add("btnormal");
+        btnAgregar.getStyleClass().add("botonNormal");
 
         Button btnVolver = new Button("Volver");
-        btnVolver.getStyleClass().add("btnormal");
+        btnVolver.getStyleClass().add("botonNormal");
 
        btnVolver.setOnAction(e->{
            Stage ss = (Stage) btnVolver.getScene().getWindow();
@@ -84,7 +82,7 @@ public class ClienteScreen {
         tablaClientes.getColumns().addAll(colNombre, colTelefono);
 
         Button btnModificar = new Button("Modificar");
-        btnModificar.setStyle("-fx-cursor: hand;");
+        btnModificar.getStyleClass().add("botonNormal");
         HBox inferior = new HBox(btnModificar);
         inferior.setAlignment(Pos.CENTER_RIGHT);
         inferior.setPrefHeight(40);

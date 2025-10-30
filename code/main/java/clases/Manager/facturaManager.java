@@ -1,4 +1,4 @@
-package clases.Manger;
+package clases.Manager;
 
 public class facturaManager {
 }

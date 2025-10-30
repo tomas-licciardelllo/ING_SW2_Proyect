@@ -2,9 +2,12 @@ package clases.gui;
 
 import javafx.animation.*;
 import javafx.application.Application;
+import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -15,9 +18,11 @@ import javafx.animation.PauseTransition;
 import clases.control.Conexion;
 import clases.model.*;
 
+import java.net.URL;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 public class MainApp extends Application {
 

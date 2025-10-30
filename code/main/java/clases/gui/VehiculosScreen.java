@@ -33,7 +33,7 @@ public class VehiculosScreen {
         txtBuscar.setPromptText("Buscar vehículo...");
 
         Button btnBuscar = new Button("Buscar");
-        btnBuscar.getStyleClass().add("botonbuscar");
+        btnBuscar.getStyleClass().add("BotonNormal");
 
         HBox barraBusqueda = new HBox(10);
         barraBusqueda.setStyle("-fx-padding: 10; -fx-background-color: #dddddd;");

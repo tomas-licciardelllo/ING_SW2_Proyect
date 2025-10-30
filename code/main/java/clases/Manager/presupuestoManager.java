@@ -1,4 +1,4 @@
-package clases.Manger;
+package clases.Manager;
 
 import clases.dao.PresupuestoDAO;
 import clases.model.presupuesto;
