@@ -3,6 +3,7 @@ package clases.gui;
 import clases.Manager.autoManager;
 import clases.Manager.presupuestoManager;
 import clases.control.Navegar;
+import clases.Manager.parteManager;
 
 
 import clases.model.*;
@@ -20,6 +21,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class PresupuestoScreen {
 
@@ -33,40 +35,64 @@ public class PresupuestoScreen {
 
         double anchoPantalla = Screen.getPrimary().getBounds().getWidth();
         double altoPantalla = Screen.getPrimary().getBounds().getHeight();
-        VBox formulario = new VBox(15);
-        formulario.setPadding(new Insets(25));
-        formulario.setMinSize(600, 500);
-        formulario.setMaxSize(800, 700);
-        formulario.setStyle(
-                "-fx-background-color: #ECEFF1;" +
-                        "-fx-background-radius: 20;" +
-                        "-fx-border-radius: 20;" +
-                        "-fx-border-color: #B0BEC5;" +
-                        "-fx-border-width: 1;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0, 0, 5);"
-        );
-        formulario.setAlignment(Pos.TOP_CENTER);
+
+        // Estilo para los paneles, simulando "tarjetas"
+        String cardStyle = "-fx-background-color: #FFFFFF; " +
+                "-fx-background-radius: 8; " +
+                "-fx-border-radius: 8; " +
+                "-fx-border-color: #CFD8DC; " +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);";
+
+        // --- Layout Principal ---
+        GridPane mainGrid = new GridPane();
+        mainGrid.setPadding(new Insets(25));
+        mainGrid.setHgap(20);
+        mainGrid.setVgap(20);
+
+        // Definir 2 columnas de igual tamaño
+        ColumnConstraints col1 = new ColumnConstraints();
+        col1.setPercentWidth(50);
+        ColumnConstraints col2 = new ColumnConstraints();
+        col2.setPercentWidth(50);
+        mainGrid.getColumnConstraints().addAll(col1, col2);
+
 
         // Fecha
         Label lblFecha = new Label("Fecha: " + LocalDate.now());
-        lblFecha.setStyle("-fx-font-size: 14px; -fx-text-fill: #546E7A;");
+        lblFecha.setStyle("-fx-font-size: 14px; -fx-text-fill: #546E7A; -fx-font-weight: bold;");
         HBox fechaBox = new HBox(lblFecha);
         fechaBox.setAlignment(Pos.CENTER_RIGHT);
-        fechaBox.setPadding(new Insets(0, 10, 10, 0));
+        fechaBox.setPadding(new Insets(0, 10, 0, 0));
+
+        // --- Sección Cliente ---
+        Label lblClienteInfo = new Label("Ningún cliente seleccionado");
+        lblClienteInfo.setStyle("-fx-font-style: italic; -fx-text-fill: #546E7A;");
+        Button btnAsignarCliente = new Button("Asignar Cliente...");
+        btnAsignarCliente.setStyle("-fx-background-color: #546E7A; -fx-text-fill: white; -fx-font-weight: bold;");
+        HBox clienteBox = new HBox(10, new Label("Cliente:"), lblClienteInfo, btnAsignarCliente);
+        clienteBox.setAlignment(Pos.CENTER_LEFT);
+        clienteBox.setPadding(new Insets(10));
+
+        TitledPane clientePane = new TitledPane("1. Datos del Cliente", clienteBox);
+        clientePane.setCollapsible(false);
+        clientePane.setStyle(cardStyle);
 
         // --- Sección Auto ---
         GridPane autoGrid = new GridPane();
         autoGrid.setHgap(20);
         autoGrid.setVgap(10);
-        autoGrid.setAlignment(Pos.CENTER);
+        autoGrid.setAlignment(Pos.CENTER_LEFT);
+        autoGrid.setPadding(new Insets(10, 0, 0, 0)); // Padding interno
 
         ComboBox<auto> cmbAutosCliente = new ComboBox<>();
         cmbAutosCliente.setPromptText("Seleccionar vehículo");
         cmbAutosCliente.setPrefWidth(200);
         Button btnNuevoVehiculo = new Button("Ingresar Vehículo Nuevo");
+        btnNuevoVehiculo.setStyle("-fx-background-color: #546E7A; -fx-text-fill: white;");
+
 
         autoGrid.add(new Label("Vehículo del Cliente:"), 0, 0);
-        autoGrid.add(cmbAutosCliente, 1, 0, 2, 1); // Ocupa 2 columnas
+        autoGrid.add(cmbAutosCliente, 1, 0, 2, 1);
         autoGrid.add(btnNuevoVehiculo, 3, 0);
 
         autoGrid.add(new Label("Tipo:"), 0, 1);
@@ -85,56 +111,23 @@ public class PresupuestoScreen {
         TextField txtPatenteAuto = new TextField();
         autoGrid.add(txtPatenteAuto, 1, 3);
 
-        TitledPane vehiculoPane = new TitledPane("Datos del Vehículo", autoGrid);
+        // Crecimiento horizontal para los campos
+        GridPane.setHgrow(txtTipoAuto, Priority.ALWAYS);
+        GridPane.setHgrow(txtMarcaAuto, Priority.ALWAYS);
+        GridPane.setHgrow(txtModeloAuto, Priority.ALWAYS);
+        GridPane.setHgrow(txtAnioAuto, Priority.ALWAYS);
+        GridPane.setHgrow(txtPatenteAuto, Priority.ALWAYS);
+
+        TitledPane vehiculoPane = new TitledPane("2. Datos del Vehículo", autoGrid);
         vehiculoPane.setCollapsible(false);
+        vehiculoPane.setStyle(cardStyle);
 
-        // Sección Repuestos
-        TitledPane repuestosPane = new TitledPane("Partes y Reparaciones", new VBox());
-        repuestosPane.setCollapsible(false);
-        VBox repuestosContent = new VBox(10);
-        repuestosContent.setPadding(new Insets(10));
-
-        ComboBox<String> partes = new ComboBox<>();
-        partes.getItems().addAll("Puerta", "Espejo", "Retrovisor", "Paragolpes", "Capó");
-        partes.setPromptText("Seleccionar Parte");
-        TextField txtPanosPintura = new TextField();
-        txtPanosPintura.setPromptText("Paños");
-        txtPanosPintura.setPrefWidth(80);
-        CheckBox chkCambio = new CheckBox("Cambio");
-        Button btnAgregar = new Button("Agregar");
-        HBox repuestosInputBox = new HBox(10, partes, txtPanosPintura, chkCambio, btnAgregar);
-        repuestosInputBox.setAlignment(Pos.CENTER_LEFT);
-
-        ObservableList<parte> listaPartes = FXCollections.observableArrayList();
-        ListView<parte> listaView = new ListView<>(listaPartes);
-        listaView.setPrefHeight(250);
-        Button btnEliminar = new Button("Eliminar Seleccionado");
-        VBox listaBox = new VBox(5, listaView, btnEliminar);
-        listaBox.setAlignment(Pos.CENTER);
-
-        listaView.setCellFactory(param -> new ListCell<>() {
-            @Override
-            protected void updateItem(parte item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null || item.getNombre() == null) {
-                    setText(null);
-                } else {
-                    String tipo = item.isCambio() ? "Cambio" : "Reparación";
-                    setText(String.format("%s - Paños: %.1f (%s)", item.getNombre(), item.getPanioPintura(), tipo));
-                }
-            }
-        });
-
-
-        repuestosContent.getChildren().addAll(repuestosInputBox, listaBox);
-        repuestosPane.setContent(repuestosContent);
-
-
-        // Sección Detalles del Trabajo
+        // --- Sección Detalles del Trabajo ---
         GridPane detallesGrid = new GridPane();
         detallesGrid.setHgap(20);
         detallesGrid.setVgap(10);
-        detallesGrid.setAlignment(Pos.CENTER);
+        detallesGrid.setAlignment(Pos.CENTER_LEFT);
+        detallesGrid.setPadding(new Insets(10, 0, 0, 0));
 
         detallesGrid.add(new Label("Tipo de Trabajo:"), 0, 0);
         TextField txtTipoTrabajo = new TextField();
@@ -159,18 +152,95 @@ public class PresupuestoScreen {
         txtTotalPanos.setEditable(false);
         detallesGrid.add(txtTotalPanos, 3, 2);
 
-        TitledPane detallesPane = new TitledPane("Detalles del Trabajo", detallesGrid);
+        // Crecimiento horizontal
+        GridPane.setHgrow(txtTipoTrabajo, Priority.ALWAYS);
+        GridPane.setHgrow(cmbTipoPintura, Priority.ALWAYS);
+        GridPane.setHgrow(txtDiasTrabajo, Priority.ALWAYS);
+        GridPane.setHgrow(txtCostoDia, Priority.ALWAYS);
+        GridPane.setHgrow(txtPrecioPano, Priority.ALWAYS);
+        GridPane.setHgrow(txtTotalPanos, Priority.ALWAYS);
+        cmbTipoPintura.setMaxWidth(Double.MAX_VALUE);
+
+        TitledPane detallesPane = new TitledPane("3. Detalles del Trabajo", detallesGrid);
         detallesPane.setCollapsible(false);
-        //SELECT CLIENTE
-        Label lblClienteInfo = new Label("Ningún cliente seleccionado");
-        lblClienteInfo.setStyle("-fx-font-style: italic; -fx-text-fill: #546E7A;");
-        Button btnAsignarCliente = new Button("Asignar Cliente...");
-        HBox clienteBox = new HBox(10, new Label("Cliente:"), lblClienteInfo, btnAsignarCliente);
-        clienteBox.setAlignment(Pos.CENTER_LEFT);
+        detallesPane.setStyle(cardStyle);
 
-        TitledPane clientePane = new TitledPane("Datos del Cliente", clienteBox);
-        clientePane.setCollapsible(false);
+        // --- Sección Repuestos ---
+        VBox repuestosContent = new VBox(10);
+        repuestosContent.setPadding(new Insets(10));
 
+        ComboBox<String> partes = new ComboBox<>();
+        parteManager pManager = new parteManager();
+        try {
+            // Obtiene todas las partes de todos los presupuestos
+            List<String> nombresDePartes = pManager.traerTodas().stream()
+                    .map(parte::getNombre) // Extrae solo el nombre
+                    .distinct()            // Obtiene nombres únicos
+                    .sorted()              // Ordena alfabéticamente
+                    .collect(Collectors.toList());
+
+            partes.getItems().addAll(nombresDePartes);
+
+        } catch (Exception ex) {
+            // Manejar error si no se pueden cargar las partes
+            System.err.println("Error al cargar partes desde la BD: " + ex.getMessage());
+        }
+
+        partes.setPromptText("Seleccionar Parte");
+        partes.setMaxWidth(Double.MAX_VALUE);
+
+        Button btnNuevaParte = new Button("+");
+        btnNuevaParte.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;");
+        btnNuevaParte.setTooltip(new Tooltip("Agregar una parte nueva a la lista"));
+
+        TextField txtPanosPintura = new TextField();
+        txtPanosPintura.setPromptText("Paños");
+        txtPanosPintura.setPrefWidth(80);
+
+        CheckBox chkCambio = new CheckBox("Cambio");
+        Button btnAgregar = new Button("Agregar");
+        btnAgregar.setStyle("-fx-background-color: #43A047; -fx-text-fill: white; -fx-font-weight: bold;");
+
+        HBox repuestosInputBox = new HBox(10, partes, btnNuevaParte, txtPanosPintura, chkCambio, btnAgregar);
+
+        repuestosInputBox.setAlignment(Pos.CENTER_LEFT);
+        HBox.setHgrow(partes, Priority.ALWAYS);
+
+        ObservableList<parte> listaPartes = FXCollections.observableArrayList();
+        ListView<parte> listaView = new ListView<>(listaPartes);
+
+        Button btnEliminar = new Button("Eliminar Seleccionado");
+        btnEliminar.setStyle("-fx-background-color: #D32F2F; -fx-text-fill: white; -fx-font-weight: bold;");
+        btnEliminar.setMaxWidth(Double.MAX_VALUE); // Para que ocupe todo el ancho
+
+        listaView.setCellFactory(param -> new ListCell<>() {
+            @Override
+            protected void updateItem(parte item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null || item.getNombre() == null) {
+                    setText(null);
+                } else {
+                    String tipo = item.isCambio() ? "Cambio" : "Reparación";
+                    setText(String.format("%s - Paños: %.1f (%s)", item.getNombre(), item.getPanioPintura(), tipo));
+                }
+            }
+        });
+
+        // Añadimos los 3 componentes directamente al VBox principal del panel
+        repuestosContent.getChildren().addAll(repuestosInputBox, listaView, btnEliminar);
+
+        // Le decimos SOLO a la lista que crezca verticalmente
+        VBox.setVgrow(listaView, Priority.ALWAYS);
+
+
+        TitledPane repuestosPane = new TitledPane("4. Partes y Reparaciones", repuestosContent);
+        repuestosPane.setCollapsible(false);
+        repuestosPane.setStyle(cardStyle);
+        // Permitir que este panel crezca verticalmente
+        GridPane.setVgrow(repuestosPane, Priority.ALWAYS);
+
+
+        // --- Lógica de Clientes y Autos ---
         btnAsignarCliente.setOnAction(e -> {
             SeleccionCliente dialog = new SeleccionCliente();
             Optional<cliente> resultado = dialog.showAndWait();
@@ -207,29 +277,82 @@ public class PresupuestoScreen {
         });
 
 
-        // Sección Costo Total
+        // --- Sección Costo Total ---
         Label lblCostoTotal = new Label("COSTO TOTAL:");
-        lblCostoTotal.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+        lblCostoTotal.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #37474F;");
         TextField txtCostoTotal = new TextField("0.00");
         txtCostoTotal.setEditable(false);
-        txtCostoTotal.setPrefWidth(150);
-        txtCostoTotal.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-alignment: center-right;");
+        txtCostoTotal.setPrefWidth(200);
+        txtCostoTotal.setStyle("-fx-font-size: 22px; -fx-font-weight: bold; -fx-alignment: center-right; -fx-text-fill: #004D40;");
         HBox costoBox = new HBox(10, lblCostoTotal, txtCostoTotal);
         costoBox.setAlignment(Pos.CENTER_RIGHT);
-        costoBox.setPadding(new Insets(10, 0, 20, 0));
+        costoBox.setPadding(new Insets(10, 10, 10, 0));
 
-        // Sección Acciones
+        // --- Sección Acciones ---
         Button btnGuardar = new Button("Guardar Presupuesto");
+        btnGuardar.setStyle("-fx-background-color: #0277BD; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-font-size: 14px;");
         Button btnLimpiar = new Button("Limpiar Formulario");
-        Button btnAtras = new Button("Atrás");
+        btnLimpiar.setStyle("-fx-background-color: #F57C00; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-font-size: 14px;");
         HBox accionesBox = new HBox(20, btnGuardar, btnLimpiar);
         accionesBox.setAlignment(Pos.CENTER);
 
-        // Lógica de Listeners
+        // --- Botón Atrás ---
+        Button btnAtras = new Button("Atrás");
+        btnAtras.setStyle("-fx-background-color: #757575; -fx-text-fill: white; -fx-padding: 8 15;");
+
+
+        // --- Lógica de Listeners ---
         listaPartes.addListener((javafx.collections.ListChangeListener<parte>) c -> calcularYActualizarTotal(listaPartes, txtCostoTotal, txtCostoDia, txtDiasTrabajo, txtPrecioPano, txtTotalPanos));
         txtCostoDia.textProperty().addListener((obs, oldVal, newVal) -> calcularYActualizarTotal(listaPartes, txtCostoTotal, txtCostoDia, txtDiasTrabajo, txtPrecioPano, txtTotalPanos));
         txtDiasTrabajo.textProperty().addListener((obs, oldVal, newVal) -> calcularYActualizarTotal(listaPartes, txtCostoTotal, txtCostoDia, txtDiasTrabajo, txtPrecioPano, txtTotalPanos));
         txtPrecioPano.textProperty().addListener((obs, oldVal, newVal) -> calcularYActualizarTotal(listaPartes, txtCostoTotal, txtCostoDia, txtDiasTrabajo, txtPrecioPano, txtTotalPanos));
+
+        btnNuevaParte.setOnAction(e -> {
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("Nueva Parte");
+            dialog.setHeaderText("Ingresar el nombre de la nueva parte");
+            dialog.setContentText("Nombre:");
+
+            Optional<String> resultado = dialog.showAndWait();
+
+            resultado.ifPresent(nombreParte -> {
+                if (nombreParte != null && !nombreParte.trim().isEmpty()) {
+                    String nombreLimpio = nombreParte.trim().substring(0, 1).toUpperCase() + nombreParte.trim().substring(1).toLowerCase();
+
+                    // Evitar duplicados (insensible a mayúsculas/minúsculas)
+                    boolean existe = partes.getItems().stream()
+                            .anyMatch(item -> item.equalsIgnoreCase(nombreLimpio));
+
+                    if (!existe) {
+                        // Si no existe, la guardamos en la BD INMEDIATAMENTE
+                        try {
+                            // Creamos una "plantilla" de parte (con 0 paños, sin cambio)
+                            // para guardarla en la base de datos.
+                            parte parteTemplate = new parte(nombreLimpio, 0, false);
+
+                            // Usamos el manager para guardar esta nueva parte.
+                            pManager.insertarParte(parteTemplate); // <-- Guardado en BD
+
+                            // Si se guardó exitosamente, la añadimos al ComboBox
+                            partes.getItems().add(nombreLimpio);
+                            partes.setValue(nombreLimpio); // Seleccionar la nueva parte
+
+                        } catch (Exception ex) {
+                            // Manejar un posible error si el manager no puede crear la parte sola
+                            System.err.println("Error al guardar la nueva parte en la BD: " + ex.getMessage());
+                            mostrarAlertaAux(Alert.AlertType.ERROR, "Error de Base de Datos", "No se pudo guardar la nueva parte.", "Revise la consola para más detalles.");
+                        }
+                    } else {
+                        // Si ya existe, solo seleccionarla
+                        partes.setValue(partes.getItems().stream()
+                                .filter(item -> item.equalsIgnoreCase(nombreLimpio))
+                                .findFirst().orElse(null));
+                    }
+                } else {
+                    mostrarAlertaAux(Alert.AlertType.WARNING, "Atención", "Nombre Inválido", "El nombre de la parte no puede estar vacío.");
+                }
+            });
+        });
 
         btnAgregar.setOnAction(e -> {
             String nombre = partes.getSelectionModel().getSelectedItem();
@@ -277,6 +400,12 @@ public class PresupuestoScreen {
             txtTipoTrabajo.clear();
             txtPrecioPano.clear();
             cmbTipoPintura.getSelectionModel().clearSelection();
+            // Limpiar también la selección de cliente y auto
+            clienteSeleccionado = null;
+            lblClienteInfo.setText("Ningún cliente seleccionado");
+            lblClienteInfo.setStyle("-fx-font-style: italic; -fx-text-fill: #546E7A;");
+            cmbAutosCliente.getItems().clear();
+            btnNuevoVehiculo.fire();
         });
 
         btnGuardar.setOnAction(e->{
@@ -284,6 +413,11 @@ public class PresupuestoScreen {
                     || txtTipoAuto.getText().isEmpty() || txtMarcaAuto.getText().isEmpty()
                     || txtModeloAuto.getText().isEmpty() || txtAnioAuto.getText().isEmpty() || txtPatenteAuto.getText().isEmpty()) {
                 mostrarAlertaAux(Alert.AlertType.ERROR, "Error", "Campos Faltantes", "Complete todos los campos del vehículo y del presupuesto.");
+                return;
+            }
+
+            if (clienteSeleccionado == null) {
+                mostrarAlertaAux(Alert.AlertType.ERROR, "Error", "Cliente Faltante", "Debe asignar un cliente al presupuesto.");
                 return;
             }
 
@@ -296,18 +430,22 @@ public class PresupuestoScreen {
                 alerta.setContentText("¿El cliente acepta el presupuesto?");
                 Optional<ButtonType> respuesta = alerta.showAndWait();
 
+                // Si el cliente NO acepta, no continuamos
+                if (respuesta.isEmpty() || respuesta.get() != ButtonType.OK) {
+                    return;
+                }
+
                 Alert alertaOrden = new Alert(Alert.AlertType.CONFIRMATION);
                 alertaOrden.setTitle("ORDEN DE TRABAJO");
                 alertaOrden.setContentText("¿Desea generar la Orden de Trabajo?");
-                Optional<ButtonType> resultado = alerta.showAndWait();
+                Optional<ButtonType> resultado = alertaOrden.showAndWait();
 
                 if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
-                    // Creamos un cliente por defecto aquí, ya que no hay interfaz para seleccionarlo
-                    cliente clienteDePrueba = new cliente("Cliente Genérico", "00000000", new ArrayList<>(), new ArrayList<>());
-                    if (clienteSeleccionado != null) {
-                        clienteDePrueba = clienteSeleccionado;
-                    }
+
+                    cliente clienteDePrueba = clienteSeleccionado;
+
                     auto a = new auto(txtTipoAuto.getText(), txtPatenteAuto.getText(), Integer.parseInt(txtAnioAuto.getText()), txtMarcaAuto.getText(), txtModeloAuto.getText());
+                    a.setCliente(clienteDePrueba);
                     pago p = new pago(0);
                     autoManager manager = new autoManager();
                     int ida = manager.crearOtraerAutoXpatente(a);
@@ -332,35 +470,53 @@ public class PresupuestoScreen {
         });
 
         // --- ENSAMBLADO FINAL DE LA PANTALLA ---
-        formulario.getChildren().addAll(
-                fechaBox,
-                new Separator(),
-                clientePane,
-                vehiculoPane,
-                repuestosPane,
-                detallesPane,
-                new Separator(),
-                costoBox,
-                accionesBox
-        );
+
+        // Fila 0: Fecha
+        mainGrid.add(fechaBox, 0, 0, 2, 1); // Span 2 columnas
+        // Fila 1: Cliente y Vehículo
+        mainGrid.add(clientePane, 0, 1);
+        mainGrid.add(vehiculoPane, 1, 1);
+        // Fila 2: Detalles y Repuestos
+        mainGrid.add(detallesPane, 0, 2);
+        mainGrid.add(repuestosPane, 1, 2);
+        // Fila 3: Costo Total
+        mainGrid.add(costoBox, 0, 3, 2, 1); // Span 2 columnas
+        // Fila 4: Acciones
+        mainGrid.add(accionesBox, 0, 4, 2, 1); // Span 2 columnas
+
+        // Hacer que las filas 1 y 2 (paneles) crezcan
+        GridPane.setVgrow(clientePane, Priority.NEVER);
+        GridPane.setVgrow(vehiculoPane, Priority.NEVER);
+        GridPane.setVgrow(detallesPane, Priority.ALWAYS);
+        GridPane.setVgrow(repuestosPane, Priority.ALWAYS); // La columna de repuestos crecerá
+
 
         // Configuración de la Escena
         BorderPane root = new BorderPane();
-        root.setCenter(formulario);
-        BorderPane.setMargin(formulario, new Insets(20));
+        root.setStyle("-fx-background-color: #ECEFF1;");
 
+        // ScrollPane para el contenido principal
+        ScrollPane scrollPane = new ScrollPane(mainGrid);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+        scrollPane.setStyle("-fx-background-color: transparent; -fx-background-insets: 0;");
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+
+        root.setCenter(scrollPane);
+
+        // Barra inferior con el botón "Atrás"
         HBox bottomBar = new HBox(btnAtras);
         bottomBar.setAlignment(Pos.CENTER_RIGHT);
-        bottomBar.setPadding(new Insets(10));
+        bottomBar.setPadding(new Insets(10, 25, 10, 25));
         root.setBottom(bottomBar);
 
-        Scene scene = new Scene(root, anchoPantalla * 0.8, altoPantalla * 0.8);
+        Scene scene = new Scene(root, anchoPantalla, altoPantalla); // Usar pantalla completa
         stage.setScene(scene);
         stage.setTitle("Gestión de Presupuestos");
         stage.show();
     }
 
-    // Métodos auxiliares
+    // --- MÉTODOS AUXILIARES ---
     private void calcularYActualizarTotal(ObservableList<parte> listaPartes, TextField txtTotal, TextField txtCostoChapa, TextField txtDias, TextField txtPrecioPano, TextField txtTotalPanos) {
         float totalPanos = 0.0f;
         float precioPorPano = 0.0f;

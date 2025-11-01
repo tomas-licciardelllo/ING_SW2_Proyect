@@ -28,10 +28,29 @@ public class parteDAO implements  dao<parte>{
 
     @Override
     public boolean delete(int id) {
-        return false;
+        String sql = "DELETE FROM parte WHERE id = ?";
+        Connection conn = Conexion.getInstance().getConnection();
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            int affectedRows = pstmt.executeUpdate();
+            return affectedRows > 0; // Retorna true si se eliminó al menos 1 fila
+        } catch (SQLException e) {
+            System.out.println("Error al eliminar parte: " + e.getMessage());
+            return false;
+        }
     }
     public boolean update(parte parte) {
-        return false;
+        String sql = "UPDATE parte SET nombre = ? WHERE id = ?";
+        Connection conn = Conexion.getInstance().getConnection();
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, parte.getNombre());
+            pstmt.setInt(2, parte.getIdDB()); // Usa el ID que ahora sí tiene el objeto
+            int affectedRows = pstmt.executeUpdate();
+            return affectedRows > 0; // Retorna true si se actualizó
+        } catch (SQLException e) {
+            System.out.println("Error al actualizar parte: " + e.getMessage());
+            return false;
+        }
     }
 
     @Override
@@ -42,7 +61,7 @@ public class parteDAO implements  dao<parte>{
     @Override
     public List<parte> getAll() {
         List<parte> lista = new ArrayList<>();
-        String sql = "SELECT nombre FROM parte";
+        String sql = "SELECT id, nombre FROM parte";
         Connection conn = Conexion.getInstance().getConnection();
         try(
                 Statement stmt = conn.createStatement();
@@ -54,7 +73,8 @@ public class parteDAO implements  dao<parte>{
                         0,
                         true
                 );
-              lista.add(p);
+                p.setIdDB(rs.getInt("id"));
+                lista.add(p);
             }
         }
         catch(SQLException e)

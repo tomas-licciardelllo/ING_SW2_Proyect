@@ -7,8 +7,13 @@ import java.util.List;
 
 public class ordentrabajoManager {
 
-    private OrdenDAO ordenDAO;
-    private tareasDAO tareasDAO;
+    private final OrdenDAO ordenDAO;
+    private final tareasDAO tareasDAO;
+
+    public ordentrabajoManager() {
+        this.ordenDAO = new OrdenDAO();     // Inicializa el DAO de Orden
+        this.tareasDAO = new tareasDAO();   // Inicializa el DAO de Tareas
+    }
 
     public boolean generarOrdenDeTrabajo(ordentrabajo orden) {
         try{

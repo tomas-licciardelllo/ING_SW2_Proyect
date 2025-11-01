@@ -153,7 +153,7 @@ public class PresupuestoDAO implements dao<presupuesto>{
             pstmt.setFloat(6,p.getCostoTotal());
             pstmt.setInt(7,p.getCliente().getIdBD());
             pstmt.setInt(8,p.getAuto().getIdBD());
-            pstmt.executeUpdate();
+            //pstmt.executeUpdate();
 
             int affectedRows = pstmt.executeUpdate();
 

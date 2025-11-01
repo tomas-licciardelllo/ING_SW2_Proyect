@@ -6,6 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -13,159 +14,231 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.scene.Node;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ParteScreen {
-    public ParteScreen(Stage stage){
-     parteManager man = new parteManager();
-     double anchoPantalla = Screen.getPrimary().getBounds().getWidth();
-     double altoPantalla = Screen.getPrimary().getBounds().getHeight();
-     List<parte> listaPartes= man.traerTodas();
-     ObservableList<parte> data = FXCollections.observableArrayList(listaPartes);
-     FilteredList<parte> filtrodata = new FilteredList<>(data,p->true);
-     TableView<parte> tablaPartes = new TableView<>(data);
 
-     TextField txtBuscar = new TextField();
-     txtBuscar.setPromptText("Buscar vehículo...");
+    // Se saca man del constructor para que sea accesible en los métodos
+    private parteManager manager;
+    private ObservableList<parte> data;
+    private TableView<parte> tablaPartes;
 
-     Button btnBuscar = new Button("Buscar");
-     btnBuscar.getStyleClass().add("botonbuscar");
+    public ParteScreen(Stage stage) {
+        manager = new parteManager();
+        double anchoPantalla = Screen.getPrimary().getBounds().getWidth();
+        double altoPantalla = Screen.getPrimary().getBounds().getHeight();
 
-     Button btnAgregar = new Button("Agregar");
+        // Carga de datos
+        List<parte> listaPartes = manager.traerTodas();
+        data = FXCollections.observableArrayList(listaPartes);
+        FilteredList<parte> filtrodata = new FilteredList<>(data, p -> true);
 
-     HBox barraBusqueda = new HBox(10);
-     barraBusqueda.setStyle("-fx-padding: 10; -fx-background-color: #dddddd;");
-     barraBusqueda.setPrefWidth(anchoPantalla);
-     barraBusqueda.setAlignment(Pos.CENTER);
-     Region spacer = new Region();
-     Region spacerIz = new Region();
-     HBox.setHgrow(spacer, Priority.ALWAYS);
-     HBox.setHgrow(spacerIz,Priority.ALWAYS);
-     barraBusqueda.getChildren().addAll(spacerIz,txtBuscar,btnBuscar,spacer,btnAgregar);
+        // Tabla
+        tablaPartes = new TableView<>();
+        TableColumn<parte, String> colNombre = new TableColumn<>("Nombre");
+        colNombre.setCellValueFactory(new PropertyValueFactory<>("Nombre"));
 
-     tablaPartes.setFixedCellSize(25);
-        var heightBinding = tablaPartes.fixedCellSizeProperty()
-                .multiply(javafx.beans.binding.Bindings.size(tablaPartes.getItems()).add(1))
-                .add(2);
+        tablaPartes.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        tablaPartes.getColumns().addAll(colNombre);
 
-        tablaPartes.minHeightProperty().bind(heightBinding);
-        tablaPartes.prefHeightProperty().bind(heightBinding);
-
-     TableColumn<parte,String> colNombre = new TableColumn<>("Nombre");
-     colNombre.setCellValueFactory(new PropertyValueFactory<>("Nombre"));
-
-
-    tablaPartes.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-    tablaPartes.getColumns().addAll(colNombre);
-
-    txtBuscar.textProperty().addListener((obs, oldValue, newValue) -> {
-            filtrodata.setPredicate(parte -> {
-
-                // 1. Si el filtro está vacío, muestra todos
-                if (newValue == null || newValue.isEmpty()) {
-                    return true;
-                }
-
-                // 2. Prepara el texto de búsqueda
-                String lowerCaseFilter = newValue.toLowerCase().replace(" ", "");
-
-                // 3. Comprueba solo el nombre de la parte
-                if (parte.getNombre() != null) {
-                    // Devuelve true si el nombre de la parte lo contiene
-                    return parte.getNombre().toLowerCase().contains(lowerCaseFilter);
-                }
-
-                // 4. Si el nombre es nulo, no coincide
-                return false;
-            });
-        });
-
-        Button btnModificar = new Button("Modificar");
-        Button btnVolver = new Button("Volver");
-
-        HBox inferior = new HBox(btnModificar, btnVolver);
-        inferior.setAlignment(Pos.CENTER_RIGHT);
-        inferior.setPrefHeight(40);
-        inferior.setSpacing(10);
-
+        // Enlazar datos filtrados y ordenados a la tabla
         SortedList<parte> sortedData = new SortedList<>(filtrodata);
         sortedData.comparatorProperty().bind(tablaPartes.comparatorProperty());
         tablaPartes.setItems(sortedData);
-        VBox panel = new VBox(10, tablaPartes, inferior);
-        panel.setStyle("-fx-padding: 20; -fx-background-color: lightgray;");
 
-        // Contenedor principal
+        // Barra de Búsqueda y Acciones Superiores
+        TextField txtBuscar = new TextField();
+        txtBuscar.setPromptText("Buscar parte por nombre...");
+        txtBuscar.setStyle("-fx-font-size: 14px; -fx-background-radius: 20;");
+
+        Button btnAgregar = new Button("Agregar Nueva Parte");
+        btnAgregar.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;");
+
+        HBox barraBusqueda = new HBox(10);
+        barraBusqueda.setStyle("-fx-padding: 10; -fx-background-color: #ECEFF1; -fx-border-color: #B0BEC5; -fx-border-width: 0 0 1 0;");
+        barraBusqueda.setAlignment(Pos.CENTER_LEFT);
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        barraBusqueda.getChildren().addAll(txtBuscar, spacer, btnAgregar);
+
+        // Lógica de filtro
+        txtBuscar.textProperty().addListener((obs, oldValue, newValue) -> {
+            filtrodata.setPredicate(parte -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+                String lowerCaseFilter = newValue.toLowerCase();
+                return parte.getNombre().toLowerCase().contains(lowerCaseFilter);
+            });
+        });
+
+        // Panel Inferior con Acciones de Tabla
+        Button btnModificar = new Button("Modificar Seleccionado");
+        btnModificar.setStyle("-fx-background-color: #FFA000; -fx-text-fill: white; -fx-font-weight: bold;");
+
+        Button btnEliminar = new Button("Eliminar Seleccionado");
+        btnEliminar.setStyle("-fx-background-color: #D32F2F; -fx-text-fill: white; -fx-font-weight: bold;");
+
+        Button btnVolver = new Button("Volver");
+
+        Region spacerInf = new Region();
+        HBox.setHgrow(spacerInf, Priority.ALWAYS);
+        HBox inferior = new HBox(10, btnModificar, btnEliminar, spacerInf, btnVolver);
+        inferior.setPadding(new Insets(10, 0, 0, 0));
+        inferior.setAlignment(Pos.CENTER);
+
+        // Contenedor principal de la tabla
+        VBox panelTabla = new VBox(10, tablaPartes, inferior);
+        panelTabla.setStyle("-fx-padding: 20; -fx-background-color: white;");
+        VBox.setVgrow(tablaPartes, Priority.ALWAYS); // Hacer que la tabla crezca
+
+        // Layout Raíz (BorderPane)
         BorderPane root = new BorderPane();
         root.setTop(barraBusqueda);
+        root.setCenter(panelTabla);
 
-        // 🔹 Mostrar la tabla como vista inicial
-        root.setCenter(panel);
+        // --- ACCIONES DE BOTONES ---
 
-        btnAgregar.setOnAction(e->root.setCenter(agregarParte(stage,root,barraBusqueda,panel)));
-        root.getStyleClass().add("fondo");
-        // Crear escena
-        Scene scene = new Scene(root, anchoPantalla * 0.8, altoPantalla * 0.8);
-        scene.getStylesheets().add(getClass().getResource("/resources/styles.css").toExternalForm());
-
+        // Acción Volver
         btnVolver.setOnAction(e -> {
             stage.setScene(MainApp.mAppVolver(stage));
         });
 
-
-        stage.setScene(scene);
-        stage.show();
-
-    }
-
-
-    public VBox agregarParte(Stage stage, BorderPane root, HBox anterior, VBox pantallaant){
-
-        Node aux = root.getTop();
-        root.setTop(null);
-        parteManager manager = new parteManager();
-        parte auxparte = new parte("",1,true);
-        VBox pantalla = new VBox();
-        pantalla.setMinSize(300,200);
-        pantalla.setMaxSize(600,400);
-        pantalla.setSpacing(10);
-        pantalla.setAlignment(Pos.CENTER);
-
-        Label Nombre = new Label("Nombre");
-
-
-        TextField nombreField = new TextField();
-
-
-
-        Button btnGuardar = new Button("Guardar");
-        Button btnCancelar = new Button("Cancelar");
-        btnGuardar.setStyle("-fx-cursor: hand;");
-        btnCancelar.setStyle("-fx-cursor: hand;");
-        btnCancelar.setOnAction(e->{
-            root.setTop(anterior);
-            root.setCenter(pantallaant);
-
+        // Acción Agregar
+        btnAgregar.setOnAction(e -> {
+            // Llama al formulario en modo "Agregar" (pasando null)
+            VBox formulario = crearFormularioParte(stage, root, panelTabla, null);
+            root.setCenter(formulario);
         });
 
-
-
-        HBox acciones = new HBox(20, btnGuardar,btnCancelar);
-
-        acciones.setAlignment(Pos.CENTER);
-        pantalla.getChildren().addAll(Nombre,nombreField, acciones);
-        pantalla.getStyleClass().add("formulario");
-
-        btnGuardar.setOnAction(e->{
-            auxparte.setNombre(nombreField.getText());
-            auxparte.toString();
-            if(manager.insertarParte(auxparte) == true){
-                mostrarAlertaAux(Alert.AlertType.INFORMATION,"Aceptada","Se cargo correctamente la informacion","Se creo la parte.");
+        // Acción Modificar
+        btnModificar.setOnAction(e -> {
+            parte parteSeleccionada = tablaPartes.getSelectionModel().getSelectedItem();
+            if (parteSeleccionada == null) {
+                mostrarAlertaAux(Alert.AlertType.WARNING, "Atención", "Ninguna parte seleccionada", "Por favor, seleccione una parte de la tabla para modificar.");
+                return;
             }
-            else
-            {
-                mostrarAlertaAux(Alert.AlertType.ERROR, "Error", "No se puden cargar los datos", "Ha habido un error.");
+            // Llama al formulario en modo "Modificar" (pasando la parte)
+            VBox formulario = crearFormularioParte(stage, root, panelTabla, parteSeleccionada);
+            root.setCenter(formulario);
+        });
+
+        btnEliminar.setOnAction(e -> {
+            parte parteSeleccionada = tablaPartes.getSelectionModel().getSelectedItem();
+            if (parteSeleccionada == null) {
+                mostrarAlertaAux(Alert.AlertType.WARNING, "Atención", "Ninguna parte seleccionada", "Por favor, seleccione una parte de la tabla para eliminar.");
+                return;
+            }
+
+            // Diálogo de confirmación
+            Alert alertaConfirm = new Alert(Alert.AlertType.CONFIRMATION);
+            alertaConfirm.setTitle("Confirmar Eliminación");
+            alertaConfirm.setHeaderText("¿Está seguro de que desea eliminar la parte: " + parteSeleccionada.getNombre() + "?");
+            alertaConfirm.setContentText("Esta acción no se puede deshacer.");
+
+            Optional<ButtonType> resultado = alertaConfirm.showAndWait();
+            if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
+
+                boolean exito = manager.eliminarParte(parteSeleccionada);
+
+                if (exito) {
+                    mostrarAlertaAux(Alert.AlertType.INFORMATION, "Éxito", "Parte Eliminada", "La parte se ha eliminado correctamente.");
+                    data.remove(parteSeleccionada); // Quitar de la lista observable
+                } else {
+                    mostrarAlertaAux(Alert.AlertType.ERROR, "Error", "No se pudo eliminar", "Hubo un error al intentar eliminar la parte de la base de datos.");
+                }
+            }
+        });
+
+        // Configuración de la Escena
+        root.getStyleClass().add("fondo");
+        Scene scene = new Scene(root, anchoPantalla * 0.8, altoPantalla * 0.8);
+        try {
+            scene.getStylesheets().add(getClass().getResource("/resources/styles.css").toExternalForm());
+        } catch (Exception e) {
+            System.err.println("No se pudo cargar la hoja de estilos: " + e.getMessage());
+        }
+
+        stage.setScene(scene);
+        stage.setTitle("Gestión de Partes");
+        stage.show();
+    }
+
+    public VBox crearFormularioParte(Stage stage, BorderPane root, VBox pantallaAnt, parte parteExistente) {
+
+        boolean esModoEdicion = (parteExistente != null);
+
+        VBox pantalla = new VBox();
+        pantalla.setMinSize(300, 200);
+        pantalla.setMaxSize(600, 400);
+        pantalla.setSpacing(15);
+        pantalla.setAlignment(Pos.CENTER);
+        pantalla.setPadding(new Insets(25));
+        pantalla.setStyle(
+                "-fx-background-color: #FFFFFF; " +
+                        "-fx-background-radius: 8; " +
+                        "-fx-border-radius: 8; " +
+                        "-fx-border-color: #CFD8DC; " +
+                        "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);"
+        );
+
+        Label lblTitulo = new Label(esModoEdicion ? "Modificar Parte" : "Agregar Nueva Parte");
+        lblTitulo.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+
+        Label lblNombre = new Label("Nombre:");
+        TextField nombreField = new TextField();
+        if (esModoEdicion) {
+            nombreField.setText(parteExistente.getNombre());
+        }
+
+        Button btnGuardar = new Button(esModoEdicion ? "Guardar Cambios" : "Guardar");
+        Button btnCancelar = new Button("Cancelar");
+        btnGuardar.setStyle("-fx-background-color: #0277BD; -fx-text-fill: white; -fx-font-weight: bold;");
+        btnCancelar.setStyle("-fx-cursor: hand;");
+
+        btnCancelar.setOnAction(e -> {
+            root.setCenter(pantallaAnt); // Vuelve a la pantalla de la tabla
+        });
+
+        HBox acciones = new HBox(20, btnGuardar, btnCancelar);
+        acciones.setAlignment(Pos.CENTER);
+        pantalla.getChildren().addAll(lblTitulo, lblNombre, nombreField, acciones);
+
+        btnGuardar.setOnAction(e -> {
+            String nombre = nombreField.getText().trim();
+            if (nombre.isEmpty()) {
+                mostrarAlertaAux(Alert.AlertType.WARNING, "Error", "Campo Vacío", "El nombre de la parte no puede estar vacío.");
+                return;
+            }
+
+            if (esModoEdicion) {
+                // --- LÓGICA DE MODIFICAR ---
+                parteExistente.setNombre(nombre);
+
+                // Asumiendo que existe un método 'modificarParte(parte)' en el manager
+                boolean exito = manager.modificarParte(parteExistente);
+
+                if (exito) {
+                    mostrarAlertaAux(Alert.AlertType.INFORMATION, "Aceptada", "Se actualizó correctamente la parte.", "Éxito");
+                    tablaPartes.refresh(); // Refresca la tabla para mostrar el cambio
+                    root.setCenter(pantallaAnt); // Vuelve a la tabla
+                } else {
+                    mostrarAlertaAux(Alert.AlertType.ERROR, "Error", "No se pudo modificar", "Ha habido un error al guardar los cambios.");
+                }
+
+            } else {
+                // --- LÓGICA DE AGREGAR ---
+                parte parteNueva = new parte(nombre, 1, true);
+
+                if (manager.insertarParte(parteNueva)) {
+                    mostrarAlertaAux(Alert.AlertType.INFORMATION, "Aceptada", "Se creó correctamente la parte.", "Éxito");
+                    data.add(parteNueva); // Añade la nueva parte a la lista observable
+                    root.setCenter(pantallaAnt); // Vuelve a la tabla
+                } else {
+                    mostrarAlertaAux(Alert.AlertType.ERROR, "Error", "No se pudo crear", "Ha habido un error al crear la parte.");
+                }
             }
         });
 

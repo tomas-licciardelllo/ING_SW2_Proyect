@@ -171,7 +171,7 @@ public class AutoDAO implements dao<auto>{
             e.printStackTrace();
             return -1; // Devolvemos -1 para indicar un error
         }
-        String sqlInsert = "INSERT INTO auto (marca, modelo, anio, patente, tipo) VALUES (?, ?, ?, ?, ?)";
+        String sqlInsert = "INSERT INTO auto (marca, modelo, anio, patente, tipo, duenioID) VALUES (?, ?, ?, ?, ?, ?)";
 
         //Connection conn = Conexion.getInstance().getConnection();
         try(
@@ -184,6 +184,12 @@ public class AutoDAO implements dao<auto>{
             stmtInsert.setInt(3, auto.getAnio());
             stmtInsert.setString(4, auto.getPatente());
             stmtInsert.setString(5, auto.getTipo());
+
+            if (auto.getCliente() != null) {
+                stmtInsert.setInt(6, auto.getCliente().getIdBD());
+            } else {
+                stmtInsert.setNull(6, java.sql.Types.INTEGER);
+            }
 
             int affectedRows = stmtInsert.executeUpdate();
 

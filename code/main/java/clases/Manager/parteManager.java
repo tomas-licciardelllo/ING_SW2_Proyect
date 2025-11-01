@@ -26,4 +26,18 @@ public class parteManager {
     public boolean insertarParte(parte p){
         return parte.create(p);
     }
+
+    public boolean modificarParte(parte p) {
+        if (p == null || p.getIdDB() == 0) {
+            return false; // No se puede modificar una parte sin ID
+        }
+        return this.actParte(p);
+    }
+
+    public boolean eliminarParte(parte p) {
+        if (p == null || p.getIdDB() == 0) {
+            return false; // No se puede eliminar una parte sin ID
+        }
+        return parte.delete(p.getIdDB());
+    }
 }

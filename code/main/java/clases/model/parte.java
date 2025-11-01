@@ -8,6 +8,7 @@ public class parte {
     private float panioPintura;
     private presupuesto presupuesto;
     private int idPresupuesto;  //Para la base de Datos
+    private int idDB;
 
     public parte(String nombre, float panioPintura, boolean cambio) {
         this.nombre = nombre;
@@ -46,6 +47,10 @@ public class parte {
     public void setCambio(boolean cambio) {
         this.cambio = cambio;
     }
+
+    public int getIdDB() { return idDB; }
+
+    public void setIdDB(int id) { this.idDB = id; }
 
     @Override
     public String toString() {
