@@ -62,12 +62,11 @@ public class Header {
         mostrarPresu.setOnAction(ev -> new MostrarPresupuestoScreen(stage));
 
         MenuItem impagosPresu = new MenuItem("Sin Pagar");
-        //impagosPresu.setOnAction(ev -> {});
 
-        generarPresu.getStyleClass().add("botonHeader");
-        mostrarPresu.getStyleClass().add("botonHeader");
-        impagosPresu.getStyleClass().add("botonHeader");
-        presupuestoContexto.setStyle("-fx-background-color: transparent;");
+        generarPresu.getStyleClass().add("menu-item");
+        mostrarPresu.getStyleClass().add("menu-item");
+        impagosPresu.getStyleClass().add("menu-item");
+        presupuestoContexto.getStyleClass().add("context-menu");
 
         presupuestoContexto.getItems().addAll(generarPresu, mostrarPresu, impagosPresu);
 
@@ -105,9 +104,9 @@ public class Header {
             }
         });
 
-        mostrarOrdenes.getStyleClass().add("botonHeader");
-        pendientesOrdenes.getStyleClass().add("botonHeader");
-        ordenContexto.setStyle("-fx-background-color: transparent;");
+        mostrarOrdenes.getStyleClass().add("menu-item");
+        pendientesOrdenes.getStyleClass().add("menu-item");
+        ordenContexto.getStyleClass().add("context-menu");
 
         ordenContexto.getItems().addAll(mostrarOrdenes, pendientesOrdenes);
 
@@ -121,6 +120,11 @@ public class Header {
 
         Button btnFacturas = new Button("Facturas");
         btnFacturas.getStyleClass().add("botonHeader");
+        btnFacturas.setOnAction(e -> {
+            Alert alerta =  new Alert(Alert.AlertType.INFORMATION);
+            alerta.setTitle("FACTURACIÓN!");
+            alerta.setContentText("Servicio en Mantenimiento");
+        });
 
         Button btnEmpleados = new Button("Empleados");
         btnEmpleados.getStyleClass().add("botonHeader");

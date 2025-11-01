@@ -6,13 +6,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 import java.util.List;
@@ -30,7 +28,7 @@ public class EmpleadoScreen {
 
         TextField txtBuscar = new TextField();
         txtBuscar.setPromptText("Buscar por nombre o DNI...");
-        txtBuscar.getStyleClass().add("textoBusqueda");
+        txtBuscar.getStyleClass().add("barraBusqueda");
         txtBuscar.setPrefWidth(600);
 
         Button btnAgregar = new Button("Agregar");
@@ -76,7 +74,14 @@ public class EmpleadoScreen {
         Region espacio = new Region();
         HBox.setHgrow(espacio, Priority.ALWAYS);
         HBox botones = new  HBox(btnModificar, btnEliminar, espacio, btnVolver);
-        root.setBottom(botones);
+        VBox centerPanel = new VBox(10);
+        centerPanel.setPadding(new Insets(10, 10, 10, 10));
+        centerPanel.setAlignment(Pos.TOP_CENTER);
+        centerPanel.getChildren().addAll(empleados, botones);
+
+        root.setCenter(centerPanel);
+
+        root.setBottom(null);
 
         btnAgregar.setOnAction(e -> {
             new empleadoFormScreen(stage, empleadoManager, null);

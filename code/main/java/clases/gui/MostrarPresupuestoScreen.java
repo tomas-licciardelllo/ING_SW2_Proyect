@@ -1,11 +1,12 @@
 package clases.gui;
 
+import clases.Manager.ordentrabajoManager;
+import clases.Manager.presupuestoManager;
+import clases.Manager.tareaManager;
 import clases.dao.AutoDAO;
 import clases.dao.ClienteDAO;
 import clases.dao.PresupuestoDAO;
-import clases.model.auto;
-import clases.model.cliente;
-import clases.model.presupuesto;
+import clases.model.*;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -15,20 +16,18 @@ import javafx.collections.transformation.SortedList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.Priority;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class MostrarPresupuestoScreen {
@@ -37,7 +36,7 @@ public class MostrarPresupuestoScreen {
 
         // DAOs
         PresupuestoDAO presupuestoDAO = new PresupuestoDAO();
-
+        ordentrabajoManager ordenManager = new ordentrabajoManager();
 
         // Traer todos los presupuestos
         List<presupuesto> listaPresupuesto = presupuestoDAO.getAll();
@@ -86,6 +85,52 @@ public class MostrarPresupuestoScreen {
         TableColumn<presupuesto, Integer> cDias = new TableColumn<>("Dias de chapa");
         cDias.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getDiasChapa()));
 
+        TableColumn<presupuesto, Void> orden = new TableColumn<>("Orden de Trabajo");
+        orden.setCellFactory(cellData -> new TableCell<>() {
+            private final Button generar = new  Button();
+            private final HBox boton = new HBox(5, generar);
+            {
+                boton.setAlignment(Pos.CENTER);
+                try {
+                    URL ojoIconUrl = getClass().getResource("/resources/img/ojo.png");
+                    ImageView ojoIcon = new ImageView(new Image(ojoIconUrl.toExternalForm()));
+                    ojoIcon.setFitHeight(20);
+                    ojoIcon.setFitWidth(20);
+                    generar.setGraphic(ojoIcon);
+                    generar.setTooltip(new Tooltip("Ver/Generar"));
+                } catch (Exception e) {
+                    generar.setText("Ver/Generar");
+                }
+
+                generar.setOnAction(e -> {
+                    presupuesto presupuestoActual = getTableRow().getItem();
+                    if(presupuestoActual != null){
+                        ordentrabajo orden = ordenManager.obtenerOrdenPorPresu(presupuestoActual.getIdPresupuesto());
+                        Stage stage = (Stage) getTableView().getScene().getWindow();
+
+                        if(orden != null){
+                            mostrarOrden(orden, presupuestoActual);
+                        }
+                        else{
+                            Alert alertaOrden = new Alert(Alert.AlertType.CONFIRMATION);
+                            alertaOrden.setTitle("ORDEN DE TRABAJO");
+                            alertaOrden.setContentText("¿Desea generar la Orden de Trabajo?");
+                            Optional<ButtonType> resultado = alertaOrden.showAndWait();
+                            if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
+                                tarea t = new tarea(presupuestoActual.getTipoTrabajo().toString());
+                                presupuestoManager presupuestoManager = new presupuestoManager();
+                                int l = presupuestoManager.crearYobtenerID(presupuestoActual);
+                                GenOrdenScreen genOrdenScreen = new GenOrdenScreen(stage, presupuestoActual, l, t);
+                            }
+                        }
+                    }
+                });
+            }
+            @Override protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(empty ? null : boton);
+            }
+        });
 
         nro.prefWidthProperty().bind(
                 tablaPresupuesto.widthProperty().multiply(0.14)
@@ -118,8 +163,12 @@ public class MostrarPresupuestoScreen {
         cDias.prefWidthProperty().bind(
                 tablaPresupuesto.widthProperty().multiply(0.14)
         );
+
+        orden.prefWidthProperty().bind(
+                tablaPresupuesto.widthProperty().multiply(0.14)
+        );
         // Agregar columnas a la tabla
-        tablaPresupuesto.getColumns().addAll(nro, fecha, colCliente, cTotal, tipoTr, tipoPin, cDias);
+        tablaPresupuesto.getColumns().addAll(nro, fecha, colCliente, cTotal, tipoTr, tipoPin, cDias, orden);
 
         // Set items
         tablaPresupuesto.setItems(sortedData);
@@ -139,18 +188,52 @@ public class MostrarPresupuestoScreen {
         // Panel principal
         VBox panel = new VBox(10, tablaPresupuesto);
         panel.setStyle("-fx-padding: 20; -fx-background-color: lightgray;");
-        panel.getChildren().addAll(barraBusqueda, panelInferior);
+        VBox.setVgrow(tablaPresupuesto, Priority.ALWAYS);
+        panel.getChildren().addAll(panelInferior);
 
         BorderPane root = new BorderPane();
         root.setTop(barraBusqueda);
         root.setCenter(panel);
 
-        double anchoPantalla = Screen.getPrimary().getBounds().getWidth();
-        double altoPantalla = Screen.getPrimary().getBounds().getHeight();
-        Scene scene = new Scene(root, anchoPantalla, altoPantalla);
+        Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("/resources/styles.css").toExternalForm());
         stage.setScene(scene);
-        stage.setTitle("ChapAPP - Presupuestos");
+        stage.setTitle("ChapAPP - Listado de Presupuesto");
+        javafx.stage.Screen screen = javafx.stage.Screen.getPrimary();
+        javafx.geometry.Rectangle2D bounds = screen.getVisualBounds();
+        stage.setX(bounds.getMinX());
+        stage.setY(bounds.getMinY());
+        stage.setWidth(bounds.getWidth());
+        stage.setHeight(bounds.getHeight());
         stage.show();
     }
+
+    public void mostrarOrden(ordentrabajo orden, presupuesto presu) {
+        tareaManager tareaManager = new tareaManager();
+        List<tarea> listita = tareaManager.getTareasPorID(orden.getID());
+
+        Dialog<Void> ventana = new Dialog<>();
+        ventana.setTitle("Detalle de la Orden de Trabajo");
+        ventana.setHeaderText("Información de la Orden N°: " + presu.getNumero());
+        ventana.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+        grid.add(new Label("Cliente:"), 0, 0);
+        grid.add(new Label(presu.getCliente().getNombre()), 1, 0);
+        grid.add(new Label("Marca del Vehículo:"), 0, 1);
+        grid.add(new Label(presu.getAuto().getMarca()), 1, 1);
+        grid.add(new Label("Modelo del Vehículo:"), 0, 2);
+        grid.add(new Label(presu.getAuto().getModelo()), 1, 2);
+        grid.add(new Label("Patente:"), 0, 3);
+        grid.add(new Label(presu.getAuto().getPatente()), 1, 3);
+        grid.add(new Label("Fecha Ingreso:"), 0, 4);
+        grid.add(new Label(orden.getFecha_inicio().toString()), 1, 4);
+        grid.add(new Label("Tareas:"), 0, 5);
+        grid.add(new Label(listita.toString()), 1, 5);
+        ventana.getDialogPane().setContent(grid);
+        ventana.showAndWait();
+    }
+
 }

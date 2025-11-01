@@ -134,5 +134,9 @@ public class ordentrabajo {
     {
         return this.id;
     }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }
 

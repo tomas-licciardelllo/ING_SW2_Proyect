@@ -31,6 +31,7 @@ public class ClienteScreen {
         // Barra de búsqueda (queda siempre arriba)
         TextField txtBuscar = new TextField();
         txtBuscar.setPromptText("Buscar cliente...");
+        txtBuscar.getStyleClass().add("barraBusqueda");
 
         Button btnBuscar = new Button("Buscar");
         btnBuscar.getStyleClass().add("botonNormal");
@@ -82,7 +83,7 @@ public class ClienteScreen {
         tablaClientes.getColumns().addAll(colNombre, colTelefono);
 
         Button btnModificar = new Button("Modificar");
-        btnModificar.getStyleClass().add("botonNormal");
+        btnModificar.getStyleClass().add("botonModificar");
         HBox inferior = new HBox(btnModificar);
         inferior.setAlignment(Pos.CENTER_RIGHT);
         inferior.setPrefHeight(40);
@@ -137,7 +138,15 @@ public class ClienteScreen {
             }
         });
 
+        scene.getStylesheets().add(getClass().getResource("/resources/styles.css").toExternalForm());
         stage.setScene(scene);
+        stage.setTitle("ChapAPP - Gestión de Clientes");
+        javafx.stage.Screen screen = javafx.stage.Screen.getPrimary();
+        javafx.geometry.Rectangle2D bounds = screen.getVisualBounds();
+        stage.setX(bounds.getMinX());
+        stage.setY(bounds.getMinY());
+        stage.setWidth(bounds.getWidth());
+        stage.setHeight(bounds.getHeight());
         stage.show();
     }
 

@@ -51,17 +51,17 @@ public class ParteScreen {
         // Barra de Búsqueda y Acciones Superiores
         TextField txtBuscar = new TextField();
         txtBuscar.setPromptText("Buscar parte por nombre...");
-        txtBuscar.setStyle("-fx-font-size: 14px; -fx-background-radius: 20;");
+        txtBuscar.getStyleClass().add("barraBusqueda");
+        txtBuscar.setPrefWidth(600);
 
         Button btnAgregar = new Button("Agregar Nueva Parte");
-        btnAgregar.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;");
+        btnAgregar.getStyleClass().add("botonNormal");
 
-        HBox barraBusqueda = new HBox(10);
-        barraBusqueda.setStyle("-fx-padding: 10; -fx-background-color: #ECEFF1; -fx-border-color: #B0BEC5; -fx-border-width: 0 0 1 0;");
-        barraBusqueda.setAlignment(Pos.CENTER_LEFT);
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
-        barraBusqueda.getChildren().addAll(txtBuscar, spacer, btnAgregar);
+        Region espacioIzq = new Region();
+        HBox.setHgrow(espacioIzq, Priority.ALWAYS);
+        Region espacioDer = new Region();
+        HBox.setHgrow(espacioDer, Priority.ALWAYS);
+        HBox barraBusqueda = new HBox(espacioIzq, txtBuscar, espacioDer, btnAgregar);
 
         // Lógica de filtro
         txtBuscar.textProperty().addListener((obs, oldValue, newValue) -> {
@@ -76,12 +76,13 @@ public class ParteScreen {
 
         // Panel Inferior con Acciones de Tabla
         Button btnModificar = new Button("Modificar Seleccionado");
-        btnModificar.setStyle("-fx-background-color: #FFA000; -fx-text-fill: white; -fx-font-weight: bold;");
+        btnModificar.getStyleClass().add("botonModificar");
 
         Button btnEliminar = new Button("Eliminar Seleccionado");
-        btnEliminar.setStyle("-fx-background-color: #D32F2F; -fx-text-fill: white; -fx-font-weight: bold;");
+        btnEliminar.getStyleClass().add("botonEliminar");
 
         Button btnVolver = new Button("Volver");
+        btnVolver.getStyleClass().add("botonNormal");
 
         Region spacerInf = new Region();
         HBox.setHgrow(spacerInf, Priority.ALWAYS);
@@ -160,9 +161,14 @@ public class ParteScreen {
         } catch (Exception e) {
             System.err.println("No se pudo cargar la hoja de estilos: " + e.getMessage());
         }
-
         stage.setScene(scene);
-        stage.setTitle("Gestión de Partes");
+        stage.setTitle("ChapAPP - Gestión de Partes del Vehículo");
+        javafx.stage.Screen screen = javafx.stage.Screen.getPrimary();
+        javafx.geometry.Rectangle2D bounds = screen.getVisualBounds();
+        stage.setX(bounds.getMinX());
+        stage.setY(bounds.getMinY());
+        stage.setWidth(bounds.getWidth());
+        stage.setHeight(bounds.getHeight());
         stage.show();
     }
 

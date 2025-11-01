@@ -151,4 +151,8 @@ public class presupuesto {
         this.membrete = membrete;
     }
 
+    public int getIdPresupuesto() {
+        return idPresupuesto;
+    }
+
 }

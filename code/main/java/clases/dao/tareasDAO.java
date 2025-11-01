@@ -5,6 +5,7 @@ import clases.model.empleado;
 import clases.model.tarea;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class tareasDAO implements dao<tarea>{
@@ -42,10 +43,8 @@ public class tareasDAO implements dao<tarea>{
     //Necesito que me devuelva el ID
     public int createAux(tarea tarea)throws SQLException {
         String sql = "INSERT INTO tareas (descripcion, empleadoCargo) VALUES (?, ?)";
-
-        try (Connection conn = Conexion.getInstance().getConnection();
-             PreparedStatement pst = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
+        Connection conn = Conexion.getInstance().getConnection();
+        try (PreparedStatement pst = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             empleado empleadoAsignado = tarea.getEmpleado();
             if (empleadoAsignado == null) {
                 throw new SQLException("La tarea no tiene empleado.");
@@ -67,11 +66,12 @@ public class tareasDAO implements dao<tarea>{
 
     public void createTrabajo (int idOrden, int idTarea)throws SQLException {
         String sql = "INSERT INTO trabajos (ordenPertenece, tareaRealizar) VALUES (?, ?)"; //
-        try (Connection conn = Conexion.getInstance().getConnection();
-             PreparedStatement pst = conn.prepareStatement(sql)) {
+        Connection conn = Conexion.getInstance().getConnection();
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
             pst.setLong(1, idOrden);
             pst.setLong(2, idTarea);
             pst.executeUpdate();
         }
     }
+    
 }

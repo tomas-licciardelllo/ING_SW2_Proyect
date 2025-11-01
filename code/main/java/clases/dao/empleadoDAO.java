@@ -1,9 +1,7 @@
 package clases.dao;
 
 import clases.control.Conexion;
-import clases.model.cliente;
 import clases.model.empleado;
-import clases.model.ordentrabajo;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -75,10 +73,8 @@ public class empleadoDAO implements dao<empleado>{
     public empleado read(int doc) {
         String sql = "SELECT nombre FROM persona WHERE dni = ?";
         empleado emp = null;
-
-        Connection conn = Conexion.getInstance().getConnection(); try(
-
-                PreparedStatement pstmt = conn.prepareStatement(sql);){
+        Connection conn = Conexion.getInstance().getConnection();
+        try(PreparedStatement pstmt = conn.prepareStatement(sql);){
             pstmt.setInt(1, doc);
             ResultSet rs = pstmt.executeQuery();
 
@@ -96,12 +92,8 @@ public class empleadoDAO implements dao<empleado>{
     public List<empleado> getAll() {
         List<empleado> lista = new ArrayList<>();
         String sql = "SELECT dni, nombre FROM empleados";
-
-        Connection conn = Conexion.getInstance().getConnection(); try(
-
-                Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery(sql)) {
-
+        Connection conn = Conexion.getInstance().getConnection();
+        try(Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
                 lista.add(new empleado(rs.getString("nombre"), new ArrayList<>(), rs.getLong("dni")));
             }
@@ -116,11 +108,9 @@ public class empleadoDAO implements dao<empleado>{
     public empleado getbyDNI(long dni){
         empleado emp = null;
         String sql = "SELECT dni, nombre FROM empleados WHERE dni = ?;";
-
-        try (Connection conn = Conexion.getInstance().getConnection();
-            PreparedStatement pst = conn.prepareStatement(sql)) {
+        Connection conn = Conexion.getInstance().getConnection();
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
             pst.setLong(1, dni);
-
         try (ResultSet rs = pst.executeQuery()) {
             if (rs.next()) {
                 emp = new empleado(rs.getString("nombre"), new ArrayList<>(), rs.getLong("dni"));

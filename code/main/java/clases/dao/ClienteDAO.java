@@ -102,11 +102,8 @@ public List<cliente> getAll() {
     List<cliente> lista = new ArrayList<>();
     String sql = "SELECT id, nombre, telefono FROM persona";
 
-    Connection conn = Conexion.getInstance().getConnection(); try(
-
-         Statement stmt = conn.createStatement();
-         ResultSet rs = stmt.executeQuery(sql)) {
-
+    Connection conn = Conexion.getInstance().getConnection();
+    try(Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
         while (rs.next()) {
             lista.add(new cliente(
                     rs.getInt("id"),
@@ -127,11 +124,9 @@ public List<cliente> getAllwID() {
     List<cliente> lista = new ArrayList<>();
     String sql = "SELECT id, nombre, telefono FROM persona";
 
-    Connection conn = Conexion.getInstance().getConnection(); try(
-
-         Statement stmt = conn.createStatement();
+    Connection conn = Conexion.getInstance().getConnection();
+    try( Statement stmt = conn.createStatement();
          ResultSet rs = stmt.executeQuery(sql)) {
-
         while (rs.next()) {
             lista.add(new cliente(
                     rs.getInt("id"),
@@ -151,8 +146,8 @@ public List<cliente> getAllwID() {
 public List<Integer> getAllId(){
     List<Integer> arr = new ArrayList<>();
     String sql = "SELECT id FROM persona";
-
-    try(Connection conn = Conexion.getInstance().getConnection();
+    Connection conn = Conexion.getInstance().getConnection();
+    try(
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery(sql))
     {
@@ -174,10 +169,8 @@ public int createAndGetID(cliente o){return 1;}
 public cliente createMOD(cliente c) {
     String sql = "INSERT INTO persona(nombre, telefono) VALUES (?, ?)";
 
-    Connection conn = Conexion.getInstance().getConnection(); try(
-
-         PreparedStatement pstmt = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS)) {
-
+    Connection conn = Conexion.getInstance().getConnection();
+    try(PreparedStatement pstmt = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS)) {
         pstmt.setString(1, c.getNombre());
         pstmt.setString(2, c.getTelefono());
         int columnasafectadas = pstmt.executeUpdate();

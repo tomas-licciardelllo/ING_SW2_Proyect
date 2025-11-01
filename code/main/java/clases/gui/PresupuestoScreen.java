@@ -510,9 +510,16 @@ public class PresupuestoScreen {
         bottomBar.setPadding(new Insets(10, 25, 10, 25));
         root.setBottom(bottomBar);
 
-        Scene scene = new Scene(root, anchoPantalla, altoPantalla); // Usar pantalla completa
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("/resources/styles.css").toExternalForm());
         stage.setScene(scene);
-        stage.setTitle("Gestión de Presupuestos");
+        stage.setTitle("ChapAPP - Generar Presupuesto");
+        javafx.stage.Screen screen = javafx.stage.Screen.getPrimary();
+        javafx.geometry.Rectangle2D bounds = screen.getVisualBounds();
+        stage.setX(bounds.getMinX());
+        stage.setY(bounds.getMinY());
+        stage.setWidth(bounds.getWidth());
+        stage.setHeight(bounds.getHeight());
         stage.show();
     }
 

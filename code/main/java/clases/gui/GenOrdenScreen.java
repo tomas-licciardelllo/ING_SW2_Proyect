@@ -32,7 +32,7 @@ public class GenOrdenScreen {
         List<tarea> tareas = new ArrayList<>();
 
         Label lblTitulo = new Label("ORDEN DE TRABAJO DEL PRESUPUESTO N°" + presupuestoAprobado.getNumero());
-        lblTitulo.setStyle("-fx-font-size: 25pt; -fx-font-weight: bold;");
+        lblTitulo.getStyleClass().add("titulo");
 
         GridPane grid = new GridPane();
         grid.setHgap(10);
@@ -69,7 +69,7 @@ public class GenOrdenScreen {
         }
 
         Label lblPartesTitulo = new Label("Tareas y Repuestos:");
-        lblPartesTitulo.setStyle("-fx-font-weight: bold;");
+        lblPartesTitulo.getStyleClass().add("subtitulo");
 
         empleadoManager empleadoManager = new empleadoManager();
         List<empleado> empleadoResu = empleadoManager.obtenerTodos();

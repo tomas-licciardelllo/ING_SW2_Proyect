@@ -1,8 +1,10 @@
 package clases.gui;
 
 import clases.Manager.ordentrabajoManager;
+import clases.Manager.tareaManager;
 import clases.control.generarPDF;
 import clases.model.auto;
+import clases.model.tarea;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXMLLoader;
@@ -30,10 +32,12 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class OrdenPendienteScreen {
     public OrdenPendienteScreen(Stage stage) {
         ordentrabajoManager ordenMan =  new ordentrabajoManager();
+        tareaManager tareaMan = new tareaManager();
         List<ordentrabajo> lista = ordenMan.obtenerPendientes();
         ObservableList<ordentrabajo> data = FXCollections.observableArrayList(lista);
         FilteredList<ordentrabajo> filtroData = new FilteredList<>(data, p->true);
@@ -47,12 +51,13 @@ public class OrdenPendienteScreen {
         panelSup.setAlignment(Pos.CENTER);
         TextField txtBuscar = new TextField();
         txtBuscar.setPromptText("Buscar por patente, cliente, Número de Orden...");
-        txtBuscar.getStyleClass().add("textoBusqueda");
+        txtBuscar.getStyleClass().add("barraBusqueda");
         HBox.setHgrow(txtBuscar, Priority.ALWAYS);
 
         panelSup.getChildren().addAll(txtBuscar);
 
         TableView<ordentrabajo> tabla = new TableView<>();
+        tabla.getStyleClass().add("table-view");
         SortedList<ordentrabajo> sortedData = new SortedList<>(filtroData);
         sortedData.comparatorProperty().bind(tabla.comparatorProperty());
         tabla.setItems(sortedData);
@@ -71,7 +76,15 @@ public class OrdenPendienteScreen {
         TableColumn<ordentrabajo, String> colPatente = new TableColumn<>("Patente");
         colPatente.setCellValueFactory(new PropertyValueFactory<>("vehiculoPat"));
         TableColumn<ordentrabajo, String> colTareas = new TableColumn<>("Tareas");
-        colTareas.setCellValueFactory(new PropertyValueFactory<>("TareasDesc"));
+        colTareas.setCellValueFactory(cellData -> {
+            ordentrabajo ordenActual = cellData.getValue();
+            List<tarea> listita = tareaMan.getTareasPorID(ordenActual.getID());
+            if (listita == null || listita.isEmpty()) {
+                return new javafx.beans.property.SimpleStringProperty("Sin tareas asignadas");
+            }
+            String tareas = listita.stream().map(tarea::getDescripcion).collect(Collectors.joining("\n"));
+            return new javafx.beans.property.SimpleStringProperty(tareas);
+        });
         TableColumn<ordentrabajo, Void> colAcciones = new TableColumn<>("Acciones");
 
         colAcciones.setCellFactory(param -> new TableCell<>() {
@@ -182,6 +195,8 @@ public class OrdenPendienteScreen {
     }
 
     public void mostrarOrden(ordentrabajo orden) {
+        tareaManager tareaManager = new tareaManager();
+        List<tarea> listita = tareaManager.getTareasPorID(orden.getID());
         Dialog<Void> ventana = new Dialog<>();
         ventana.setTitle("Detalle de la Orden de Trabajo");
         ventana.setHeaderText("Información de la Orden N°: " + orden.getPresupuesto().getNumero());
@@ -201,8 +216,16 @@ public class OrdenPendienteScreen {
         grid.add(new Label("Fecha Ingreso:"), 0, 4);
         grid.add(new Label(orden.getFecha_inicio().toString()), 1, 4);
         grid.add(new Label("Tareas:"), 0, 5);
-        grid.add(new Label(orden.getTareas().toString()), 1, 5);
+        grid.add(new Label(listita.toString()), 1, 5);
         ventana.getDialogPane().setContent(grid);
         ventana.showAndWait();
+    }
+
+    public String toStringLista (List<tarea> lista) {
+        String s = "";
+        for (int i = 0; i < lista.size(); i++) {
+
+        }
+        return s;
     }
 }

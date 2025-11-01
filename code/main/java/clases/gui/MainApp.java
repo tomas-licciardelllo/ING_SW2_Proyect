@@ -90,6 +90,7 @@ public class MainApp extends Application {
 
         Scene principal = new Scene(root, 900, 600);
         principal.getStylesheets().add(MainApp.class.getResource("/resources/styles.css").toExternalForm());
+        stage.setTitle("ChapAPP - Menú Principal");
         return principal;
     }
 

@@ -17,7 +17,7 @@ public class ordentrabajoManager {
 
     public boolean generarOrdenDeTrabajo(ordentrabajo orden) {
         try{
-            int idOrden = ordenDAO.createAux(orden);
+            int idOrden = ordenDAO.createAndGetID(orden);
             for(tarea tarea : orden.getTareas()){
                 int idTarea = tareasDAO.createAux(tarea);
                 tareasDAO.createTrabajo(idOrden, idTarea);
@@ -32,5 +32,10 @@ public class ordentrabajoManager {
     public List<ordentrabajo> obtenerPendientes(){
         OrdenDAO ordencita = new  OrdenDAO();
         return ordencita.getPendientes();
+    }
+
+    public ordentrabajo obtenerOrdenPorPresu(int idPresupuesto){
+        OrdenDAO ordencita = new  OrdenDAO();
+        return ordencita.getPorPresupuesto(idPresupuesto);
     }
 }

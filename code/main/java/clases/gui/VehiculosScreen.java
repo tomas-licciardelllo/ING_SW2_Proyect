@@ -31,10 +31,7 @@ public class VehiculosScreen {
 
         TextField txtBuscar = new TextField();
         txtBuscar.setPromptText("Buscar vehículo...");
-        txtBuscar.getStyleClass().add("textoBusqueda");
-
-        Button btnBuscar = new Button("Buscar");
-        btnBuscar.getStyleClass().add("BotonNormal");
+        txtBuscar.getStyleClass().add("barraBusqueda");
 
         HBox barraBusqueda = new HBox(10);
         barraBusqueda.setStyle("-fx-padding: 10; -fx-background-color: #dddddd;");
@@ -44,9 +41,10 @@ public class VehiculosScreen {
         Region spacerIz = new Region();
         HBox.setHgrow(spacer,Priority.ALWAYS);
         HBox.setHgrow(spacerIz,Priority.ALWAYS);
-        barraBusqueda.getChildren().addAll(txtBuscar,btnBuscar);
+        barraBusqueda.getChildren().addAll(txtBuscar);
 
         TableView<auto> tabalAutos = new TableView<>(data);
+        tabalAutos.getStyleClass().add("table-view");
 
         tabalAutos.setFixedCellSize(25);
         tabalAutos.prefHeightProperty().bind(tabalAutos.fixedCellSizeProperty().multiply( javafx.beans.binding.Bindings.size(tabalAutos.getItems()).add(1)));
@@ -141,8 +139,14 @@ public class VehiculosScreen {
             stage.setScene(MainApp.mAppVolver(stage));
         });
 
-
         stage.setScene(scene);
+        stage.setTitle("ChapAPP - Gestión de Vehiculos");
+        javafx.stage.Screen screen = javafx.stage.Screen.getPrimary();
+        javafx.geometry.Rectangle2D bounds = screen.getVisualBounds();
+        stage.setX(bounds.getMinX());
+        stage.setY(bounds.getMinY());
+        stage.setWidth(bounds.getWidth());
+        stage.setHeight(bounds.getHeight());
         stage.show();
     }
 

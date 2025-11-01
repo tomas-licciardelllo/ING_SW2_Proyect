@@ -30,6 +30,33 @@ public class OrdenDAO implements dao<ordentrabajo> {
     }
 
     @Override
+    public int createAndGetID(ordentrabajo ordentrabajo) {
+
+        String sql = "INSERT INTO orden_trabajo (fecha_inicio, fecha_fin, estado, pID) VALUES (?, ?, ?, ?)";
+        Connection conn = Conexion.getInstance().getConnection();
+
+        try (PreparedStatement pst = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            pst.setString(1, String.valueOf(Date.valueOf(ordentrabajo.getFecha_inicio())));
+            pst.setString(2,String.valueOf(Date.valueOf(ordentrabajo.getFecha_final())));
+            pst.setInt(3, ordentrabajo.getEstado().toInt());
+            pst.setInt(4, ordentrabajo.getPresupuesto().getNumero());
+            pst.executeUpdate();
+            try (ResultSet rs = pst.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                } else {
+                    throw new SQLException("Fallo al crear la orden, no se obtuvo ID.");
+                }
+            }
+        } catch (SQLException e) {
+
+            System.out.println("Error al guardar la orden de trabajo: " + e.getMessage());
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    @Override
     public boolean update(ordentrabajo o) {
         return true;
     }
@@ -75,10 +102,8 @@ public class OrdenDAO implements dao<ordentrabajo> {
     public List<ordentrabajo> getAll() {
         List<ordentrabajo> lista = new ArrayList<>();
         String sql = "SELECT id,fecha_inicio,fecha_fin, estado, pID FROM orden_trabajo";
-        Connection conn = Conexion.getInstance().getConnection(); try(
-
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+        Connection conn = Conexion.getInstance().getConnection();
+        try(Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
                 int estadoNum = rs.getInt("estado");
                 ordentrabajo.Estado estado = ordentrabajo.Estado.fromInt(estadoNum);
@@ -103,14 +128,9 @@ public class OrdenDAO implements dao<ordentrabajo> {
     }
 
 
-    public int createAndGetID(ordentrabajo o){return 1;}
-
     public List<ordentrabajo> getPendientes() {
         List<ordentrabajo> lista = new ArrayList<>();
 
-        // ✍️ Esta consulta SQL une las 4 tablas para obtener toda la información de una vez.
-        // Asegúrate que los nombres de tablas (orden_trabajo, presupuesto, persona, autos)
-        // y columnas (pID, idPresupuesto, id_cliente, idBD, id_auto, aID) sean correctos.
         String sql = "SELECT " +
                 "    ot.id AS orden_id, ot.fecha_inicio, ot.estado, " +
                 "    p.idPresupuesto, p.t_trabajo, p.t_pintura, p.d_chapa, p.costo_total," +
@@ -191,7 +211,6 @@ public class OrdenDAO implements dao<ordentrabajo> {
     public List<tarea> getAllTrabajos(int idOrden) {
         List<tarea> lista = new ArrayList<>();
         empleadoDAO empdao = new empleadoDAO();
-
         String sql = "SELECT T.descripcion, T.empleadoCargo " +
                 "FROM tareas T " +
                 "JOIN trabajos TR ON T.id = TR.tareaRealizar " +
@@ -215,29 +234,27 @@ public class OrdenDAO implements dao<ordentrabajo> {
         return lista;
     }
 
-    public int createAux(ordentrabajo orden) throws SQLException {
-
-        String sql = "INSERT INTO orden_trabajo (fecha_inicio, fecha_fin, estado, pID) VALUES (?, ?, ?, ?)";
-
-        // El try-with-resources maneja la conexión, el statement y el resultset
-        try (Connection conn = Conexion.getInstance().getConnection();
-             PreparedStatement pst = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
-            pst.setString(1, String.valueOf(Date.valueOf(orden.getFecha_inicio())));
-            pst.setString(2,String.valueOf(Date.valueOf(orden.getFecha_final())));
-            pst.setInt(3, orden.getEstado().toInt());
-            pst.setInt(4, orden.getPresupuesto().getNumero());
-
-            pst.executeUpdate();
-
-            try (ResultSet rs = pst.getGeneratedKeys()) {
+    public ordentrabajo getPorPresupuesto(int idPresupuesto) {
+        ordentrabajo respuesta = null;
+        PresupuestoDAO presupuestoDAO = new PresupuestoDAO();
+        presupuesto presu = presupuestoDAO.read(idPresupuesto);
+        List<tarea> lista = getAllTrabajos(idPresupuesto);
+        String sql = "SELECT * FROM orden_trabajo WHERE pID = ?";
+        Connection conn = Conexion.getInstance().getConnection();
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setInt(1, idPresupuesto);
+            try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getInt(1);
-                } else {
-                    throw new SQLException("Fallo al crear la orden, no se obtuvo ID.");
+                    respuesta = new ordentrabajo(ordentrabajo.Estado.fromInt(rs.getInt("estado")),
+                            (LocalDate.parse(rs.getString("fecha_inicio"))),
+                            (LocalDate.parse(rs.getString("fecha_fin"))),
+                            presu, lista);
                 }
             }
+        } catch (SQLException e) {
+            System.out.println("Error al buscar orden por pID: " + e.getMessage());
+            e.printStackTrace();
         }
+        return respuesta;
     }
-
 }
