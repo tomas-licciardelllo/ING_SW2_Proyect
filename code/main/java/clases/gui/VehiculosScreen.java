@@ -6,6 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -32,16 +33,13 @@ public class VehiculosScreen {
         TextField txtBuscar = new TextField();
         txtBuscar.setPromptText("Buscar vehículo...");
         txtBuscar.getStyleClass().add("barraBusqueda");
+        txtBuscar.setPrefWidth(600);
 
-        HBox barraBusqueda = new HBox(10);
-        barraBusqueda.setStyle("-fx-padding: 10; -fx-background-color: #dddddd;");
-        barraBusqueda.setPrefWidth(anchoPantalla);
-        barraBusqueda.setAlignment(Pos.CENTER);
         Region spacer = new Region();
         Region spacerIz = new Region();
         HBox.setHgrow(spacer,Priority.ALWAYS);
         HBox.setHgrow(spacerIz,Priority.ALWAYS);
-        barraBusqueda.getChildren().addAll(txtBuscar);
+        HBox barraBusqueda = new HBox(spacer, txtBuscar, spacerIz);
 
         TableView<auto> tabalAutos = new TableView<>(data);
         tabalAutos.getStyleClass().add("table-view");
@@ -102,10 +100,14 @@ public class VehiculosScreen {
 
         Button btnModificar = new Button("Modificar");
         Button btnVolver = new Button("Volver");
-        HBox inferior = new HBox(btnModificar, btnVolver);
-        inferior.setAlignment(Pos.CENTER_RIGHT);
-        inferior.setPrefHeight(40);
-        inferior.setSpacing(10);
+        btnModificar.getStyleClass().add("botonModificar");
+        btnVolver.getStyleClass().add("botonNormal");
+
+        Region spacerInf = new Region();
+        HBox.setHgrow(spacerInf, Priority.ALWAYS);
+        HBox inferior = new HBox(10, btnModificar, spacerInf, btnVolver);
+        inferior.setPadding(new Insets(10, 0, 0, 0));
+        inferior.setAlignment(Pos.CENTER);
 
         SortedList<auto> sortedData = new SortedList<>(filtroData);
         sortedData.comparatorProperty().bind(tabalAutos.comparatorProperty());

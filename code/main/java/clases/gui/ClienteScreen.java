@@ -5,6 +5,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -33,9 +34,6 @@ public class ClienteScreen {
         txtBuscar.setPromptText("Buscar cliente...");
         txtBuscar.getStyleClass().add("barraBusqueda");
 
-        Button btnBuscar = new Button("Buscar");
-        btnBuscar.getStyleClass().add("botonNormal");
-
         Button btnAgregar = new Button("Agregar");
         btnAgregar.getStyleClass().add("botonNormal");
 
@@ -55,7 +53,7 @@ public class ClienteScreen {
         Region spacerIz = new Region();
         HBox.setHgrow(spacer,Priority.ALWAYS);
         HBox.setHgrow(spacerIz,Priority.ALWAYS);
-        barraBusqueda.getChildren().addAll(spacerIz,txtBuscar, btnBuscar,spacer, btnAgregar,btnVolver);
+        barraBusqueda.getChildren().addAll(spacerIz,txtBuscar,spacer, btnAgregar);
 
 
         txtBuscar.prefWidthProperty().bind(barraBusqueda.widthProperty().multiply(0.6));
@@ -82,14 +80,13 @@ public class ClienteScreen {
 
         tablaClientes.getColumns().addAll(colNombre, colTelefono);
 
+        Region espacio = new Region();
+        HBox.setHgrow(espacio, Priority.ALWAYS);
         Button btnModificar = new Button("Modificar");
         btnModificar.getStyleClass().add("botonModificar");
-        HBox inferior = new HBox(btnModificar);
-        inferior.setAlignment(Pos.CENTER_RIGHT);
-        inferior.setPrefHeight(40);
-        inferior.setSpacing(10);
-
-
+        HBox inferior = new HBox(10, btnModificar, espacio, btnVolver);
+        inferior.setPadding(new Insets(10,0,0,0));
+        inferior.setAlignment(Pos.CENTER);
 
         txtBuscar.textProperty().addListener((obs,oldValue,newValue)->{
             filtroData.setPredicate(cliente->{

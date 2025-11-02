@@ -162,11 +162,6 @@ public class MainApp extends Application {
         TableColumn<ordentrabajo,String> colAuto = new TableColumn<>("Auto");
         TableColumn<ordentrabajo,String> colPatente = new TableColumn<>("Patente");
 
-        colNumero.setStyle("-fx-alignment: CENTER;");
-        colFecha.setStyle("-fx-alignment: CENTER;");
-        colAuto.setStyle("-fx-alignment: CENTER;");
-        colPatente.setStyle("-fx-alignment: CENTER;");
-
         colNumero.setCellValueFactory(new PropertyValueFactory<>("Id"));
         colFecha.setCellValueFactory(new PropertyValueFactory<>("fecha_inicio"));
         colAuto.setCellValueFactory(cellData->{
@@ -194,11 +189,6 @@ public class MainApp extends Application {
         TableColumn<presupuesto,LocalDate> colFecha = new TableColumn<>("Fecha");
         TableColumn<presupuesto,String> colCliente = new TableColumn<>("Cliente");
         TableColumn<presupuesto,Float> colMonto = new TableColumn<>("Monto");
-
-        colNumero.setStyle("-fx-alignment: CENTER;");
-        colFecha.setStyle("-fx-alignment: CENTER;");
-        colCliente.setStyle("-fx-alignment: CENTER;");
-        colMonto.setStyle("-fx-alignment: CENTER;");
 
         colNumero.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getNumero()));
         colFecha.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getFecha()));

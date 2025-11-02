@@ -28,7 +28,6 @@ public class OrdenScreen {
 
         TableView<ordentrabajo> tablaOrdenes = new TableView<>(data);
 
-
         TableColumn<ordentrabajo, String> colEstado = new TableColumn<>("Estado");
         colEstado.setCellValueFactory(new PropertyValueFactory<>("Estado"));
         TableColumn<ordentrabajo, LocalDate> colFecha = new TableColumn<>("Fecha");

@@ -7,27 +7,55 @@
         -fx-celeste: #008AC0;
     }
 
+    .titulo{
+            -fx-font-size: 30px;
+            -fx-font-weight: bold;
+            -fx-font-family: "Livvic Black";
+            -fx-font-color: #000000;
+    }
+    .subtitulo{
+        -fx-font-size: 20px;
+        -fx-font-weight: bold;
+        -fx-font-family: "Livvic Black";
+        -fx-font-color: #000000;
+    }
+
+    .subtituloMenu{
+        -fx-font-size: 30px;
+        -fx-font-family: "Livvic Regular";
+        -fx-text-fill: white;
+    }
+
+
+    .img-cont{
+        -fx-alignment: TOP_LEFT;
+        -fx-padding: 10px;
+        -fx-border-color: black;
+    }
+
+    .img-logo {
+        -fx-effect: dropshadow(gaussian, #ADADAD, 5, 0.0, 0.0, 1.0);
+    }
+
     .cajacarga {
         -fx-alignment: center;
         -fx-background-color: linear-gradient(to bottom, -fx-gris, -fx-grisosc);
         -fx-background-color: white;
     }
 
-   .botonbuscar{
-        -fx-cursor: hand;
-   }
     .textocarga{
         -fx-text-fill: black;
         -fx-font-size: 20px;
         -fx-font-family: "Livvic Regular"
     }
+
     .grillacliente{
-                -fx-border-color: black;
-                -fx-border-width: 2;
-                -fx-border-radius: 10;
-                -fx-background-radius: 10;
-                -fx-padding: 10;
-                -fx-background-color: white;
+        -fx-border-color: black;
+        -fx-border-width: 2;
+        -fx-border-radius: 10;
+        -fx-background-radius: 10;
+        -fx-padding: 10;
+        -fx-background-color: white;
     }
 
     .barraprogreso {
@@ -44,22 +72,13 @@
     }
 
     .fondo {
-        -fx-background-color: linear-gradient(
-                to bottom right,
-                #f9f9f9,
-                #ffffff,
-                #f9f9f9
-            );
-    }
-
-    .button:hover {
-        -fx-background-color: -fx-grisosc;
+        -fx-background-color: -fx-celeste;
     }
 
     .botonHeader{
         -fx-padding: 20;
         -fx-cursor: hand;
-        -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, -fx-azul, #5b42f3 50%, #00ddeb);
+        -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, -fx-azul, -fx-celeste 50%, -fx-azul);
         -fx-text-fill: #ffffff;
         -fx-font-size: 20px;
         -fx-font-color: white;
@@ -72,7 +91,7 @@
         -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 5, 0, 0, 2);
     }
     .botonHeader: hover{
-        -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #5b42f3, -fx-azul 50%, #00ddeb);
+        -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, -fx-celeste, -fx-azul 50%, -fx-celeste);
         -fx-scale-x: 1.05;
         -fx-scale-y: 1.05;
     }
@@ -83,22 +102,13 @@
         -fx-translate-y: 1px;
     }
 
-    .botonBase{
-        -fx-font-family: "Livvic Regular";
-        -fx-font-weight: bold;
-        -fx-font-size: 13px;
-        -fx-background-radius: 6px;
-        -fx-padding: 6px 14px;
-        -fx-cursor: hand;
-        -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 3, 0, 0, 1);
-        -fx-transition: all 0.2s ease-in-out;
-    }
-
     .botonNormal{
+        -fx-font-family: "Livvic Regular";
+        -fx-font-size: 15px;
         -fx-background-color: -fx-azul;
         -fx-text-fill: white;
         -fx-text-color: white;
-        -fx-border-radius: 8px;
+        -fx-border-radius: 10px;
         -fx-font-weight: bold;
         -fx-cursor: hand;
         -fx-padding: 6px 19px;
@@ -113,33 +123,36 @@
         -fx-translate-y: 1px
     }
 
-        .botonModificar{
-            -fx-background-color: #FA993C;
-            -fx-text-fill: white;
-            -fx-text-color: white;
-            -fx-border-radius: 8px;
-            -fx-font-weight: bold;
-            -fx-cursor: hand;
-            -fx-padding: 6px 19px;
-        }
-        .botonModificar:hover{
-            -fx-background-color: #FBAB60;
-            -fx-scale-x: 1.05;
-            -fx-scale-y: 1.05;
-        }
-        .botonModificar:pressed{
-            -fx-background-color: #e0e0e0;
-            -fx-translate-y: 1px
-        }
-
+    .botonModificar{
+        -fx-font-family: "Livvic Regular";
+        -fx-font-size: 15px;
+        -fx-background-color: #FA993C;
+        -fx-text-fill: white;
+        -fx-text-color: white;
+        -fx-border-radius: 10px;
+        -fx-font-weight: bold;
+        -fx-cursor: hand;
+        -fx-padding: 6px 19px;
+    }
+    .botonModificar:hover{
+        -fx-background-color: #FBAB60;
+        -fx-scale-x: 1.05;
+        -fx-scale-y: 1.05;
+    }
+    .botonModificar:pressed{
+        -fx-background-color: #e0e0e0;
+        -fx-translate-y: 1px
+    }
     .botonEliminar{
+        -fx-font-family: "Livvic Regular";
+        -fx-font-size: 15px;
         -fx-background-color: -fx-rojo;
         -fx-text-fill: white;
+        -fx-text-color: white;
+        -fx-border-radius: 10px;
         -fx-font-weight: bold;
-        -fx-border-width: 0;
-        -fx-background-radius: 6px;
-        -fx-padding: 6px 14px;
         -fx-cursor: hand;
+        -fx-padding: 6px 19px;
     }
     .botonEliminar:hover{
         -fx-background-color: #E53935;
@@ -150,28 +163,6 @@
         -fx-background-color: #C62828;
     }
 
-    .titulo{
-        -fx-font-size: 30px;
-        -fx-font-weight: bold;
-        -fx-font-family: "Livvic Black";
-        -fx-font-color: #000000;
-    }
-    .subtitulo{
-        -fx-font-size: 20px;
-        -fx-font-weight: bold;
-        -fx-font-family: "Livvic Black";
-        -fx-font-color: #000000;
-    }
-
-    .img-cont{
-        -fx-alignment: TOP_LEFT;
-        -fx-padding: 10px;
-        -fx-border-color: black;
-    }
-
-    .img-logo {
-        -fx-effect: dropshadow(gaussian, #ADADAD, 5, 0.0, 0.0, 1.0);
-    }
 
     .table-view {
         -fx-background-color: transparent;
@@ -196,7 +187,7 @@
         -fx-text-fill: white;
         -fx-font-size: 15px;
         -fx-font-weight: bold;
-        -fx-alignment: CENTER_LEFT;
+        -fx-alignment: CENTER;
     }
     .table-row-cell {
         -fx-background-color: #ffffff;

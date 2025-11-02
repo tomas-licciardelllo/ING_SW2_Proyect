@@ -54,7 +54,7 @@ public class ParteScreen {
         txtBuscar.getStyleClass().add("barraBusqueda");
         txtBuscar.setPrefWidth(600);
 
-        Button btnAgregar = new Button("Agregar Nueva Parte");
+        Button btnAgregar = new Button("Agregar Parte");
         btnAgregar.getStyleClass().add("botonNormal");
 
         Region espacioIzq = new Region();
@@ -75,10 +75,10 @@ public class ParteScreen {
         });
 
         // Panel Inferior con Acciones de Tabla
-        Button btnModificar = new Button("Modificar Seleccionado");
+        Button btnModificar = new Button("Modificar");
         btnModificar.getStyleClass().add("botonModificar");
 
-        Button btnEliminar = new Button("Eliminar Seleccionado");
+        Button btnEliminar = new Button("Eliminar");
         btnEliminar.getStyleClass().add("botonEliminar");
 
         Button btnVolver = new Button("Volver");

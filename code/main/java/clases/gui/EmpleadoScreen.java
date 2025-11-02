@@ -67,13 +67,13 @@ public class EmpleadoScreen {
         Button btnModificar = new Button("Modificar");
         Button btnEliminar = new Button("Eliminar");
         Button btnVolver = new Button("Volver");
-        btnModificar.getStyleClass().add("botonNormal");
+        btnModificar.getStyleClass().add("botonModificar");
         btnEliminar.getStyleClass().add("botonEliminar");
         btnVolver.getStyleClass().add("botonNormal");
 
         Region espacio = new Region();
         HBox.setHgrow(espacio, Priority.ALWAYS);
-        HBox botones = new  HBox(btnModificar, btnEliminar, espacio, btnVolver);
+        HBox botones = new  HBox(10, btnModificar, btnEliminar, espacio, btnVolver);
         VBox centerPanel = new VBox(10);
         centerPanel.setPadding(new Insets(10, 10, 10, 10));
         centerPanel.setAlignment(Pos.TOP_CENTER);
@@ -92,7 +92,6 @@ public class EmpleadoScreen {
                 mostrarAlerta("Atención", "Debe seleccionar un empleado para modificar.", Alert.AlertType.WARNING);
                 return;
             }
-            // Llama a la nueva pantalla de formulario en modo "Modificar" (pasando el empleado)
             new empleadoFormScreen(stage, empleadoManager, seleccionado);
         });
         btnEliminar.setOnAction(e -> {
@@ -110,7 +109,6 @@ public class EmpleadoScreen {
             Optional<ButtonType> resultado = confirmacion.showAndWait();
             if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
                 try {
-                    // Llama al manager para eliminar
                     if (empleadoManager.eliminarEmpleado(seleccionado.getDocumento())) {
                         allEmpleados.remove(seleccionado); // Actualiza la UI
                         mostrarAlerta("Éxito", "Empleado eliminado correctamente.", Alert.AlertType.INFORMATION);

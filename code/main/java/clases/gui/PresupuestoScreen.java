@@ -89,7 +89,7 @@ public class PresupuestoScreen {
         cmbAutosCliente.setPromptText("Seleccionar vehículo");
         cmbAutosCliente.setPrefWidth(200);
         Button btnNuevoVehiculo = new Button("Ingresar Vehículo Nuevo");
-        btnNuevoVehiculo.setStyle("-fx-background-color: #546E7A; -fx-text-fill: white;");
+        btnNuevoVehiculo.setStyle("-fx-background-color: -fx-azul; -fx-text-fill: white;");
 
 
         autoGrid.add(new Label("Vehículo del Cliente:"), 0, 0);
@@ -291,15 +291,15 @@ public class PresupuestoScreen {
 
         // --- Sección Acciones ---
         Button btnGuardar = new Button("Guardar Presupuesto");
-        btnGuardar.setStyle("-fx-background-color: #0277BD; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-font-size: 14px;");
+        btnGuardar.getStyleClass().add("botonNormal");
         Button btnLimpiar = new Button("Limpiar Formulario");
-        btnLimpiar.setStyle("-fx-background-color: #F57C00; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-font-size: 14px;");
+        btnLimpiar.getStyleClass().add("botonEliminar");
         HBox accionesBox = new HBox(20, btnGuardar, btnLimpiar);
         accionesBox.setAlignment(Pos.CENTER);
 
         // --- Botón Atrás ---
-        Button btnAtras = new Button("Atrás");
-        btnAtras.setStyle("-fx-background-color: #757575; -fx-text-fill: white; -fx-padding: 8 15;");
+        Button btnAtras = new Button("Volver");
+        btnAtras.getStyleClass().add("botonNormal");
 
 
         // --- Lógica de Listeners ---
