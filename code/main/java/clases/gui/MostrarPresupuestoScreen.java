@@ -105,10 +105,10 @@ public class MostrarPresupuestoScreen {
                 generar.setOnAction(e -> {
                     presupuesto presupuestoActual = getTableRow().getItem();
                     if(presupuestoActual != null){
-                        ordentrabajo orden = ordenManager.obtenerOrdenPorPresu(presupuestoActual.getIdPresupuesto());
+                        ordentrabajo orden = ordenManager.obtenerOrdenPorPresu(presupuestoActual.getNumero());
+                        System.out.println("ORDEN NUM:"+orden.getID()+ "ORDEN NUM: " +orden.getNumero());
                         Stage stage = (Stage) getTableView().getScene().getWindow();
-
-                        if(orden != null){
+                        if(orden != null && orden.getNumero() != -1){
                             mostrarOrden(orden, presupuestoActual);
                         }
                         else{
@@ -118,9 +118,7 @@ public class MostrarPresupuestoScreen {
                             Optional<ButtonType> resultado = alertaOrden.showAndWait();
                             if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
                                 tarea t = new tarea(presupuestoActual.getTipoTrabajo().toString());
-                                presupuestoManager presupuestoManager = new presupuestoManager();
-                                int l = presupuestoManager.crearYobtenerID(presupuestoActual);
-                                GenOrdenScreen genOrdenScreen = new GenOrdenScreen(stage, presupuestoActual, l, t);
+                                GenOrdenScreen genOrdenScreen = new GenOrdenScreen(stage, presupuestoActual, presupuestoActual.getNumero(), t);
                             }
                         }
                     }

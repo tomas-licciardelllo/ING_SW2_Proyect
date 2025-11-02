@@ -32,27 +32,67 @@ public class OrdenDAO implements dao<ordentrabajo> {
     @Override
     public int createAndGetID(ordentrabajo ordentrabajo) {
 
-        String sql = "INSERT INTO orden_trabajo (fecha_inicio, fecha_fin, estado, pID) VALUES (?, ?, ?, ?)";
+        int presupuestoID = ordentrabajo.getPresupuesto().getNumero();
+
+        String sqlSelect = "SELECT id FROM orden_trabajo WHERE pID = ?";
+        String sqlUpdate = "UPDATE orden_trabajo SET fecha_inicio = ?, fecha_fin = ?, estado = ? WHERE id = ?";
+        String sqlInsert = "INSERT INTO orden_trabajo (fecha_inicio, fecha_fin, estado, pID) VALUES (?, ?, ?, ?)";
+
         Connection conn = Conexion.getInstance().getConnection();
 
-        try (PreparedStatement pst = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            pst.setString(1, String.valueOf(Date.valueOf(ordentrabajo.getFecha_inicio())));
-            pst.setString(2,String.valueOf(Date.valueOf(ordentrabajo.getFecha_final())));
-            pst.setInt(3, ordentrabajo.getEstado().toInt());
-            pst.setInt(4, ordentrabajo.getPresupuesto().getNumero());
-            pst.executeUpdate();
-            try (ResultSet rs = pst.getGeneratedKeys()) {
+        try (PreparedStatement pstSelect = conn.prepareStatement(sqlSelect)) {
+            System.out.println("IDP " + presupuestoID);
+            pstSelect.setInt(1, presupuestoID); // Buscamos por pID (parámetro 1)
+
+            try (ResultSet rs = pstSelect.executeQuery()) {
+
+                // SI HAY RESULTADO (rs.next() es true) = LA ORDEN YA EXISTE
                 if (rs.next()) {
-                    return rs.getInt(1);
-                } else {
-                    throw new SQLException("Fallo al crear la orden, no se obtuvo ID.");
+                    int ordenExistenteID = rs.getInt("id");
+
+                    // Creamos un PreparedStatement NUEVO para el UPDATE
+                    try (PreparedStatement pstUpdate = conn.prepareStatement(sqlUpdate)) {
+                        pstUpdate.setObject(1, ordentrabajo.getFecha_inicio());
+                        pstUpdate.setObject(2, ordentrabajo.getFecha_final());
+                        pstUpdate.setInt(3, ordentrabajo.getEstado().toInt());
+                        pstUpdate.setInt(4, ordenExistenteID); // WHERE id = ?
+
+                        pstUpdate.executeUpdate();
+                        return ordenExistenteID; // Devolvemos el ID que actualizamos
+                    }
+
+                }
+                // NO HAY RESULTADO = LA ORDEN NO EXISTE, HAY QUE CREARLA
+                else {
+
+                    // Creamos un PreparedStatement NUEVO para el INSERT
+                    try (PreparedStatement pstInsert = conn.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)) {
+                        pstInsert.setObject(1, ordentrabajo.getFecha_inicio());
+                        pstInsert.setObject(2, ordentrabajo.getFecha_final());
+                        pstInsert.setInt(3, ordentrabajo.getEstado().toInt());
+                        pstInsert.setInt(4, presupuestoID); // pID = ?
+
+                        int filasAfectadas = pstInsert.executeUpdate();
+                        if (filasAfectadas == 0) {
+                            throw new SQLException("Fallo al crear la orden, 0 filas afectadas.");
+                        }
+
+                        // Obtenemos el ID nuevo que se generó
+                        try (ResultSet r = pstInsert.getGeneratedKeys()) {
+                            if (r.next()) {
+                                return r.getInt(1); // Devolvemos el ID nuevo
+                            } else {
+                                throw new SQLException("Fallo al crear la orden, no se obtuvo ID.");
+                            }
+                        }
+                    }
                 }
             }
-        } catch (SQLException e) {
 
-            System.out.println("Error al guardar la orden de trabajo: " + e.getMessage());
+        } catch (SQLException e) {
+            System.out.println("Error al guardar la orden de trabajo (Upsert): " + e.getMessage());
             e.printStackTrace();
-            return -1;
+            return -1; // Devolvemos -1 en caso de error
         }
     }
 
@@ -245,7 +285,7 @@ public class OrdenDAO implements dao<ordentrabajo> {
             pst.setInt(1, idPresupuesto);
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
-                    respuesta = new ordentrabajo(ordentrabajo.Estado.fromInt(rs.getInt("estado")),
+                    respuesta = new ordentrabajo(rs.getInt("id"),ordentrabajo.Estado.fromInt(rs.getInt("estado")),
                             (LocalDate.parse(rs.getString("fecha_inicio"))),
                             (LocalDate.parse(rs.getString("fecha_fin"))),
                             presu, lista);

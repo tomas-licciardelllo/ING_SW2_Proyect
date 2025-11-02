@@ -5,17 +5,23 @@ import java.util.stream.Collectors;
 
 public class ordentrabajo {
 
-    public enum Estado {Pendiente, Desarrollo, Finalizada;
+    public enum Estado {Pendiente, Desarrollo, Finalizada, Guardada;
         public static Estado fromInt(int value) {
             return switch (value) {
                 case 0 -> Pendiente;
                 case 1 -> Desarrollo;
                 case 2 -> Finalizada;
+                case -1 -> Guardada;
                 default -> throw new IllegalArgumentException("Valor inválido para Estado: " + value);
             };
         }
         public int toInt() {
-            return this.ordinal();
+            return switch (this) {
+                case Pendiente -> 0;
+                case Desarrollo -> 1;
+                case Finalizada -> 2;
+                case Guardada -> -1;
+            };
         }
     };
     private int id;
@@ -83,6 +89,7 @@ public class ordentrabajo {
 
     public int getNumero() {
         return switch(this.estado){
+            case Guardada -> -1;
             case Pendiente -> 1;
             case Desarrollo -> 2;
             case Finalizada -> 3;

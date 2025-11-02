@@ -47,10 +47,12 @@ public class tareasDAO implements dao<tarea>{
         try (PreparedStatement pst = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             empleado empleadoAsignado = tarea.getEmpleado();
             if (empleadoAsignado == null) {
-                throw new SQLException("La tarea no tiene empleado.");
+                pst.setString(1, tarea.getDescripcion());
+                pst.setLong(2, 0);
+            }else {
+                pst.setString(1, tarea.getDescripcion());
+                pst.setLong(2, empleadoAsignado.getDocumento());
             }
-            pst.setString(1, tarea.getDescripcion());
-            pst.setLong(2, empleadoAsignado.getDocumento()); //
 
             pst.executeUpdate();
 

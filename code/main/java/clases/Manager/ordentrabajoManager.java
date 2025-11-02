@@ -3,6 +3,7 @@ import clases.dao.OrdenDAO;
 import clases.dao.tareasDAO;
 import clases.model.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ordentrabajoManager {
@@ -27,6 +28,23 @@ public class ordentrabajoManager {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public List<tarea> generarTareasDesdePresupuesto(presupuesto p) {
+        List<tarea> tareas = new ArrayList<>();
+
+        // Esta es la MISMA lógica que tenías en GenOrdenScreen
+        String descPresu = "Tipo: " + p.getTipoTrabajo();
+        String capasPresu = "Capas: " + p.getTipoPintura();
+        tareas.add(new tarea(descPresu));
+        tareas.add(new tarea(capasPresu));
+
+        for (parte parte : p.getRepuestos()) {
+            String descripcion = parte.parteRepuesto();
+            tarea tareita = new tarea(descripcion);
+            tareas.add(tareita);
+        }
+        return tareas;
     }
 
     public List<ordentrabajo> obtenerPendientes(){

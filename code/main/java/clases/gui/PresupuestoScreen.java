@@ -1,6 +1,7 @@
 package clases.gui;
 
 import clases.Manager.autoManager;
+import clases.Manager.ordentrabajoManager;
 import clases.Manager.presupuestoManager;
 import clases.control.Navegar;
 import clases.Manager.parteManager;
@@ -440,21 +441,23 @@ public class PresupuestoScreen {
                 alertaOrden.setContentText("¿Desea generar la Orden de Trabajo?");
                 Optional<ButtonType> resultado = alertaOrden.showAndWait();
 
+                cliente clienteDePrueba = clienteSeleccionado;
+                auto a = new auto(txtTipoAuto.getText(), txtPatenteAuto.getText(), Integer.parseInt(txtAnioAuto.getText()), txtMarcaAuto.getText(), txtModeloAuto.getText());
+                a.setCliente(clienteDePrueba);
+                pago p = new pago(0);
+                autoManager manager = new autoManager();
+                int ida = manager.crearOtraerAutoXpatente(a);
+                tarea t = new tarea(txtTipoTrabajo.getText());
+                a.setIdBD(ida);
+                presupuesto presu = new presupuesto(0, LocalDate.now(), new ArrayList<>(listaPartes), txtTipoTrabajo.getText(), cmbTipoPintura.getValue(), Integer.parseInt(txtDiasTrabajo.getText()), costoFinal, clienteSeleccionado, a, p);
+                presupuestoManager managerPresupuesto = new presupuestoManager();
+                int l = managerPresupuesto.crearYobtenerID(presu);
+                presu.setNumero(l);
+                ordentrabajoManager ordenManager = new ordentrabajoManager();
+                List<tarea> t1 = ordenManager.generarTareasDesdePresupuesto(presu);
+                ordentrabajo nueva = new ordentrabajo(ordentrabajo.Estado.Guardada, presu.getFecha(), LocalDate.now(), presu, t1);
+                ordenManager.generarOrdenDeTrabajo(nueva);
                 if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
-
-                    cliente clienteDePrueba = clienteSeleccionado;
-
-                    auto a = new auto(txtTipoAuto.getText(), txtPatenteAuto.getText(), Integer.parseInt(txtAnioAuto.getText()), txtMarcaAuto.getText(), txtModeloAuto.getText());
-                    a.setCliente(clienteDePrueba);
-                    pago p = new pago(0);
-                    autoManager manager = new autoManager();
-                    int ida = manager.crearOtraerAutoXpatente(a);
-                    tarea t = new tarea(txtTipoTrabajo.getText());
-                    a.setIdBD(ida);
-                    presupuesto presu = new presupuesto(0, LocalDate.now(), new ArrayList<>(listaPartes), txtTipoTrabajo.getText(), cmbTipoPintura.getValue(), Integer.parseInt(txtDiasTrabajo.getText()), costoFinal, clienteDePrueba, a, p);
-                    presupuestoManager managerPresupuesto = new presupuestoManager();
-                    int l = managerPresupuesto.crearYobtenerID(presu);
-                    presu.setNumero(l);
                     new GenOrdenScreen(stage, presu,l,t);
                 } else {
                     stage.setScene(MainApp.mAppVolver(stage));
