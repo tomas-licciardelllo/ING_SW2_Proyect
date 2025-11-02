@@ -3,8 +3,6 @@ package clases.gui;
 import clases.Manager.ordentrabajoManager;
 import clases.Manager.presupuestoManager;
 import clases.Manager.tareaManager;
-import clases.dao.AutoDAO;
-import clases.dao.ClienteDAO;
 import clases.dao.PresupuestoDAO;
 import clases.model.*;
 import javafx.beans.property.SimpleObjectProperty;
@@ -20,12 +18,10 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -82,9 +78,6 @@ public class MostrarPresupuestoScreen {
         TableColumn<presupuesto, String> tipoPin = new TableColumn<>("Tipo de pintura");
         tipoPin.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTipoPintura()));
 
-        TableColumn<presupuesto, Integer> cDias = new TableColumn<>("Dias de chapa");
-        cDias.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getDiasChapa()));
-
         TableColumn<presupuesto, Void> orden = new TableColumn<>("Orden de Trabajo");
         orden.setCellFactory(cellData -> new TableCell<>() {
             private final Button generar = new  Button();
@@ -130,43 +123,9 @@ public class MostrarPresupuestoScreen {
             }
         });
 
-        nro.prefWidthProperty().bind(
-                tablaPresupuesto.widthProperty().multiply(0.14)
-        );
-
-        fecha.prefWidthProperty().bind(
-                tablaPresupuesto.widthProperty().multiply(0.14)
-        );
-
-        colCliente.prefWidthProperty().bind(
-                tablaPresupuesto.widthProperty().multiply(0.14)
-        );
-
-        colRepuestos.prefWidthProperty().bind(
-                tablaPresupuesto.widthProperty().multiply(0.14)
-        );
-
-        cTotal.prefWidthProperty().bind(
-                tablaPresupuesto.widthProperty().multiply(0.14)
-        );
-
-        tipoTr.prefWidthProperty().bind(
-                tablaPresupuesto.widthProperty().multiply(0.14)
-        );
-
-        tipoPin.prefWidthProperty().bind(
-                tablaPresupuesto.widthProperty().multiply(0.14)
-        );
-
-        cDias.prefWidthProperty().bind(
-                tablaPresupuesto.widthProperty().multiply(0.14)
-        );
-
-        orden.prefWidthProperty().bind(
-                tablaPresupuesto.widthProperty().multiply(0.14)
-        );
         // Agregar columnas a la tabla
-        tablaPresupuesto.getColumns().addAll(nro, fecha, colCliente, cTotal, tipoTr, tipoPin, cDias, orden);
+        tablaPresupuesto.getColumns().addAll(nro, fecha, colCliente, cTotal, tipoTr, tipoPin, orden);
+        tablaPresupuesto.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         // Set items
         tablaPresupuesto.setItems(sortedData);
@@ -178,6 +137,7 @@ public class MostrarPresupuestoScreen {
         HBox panelInferior = new HBox();
         panelInferior.setPadding(new Insets(10, 0, 0, 0));
         Button btnVolver = new Button("Volver");
+        btnVolver.getStyleClass().add("botonNormal");
         btnVolver.setOnAction(event -> {
             stage.setScene(MainApp.mAppVolver(stage));
         });

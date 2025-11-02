@@ -65,7 +65,7 @@ public class OrdenPendienteScreen {
 
         TableColumn<ordentrabajo, Integer> colNumero = new TableColumn<>("Número de Orden");
         colNumero.setCellValueFactory(new PropertyValueFactory<>("Id"));
-        TableColumn<ordentrabajo, Date> colFecha = new TableColumn<>("fecha_inicio");
+        TableColumn<ordentrabajo, Date> colFecha = new TableColumn<>("Fecha Ingreso");
         colFecha.setCellValueFactory(new PropertyValueFactory<>("fechaIngreso"));
         TableColumn<ordentrabajo, String> colCliente = new TableColumn<>("Cliente");
         colCliente.setCellValueFactory(new PropertyValueFactory<>("clienteNombre"));

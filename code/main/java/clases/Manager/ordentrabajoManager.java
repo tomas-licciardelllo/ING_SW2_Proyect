@@ -56,4 +56,9 @@ public class ordentrabajoManager {
         OrdenDAO ordencita = new  OrdenDAO();
         return ordencita.getPorPresupuesto(idPresupuesto);
     }
+
+    public List<ordentrabajo> obtenerDesarrollo(){
+        OrdenDAO ordencita = new  OrdenDAO();
+        return ordencita.getDesarrollo();
+    }
 }
