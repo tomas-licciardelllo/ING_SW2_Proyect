@@ -1,5 +1,5 @@
 package clases.gui;
-import clases.dao.AutoDAO;
+import clases.Manager.autoManager;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -25,8 +25,10 @@ public class VehiculosScreen {
     {
         double anchoPantalla = Screen.getPrimary().getBounds().getWidth();
         double altoPantalla = Screen.getPrimary().getBounds().getHeight();
-        AutoDAO autoDAO = new AutoDAO();
-        List<auto> listaAutos = autoDAO.getAll();
+        autoManager mgr = new autoManager();
+        List<auto> listaAutos = mgr.getAll();
+
+        System.out.println("VehiculosScreen: Autos encontrados en la BD: " + listaAutos.size());
         ObservableList<auto> data = FXCollections.observableArrayList(listaAutos);
         FilteredList<auto> filtroData = new FilteredList<>(data, p->true);
 
@@ -55,11 +57,11 @@ public class VehiculosScreen {
         colCliente.prefWidthProperty().bind(tabalAutos.widthProperty().multiply(0.5));
 
         TableColumn<auto, String> colMarca = new TableColumn<>("Marca");
-        colMarca.setCellValueFactory(new PropertyValueFactory<>("Marca"));
+        colMarca.setCellValueFactory(new PropertyValueFactory<>("marca"));
         colMarca.prefWidthProperty().bind(tabalAutos.widthProperty().multiply(0.5));
 
         TableColumn<auto, String> colModelo = new TableColumn<>("Modelo");
-        colModelo.setCellValueFactory(new PropertyValueFactory<>("Modelo"));
+        colModelo.setCellValueFactory(new PropertyValueFactory<>("modelo"));
         colModelo.prefWidthProperty().bind(tabalAutos.widthProperty().multiply(0.5));
 
         TableColumn<auto, Integer> colAnio = new TableColumn<>("Año");
@@ -67,7 +69,7 @@ public class VehiculosScreen {
         colAnio.prefWidthProperty().bind(tabalAutos.widthProperty().multiply(0.5));
 
         TableColumn<auto, Integer> colPatente = new TableColumn<>("Patente");
-        colPatente.setCellValueFactory(new PropertyValueFactory<>("Patente"));
+        colPatente.setCellValueFactory(new PropertyValueFactory<>("patente"));
         colPatente.prefWidthProperty().bind(tabalAutos.widthProperty().multiply(0.5));
 
         tabalAutos.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -132,7 +134,7 @@ public class VehiculosScreen {
             if(newSelection != null){
                 Integer id = tabalAutos.getSelectionModel().getSelectedItem().getIdBD();
                 System.out.println("SE ENTRO"+id);
-                btnModificar.setOnAction(e->root.setCenter(ModificarAuto(root,id,barraBusqueda,panel)));
+                btnModificar.setOnAction(e->root.setCenter(ModificarAuto(root,id,barraBusqueda,panel, mgr)));
 
             }
         });
@@ -152,11 +154,10 @@ public class VehiculosScreen {
         stage.show();
     }
 
-    private VBox ModificarAuto(BorderPane root, int idAutoBuscado, HBox anterior, VBox pantallaant){
+    private VBox ModificarAuto(BorderPane root, int idAutoBuscado, HBox anterior, VBox pantallaant, autoManager mgr){
         Node aux = root.getTop();
         root.setTop(null);
-        AutoDAO au = new AutoDAO();
-        auto auxAuto = au.read(idAutoBuscado);
+        auto auxAuto = mgr.traerAutoId(idAutoBuscado);
         VBox pantalla = new VBox();
         pantalla.setMinSize(300,200);
         pantalla.setMaxSize(600,400);
@@ -198,7 +199,7 @@ public class VehiculosScreen {
             auxAuto.setAnio(Integer.parseInt(anioField.getText()));
             auxAuto.setPatente(patenteField.getText());
             System.out.println(auxAuto.toString());
-            au.update(auxAuto);
+            mgr.actualizarAuto(auxAuto);
         });
         return pantalla;
     }

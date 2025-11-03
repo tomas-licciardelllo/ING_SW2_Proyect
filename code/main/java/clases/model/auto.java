@@ -32,6 +32,7 @@ public class auto {
     }
 
     public auto(int id, String tipo, String patente, int anio, String marca, String modelo) {
+        this.IdBD = id;
         this.tipo = tipo;
         this.patente = patente;
         this.anio = anio;

@@ -58,7 +58,7 @@ public class AutoDAO implements dao<auto>{
 
     @Override
     public auto read(int id){
-        String sql = "SELECT aID,marca,modelo,anio,patente FROM auto WHERE aID = ?";
+        String sql = "SELECT aID,marca,modelo,anio,patente,tipo FROM auto WHERE aID = ?";
         auto a =null;
         Connection conn = Conexion.getInstance().getConnection();
         try(PreparedStatement pstmt = conn.prepareStatement(sql)){
@@ -68,7 +68,7 @@ public class AutoDAO implements dao<auto>{
             if(rs.next()){
                 a = new auto(
                         rs.getInt("aID"),
-                        "camioneta" ,
+                        rs.getString("tipo"),
                         rs.getString("patente"),
                         rs.getInt("anio"),
                         rs.getString("marca"),
@@ -87,7 +87,7 @@ public class AutoDAO implements dao<auto>{
     @Override
     public List<auto> getAll(){
         List<auto> lista = new ArrayList<>();
-        String sql = "SELECT a.aID, a.marca, a.modelo, a.anio, a.patente, a.duenioID, " +
+        String sql = "SELECT a.aID, a.marca, a.modelo, a.anio, a.patente, a.duenioID, a.tipo," +
                 "c.id AS idCliente, c.nombre AS nombreCliente, c.telefono AS telCliente " +
                 "FROM auto a " +
                 "LEFT JOIN persona c ON a.duenioID = c.id";
@@ -104,7 +104,7 @@ public class AutoDAO implements dao<auto>{
 
                 auto a = new auto(
                         rs.getInt("aID"),
-                        rs.getString("marca"),
+                        rs.getString("tipo"),
                         rs.getString("patente"),
                         rs.getInt("anio"),
                         rs.getString("marca"),
