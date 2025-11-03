@@ -14,6 +14,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
@@ -69,6 +70,9 @@ public class MainApp extends Application {
         animabarra.setCycleCount(1);
         animabarra.play();
 
+        URL logo = getClass().getResource("/resources/img/Logo1Chap.png");
+        ImageView logoIcono = new ImageView(new Image(logo.toExternalForm()));
+        stage.getIcons().add(logoIcono.getImage());
         stage.setScene(load);
         stage.setTitle("ChapAPP");
         stage.show();
