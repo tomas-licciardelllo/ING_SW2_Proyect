@@ -20,9 +20,9 @@
         -fx-font-color: #000000;
     }
 
-    .subtituloMenu{
+    .subtituloWhite{
         -fx-font-size: 30px;
-        -fx-font-family: "Livvic Regular";
+        -fx-font-family: "Livvic Black";
         -fx-text-fill: white;
     }
 

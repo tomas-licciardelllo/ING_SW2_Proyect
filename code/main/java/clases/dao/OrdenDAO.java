@@ -140,6 +140,7 @@ public class OrdenDAO implements dao<ordentrabajo> {
 
     @Override
     public List<ordentrabajo> getAll() {
+        /*
         List<ordentrabajo> lista = new ArrayList<>();
         String sql = "SELECT id,fecha_inicio,fecha_fin, estado, pID FROM orden_trabajo";
         Connection conn = Conexion.getInstance().getConnection();
@@ -155,6 +156,53 @@ public class OrdenDAO implements dao<ordentrabajo> {
                                 estado,
                                 LocalDate.parse(rs.getString("fecha_inicio")),
                                 LocalDate.parse(rs.getString("fecha_fin")),
+                                p,
+                                tareas
+                        )
+                );
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al obtener las ordenes de trabajo: " + e.getMessage());
+        }
+
+        return lista;*/
+        List<ordentrabajo> lista = new ArrayList<>();
+        String sql = "SELECT id,fecha_inicio,fecha_fin, estado, pID FROM orden_trabajo";
+        Connection conn = Conexion.getInstance().getConnection();
+        try(Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                int estadoNum = rs.getInt("estado");
+                ordentrabajo.Estado estado = ordentrabajo.Estado.fromInt(estadoNum);
+                int presupuestoId = rs.getInt("pID");
+                presupuesto p = new PresupuestoDAO().read(presupuestoId);
+                List<tarea> tareas = getAllTrabajos(rs.getInt("id"));
+                String fechaInicioAux = rs.getString("fecha_inicio");
+                LocalDate fechaInicio = null;
+                if (fechaInicioAux != null && !fechaInicioAux.isEmpty()) {
+                    try {
+                        fechaInicio = LocalDate.parse(fechaInicioAux);
+                    } catch (Exception e) {
+                        System.out.println("Fecha con formato inesperado: " + fechaInicio);
+                    }
+                }
+                String fechaFinAux = rs.getString("fecha_fin");
+                LocalDate fechaFin = null;
+                if (fechaFinAux != null && !fechaFinAux.isEmpty()) {
+                    try {
+                        fechaFin = LocalDate.parse(fechaFinAux);
+                    } catch (Exception e) {
+                        System.out.println("Fecha con formato inesperado: " + fechaInicio);
+                    }
+                }
+                else{
+                    //Como algunas ordenes no tienen fecha, le di una random
+                    fechaFin = fechaInicio;
+                }
+                lista.add(new ordentrabajo(
+                                rs.getInt("id"),
+                                estado,
+                                fechaInicio,
+                                fechaFin,
                                 p,
                                 tareas
                         )

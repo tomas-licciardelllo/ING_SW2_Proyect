@@ -61,4 +61,17 @@ public class ordentrabajoManager {
         OrdenDAO ordencita = new  OrdenDAO();
         return ordencita.getDesarrollo();
     }
+
+    public boolean actualizarOrden(ordentrabajo orden, int estadoNuevo) {
+        if(estadoNuevo == 0 || estadoNuevo == 1 || estadoNuevo == 2 || estadoNuevo == -1) {
+            OrdenDAO ordenDAO = new OrdenDAO();
+            //Cambiamos el estado de la Orden
+            orden.setEstado(ordentrabajo.Estado.fromInt(estadoNuevo));
+            ordenDAO.createAndGetID(orden);
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 }

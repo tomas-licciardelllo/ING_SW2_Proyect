@@ -73,7 +73,7 @@ public class MainApp extends Application {
         stage.setTitle("ChapAPP");
         stage.show();
 
-        PauseTransition pausa = new PauseTransition(Duration.seconds(1.5));
+        PauseTransition pausa = new PauseTransition(Duration.seconds(2.5));
         pausa.setOnFinished(e -> {
             stage.setScene(mAppVolver(stage));
             stage.setMaximized(true);
@@ -110,8 +110,8 @@ public class MainApp extends Application {
 
         Label lblTitulo1 = new Label("PRESUPUESTO SIN COBRAR");
         Label lblTitulo2 = new Label("TRABAJOS EN DESARROLLO");
-        lblTitulo1.getStyleClass().add("subtituloMenu");
-        lblTitulo2.getStyleClass().add("subtituloMenu");
+        lblTitulo1.getStyleClass().add("subtituloWhite");
+        lblTitulo2.getStyleClass().add("subtituloWhite");
 
         GridPane.setHalignment(lblTitulo1, javafx.geometry.HPos.CENTER);
         GridPane.setHalignment(lblTitulo2, javafx.geometry.HPos.CENTER);
@@ -157,7 +157,7 @@ public class MainApp extends Application {
 
     public static TableView<ordentrabajo> tablaOrdenesenDesarrollo(){
         TableView<ordentrabajo> tabla = new TableView<>();
-        TableColumn<ordentrabajo,Integer> colNumero = new TableColumn<>("Numero de Orden");
+        TableColumn<ordentrabajo,Integer> colNumero = new TableColumn<>("Número de Orden");
         TableColumn<ordentrabajo,String> colFecha = new TableColumn<>("Fecha Ingreso");
         TableColumn<ordentrabajo,String> colAuto = new TableColumn<>("Auto");
         TableColumn<ordentrabajo,String> colPatente = new TableColumn<>("Patente");
@@ -185,10 +185,11 @@ public class MainApp extends Application {
     }
     public static TableView<presupuesto> tablaPresupuestosDeuda(){
         TableView<presupuesto> tabla = new TableView<>();
-        TableColumn<presupuesto,Integer> colNumero = new TableColumn<>("Numero");
+        TableColumn<presupuesto,Integer> colNumero = new TableColumn<>("Número");
         TableColumn<presupuesto,LocalDate> colFecha = new TableColumn<>("Fecha");
         TableColumn<presupuesto,String> colCliente = new TableColumn<>("Cliente");
-        TableColumn<presupuesto,Float> colMonto = new TableColumn<>("Monto");
+        TableColumn<presupuesto,Float> colMonto = new TableColumn<>("Monto Total");
+        TableColumn<presupuesto,Float> colRestante = new TableColumn<>("Monto Restante");
 
         colNumero.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getNumero()));
         colFecha.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getFecha()));
@@ -198,7 +199,7 @@ public class MainApp extends Application {
         });
         colMonto.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getCostoTotal()));
 
-        tabla.getColumns().addAll(colNumero,colFecha,colCliente,colMonto);
+        tabla.getColumns().addAll(colNumero,colFecha,colCliente,colMonto, colRestante);
 
         presupuestoManager presuMan =  new presupuestoManager();
         List<presupuesto> debe = presuMan.obtenerDeudas();

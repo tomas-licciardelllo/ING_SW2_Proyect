@@ -101,7 +101,7 @@ public class OrdenPendienteScreen {
                     btnPdf.setGraphic(pdfLogo);
                     btnPdf.setTooltip(new Tooltip("Generar PDF"));
                 } catch (Exception e) {
-                    btnPdf.setText("PDF");
+                    btnPdf.setText("PDF/Desarrollo");
                 }
 
                 try {
@@ -115,15 +115,27 @@ public class OrdenPendienteScreen {
                     btnVer.setText("Ver");
                 }
 
+
                 btnPdf.setOnAction(event -> {
                     ordentrabajo orden = getTableView().getItems().get(getIndex());
+                    ordentrabajoManager ordenMan = new ordentrabajoManager();
                     generarPDF nuevo = new generarPDF();
                     nuevo.generarpdf(orden);
-                    Alert alerta = new Alert(Alert.AlertType.INFORMATION);
-                    alerta.setTitle("Éxito");
-                    alerta.setContentText("La orden de trabajo fue guardada correctamente.");
-                    alerta.showAndWait();
-                    stage.setScene(MainApp.mAppVolver(stage));
+                    //1 = Desarrollo
+                    if (ordenMan.actualizarOrden(orden, 1)) {
+                        Alert alerta = new Alert(Alert.AlertType.INFORMATION);
+                        alerta.setTitle("ÉXITO");
+                        alerta.setContentText("La orden de trabajo fue guardada y puesta en desarrollo de manera correcta!");
+                        alerta.showAndWait();
+                        stage.setScene(MainApp.mAppVolver(stage));
+                    }
+                    else{
+                        Alert alerta = new Alert(Alert.AlertType.ERROR);
+                        alerta.setTitle("ERROR");
+                        alerta.setContentText("Ocurrió un error y la orden de trabajo no fue guardada correctamente");
+                        alerta.showAndWait();
+                        stage.setScene(MainApp.mAppVolver(stage));
+                    }
                 });
 
                 btnVer.setOnAction(event -> {
