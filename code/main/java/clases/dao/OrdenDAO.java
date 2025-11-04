@@ -32,8 +32,11 @@ public class OrdenDAO implements dao<ordentrabajo> {
     @Override
     public int createAndGetID(ordentrabajo ordentrabajo) {
 
+        // Obtenemos el ID del presupuesto, que es nuestra clave de búsqueda
+        // Asegúrate de que getNumero() sea el ID. Si es getIdPresupuesto(), cámbialo.
         int presupuestoID = ordentrabajo.getPresupuesto().getNumero();
 
+        // 1. PRIMERO: Intentamos encontrar una orden existente para ese presupuesto
         String sqlSelect = "SELECT id FROM orden_trabajo WHERE pID = ?";
         String sqlUpdate = "UPDATE orden_trabajo SET fecha_inicio = ?, fecha_fin = ?, estado = ? WHERE id = ?";
         String sqlInsert = "INSERT INTO orden_trabajo (fecha_inicio, fecha_fin, estado, pID) VALUES (?, ?, ?, ?)";
@@ -41,7 +44,7 @@ public class OrdenDAO implements dao<ordentrabajo> {
         Connection conn = Conexion.getInstance().getConnection();
 
         try (PreparedStatement pstSelect = conn.prepareStatement(sqlSelect)) {
-            System.out.println("IDP " + presupuestoID);
+
             pstSelect.setInt(1, presupuestoID); // Buscamos por pID (parámetro 1)
 
             try (ResultSet rs = pstSelect.executeQuery()) {

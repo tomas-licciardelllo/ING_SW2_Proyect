@@ -431,12 +431,6 @@ public class PresupuestoScreen {
                 alerta.setContentText("¿El cliente acepta el presupuesto?");
                 Optional<ButtonType> respuesta = alerta.showAndWait();
 
-                /*
-                Alert alertaOrden = new Alert(Alert.AlertType.CONFIRMATION);
-                alertaOrden.setTitle("ORDEN DE TRABAJO");
-                alertaOrden.setContentText("¿Desea generar la Orden de Trabajo?");
-                Optional<ButtonType> resultado = alertaOrden.showAndWait();
-                */
                 if(respuesta.isPresent() && respuesta.get() == ButtonType.OK) {
                     cliente clienteDePrueba = clienteSeleccionado;
                     auto a = new auto(txtTipoAuto.getText(), txtPatenteAuto.getText(), Integer.parseInt(txtAnioAuto.getText()), txtMarcaAuto.getText(), txtModeloAuto.getText());
@@ -455,13 +449,16 @@ public class PresupuestoScreen {
                     //Guardamos la Orden con -1
                     ordentrabajo nueva = new ordentrabajo(ordentrabajo.Estado.Guardada, presu.getFecha(), LocalDate.now(), presu, t1);
                     ordenManager.generarOrdenDeTrabajo(nueva);
-                }
-                /*
-                if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
-                    new GenOrdenScreen(stage, presu,l,t);
-                } */
-                else {
-                    stage.setScene(MainApp.mAppVolver(stage));
+                    Alert alertaOrden = new Alert(Alert.AlertType.CONFIRMATION);
+                    alertaOrden.setTitle("ORDEN DE TRABAJO");
+                    alertaOrden.setContentText("¿Desea generar la Orden de Trabajo?");
+                    Optional<ButtonType> resultado = alertaOrden.showAndWait();
+                    if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
+                        new GenOrdenScreen(stage, presu,l,t);
+                    }
+                    else {
+                        stage.setScene(MainApp.mAppVolver(stage));
+                    }
                 }
             } catch (NumberFormatException ex) {
                 mostrarAlertaAux(Alert.AlertType.ERROR, "Error", "Datos Inválidos", "Revise que los campos numéricos (año, días, costo) sean correctos.");

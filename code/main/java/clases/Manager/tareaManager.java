@@ -1,6 +1,7 @@
 package clases.Manager;
 
 import clases.dao.OrdenDAO;
+import clases.dao.tareasDAO;
 import clases.model.tarea;
 
 import java.util.ArrayList;
@@ -13,6 +14,13 @@ public class tareaManager {
         OrdenDAO ordenDAO = new OrdenDAO();
         lista = ordenDAO.getAllTrabajos(idOrden);
         return lista;
+    }
+
+    public List<tarea> getTareasPorOrden(int id)
+    {
+        tareasDAO tD = new tareasDAO();
+        List<tarea> t = new ArrayList<>();
+        return t = tD.getTareasPorOrden(id);
     }
 
 }

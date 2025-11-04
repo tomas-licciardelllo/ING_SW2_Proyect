@@ -99,7 +99,6 @@ public class MostrarPresupuestoScreen {
                     presupuesto presupuestoActual = getTableRow().getItem();
                     if(presupuestoActual != null){
                         ordentrabajo orden = ordenManager.obtenerOrdenPorPresu(presupuestoActual.getNumero());
-                        System.out.println("ORDEN NUM:"+orden.getID()+ "ORDEN NUM: " +orden.getNumero());
                         Stage stage = (Stage) getTableView().getScene().getWindow();
                         if(orden != null && orden.getNumero() != -1){
                             mostrarOrden(orden, presupuestoActual);

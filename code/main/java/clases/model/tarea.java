@@ -3,6 +3,7 @@ package clases.model;
 import java.util.List;
 
 public class tarea {
+    private int id;
     private String descripcion;
     private List<ordentrabajo> ordenes;
     private empleado empleado;
@@ -17,6 +18,8 @@ public class tarea {
         this.descripcion = descripcion;
         this.empleado = empleado;
     }
+
+    public void setId(int id){this.id = id;}
 
     public tarea(String descripcion) {
         this.descripcion = descripcion;

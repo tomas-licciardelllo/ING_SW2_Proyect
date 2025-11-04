@@ -1,6 +1,7 @@
 package clases.gui;
 import clases.Manager.empleadoManager;
 import clases.Manager.ordentrabajoManager;
+import clases.Manager.tareaManager;
 import clases.dao.OrdenDAO;
 import clases.dao.empleadoDAO;
 import clases.model.*;
@@ -21,7 +22,11 @@ import java.util.List;
 import clases.control.generarPDF;
 import javafx.util.StringConverter;
 
+
 public class GenOrdenScreen {
+    private ordentrabajo ordenExistente;
+    private List<tarea> tareas;
+    private presupuesto presupuestoAprobado;
     public GenOrdenScreen(Stage stage, presupuesto presupuestoAprobado, int l,tarea ta){
         BorderPane root = new BorderPane();
         VBox panelCentral = new VBox(20);
@@ -29,7 +34,6 @@ public class GenOrdenScreen {
         panelCentral.setStyle("-fx-background-color: #E0E0E0; -fx-background-radius: 15;");
         panelCentral.setAlignment(Pos.TOP_CENTER);
         panelCentral.setMaxWidth(800);
-        List<tarea> tareas = new ArrayList<>();
 
         Label lblTitulo = new Label("ORDEN DE TRABAJO DEL PRESUPUESTO N°" + presupuestoAprobado.getNumero());
         lblTitulo.getStyleClass().add("titulo");
@@ -56,16 +60,17 @@ public class GenOrdenScreen {
         grid.add(lblFechaTitulo, 0, 2);
         grid.add(lblFecha, 1, 2);
 
-        String descPresu = "Tipo: "+presupuestoAprobado.getTipoTrabajo();
-        String capasPresu = "Capas: " + presupuestoAprobado.getTipoPintura();
-        tarea t1 = new tarea(descPresu);
-        tarea t2 = new tarea(capasPresu);
-        tareas.add(t1);
-        tareas.add(t2);
-        for (parte parte : presupuestoAprobado.getRepuestos()) {
-            String descripcion = parte.parteRepuesto();
-            tarea tareita = new tarea(descripcion);
-            tareas.add(tareita);
+
+        ordentrabajoManager manager = new ordentrabajoManager();
+        ordentrabajo ordenExistente = manager.obtenerOrdenPorPresu(presupuestoAprobado.getNumero());
+        this.ordenExistente = manager.obtenerOrdenPorPresu(presupuestoAprobado.getNumero());
+        if (this.ordenExistente != null) {
+            System.out.println("Cargando tareas existentes de la Orden ID: " + ordenExistente.getID());
+            tareaManager tDao = new tareaManager();
+            this.tareas = tDao.getTareasPorOrden(this.ordenExistente.getID());
+        } else {
+            System.out.println("Generando tareas nuevas desde el Presupuesto ID: " + presupuestoAprobado.getNumero());
+            this.tareas = manager.generarTareasDesdePresupuesto(presupuestoAprobado);
         }
 
         Label lblPartesTitulo = new Label("Tareas y Repuestos:");
@@ -128,6 +133,7 @@ public class GenOrdenScreen {
             }
 
             ordentrabajoManager ordenManager = new ordentrabajoManager();
+
             ordentrabajo nueva = new ordentrabajo(ordentrabajo.Estado.Pendiente, presupuestoAprobado.getFecha(), LocalDate.now(), presupuestoAprobado, tareas);
             if(nueva.getEstado() == ordentrabajo.Estado.Pendiente){
                 boolean exito = ordenManager.generarOrdenDeTrabajo(nueva);
