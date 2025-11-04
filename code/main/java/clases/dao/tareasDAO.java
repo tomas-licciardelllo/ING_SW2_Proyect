@@ -89,7 +89,60 @@ public class tareasDAO implements dao<tarea>{
         return tareas;
     }
 
-    //Necesito que me devuelva el ID
+    // En tareasDAO (necesito ver tu código, pero debería ser algo así)
+    public boolean actualizarEmpleado(tarea t) {
+        String sql = "UPDATE tareas SET empleadoCargo = ? WHERE descripcion = ?";
+
+        Connection conn = Conexion.getInstance().getConnection();
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setLong(1, t.getEmpleado().getDocumento());
+            pst.setString(2, t.getDescripcion());
+
+            int filasAfectadas = pst.executeUpdate();
+            return filasAfectadas > 0;
+
+        } catch (SQLException e) {
+            System.out.println("Error al actualizar empleado de tarea: " + e.getMessage());
+            return false;
+        }
+    }
+    /*
+    public List<tarea> getTareasPorOrden(int idOrden) {
+        List<tarea> tareas = new ArrayList<>();
+        String sql = """
+        SELECT 
+            t.id, t.descripcion, t.empleadoCargo 
+        FROM tareas t
+        JOIN trabajos j ON t.id = j.tareaRealizar
+        WHERE j.ordenPertenece = ?
+        """;
+        empleadoDAO empDAO = new empleadoDAO();
+        Connection conn = Conexion.getInstance().getConnection();
+
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setInt(1, idOrden);
+
+            try (ResultSet rs = pst.executeQuery()) {
+                while (rs.next()) {
+                    int idTarea = rs.getInt("id");
+                    String descripcion = rs.getString("descripcion");
+                    int idEmpleado = rs.getInt("empleadoCargo"); // Esto será 0 para "Reparación"
+                    tarea t = new tarea(descripcion);
+                    t.setId(idTarea);
+                    if (idEmpleado > 0) {
+                        empleado emp = empDAO.read(idEmpleado);
+                        t.setEmpleado(emp);
+                    }
+                    tareas.add(t);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al cargar tareas por orden: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return tareas;
+    }
+*/
     public int createAux(tarea tarea)throws SQLException {
         String sql = "INSERT INTO tareas (descripcion, empleadoCargo) VALUES (?, ?)";
         Connection conn = Conexion.getInstance().getConnection();

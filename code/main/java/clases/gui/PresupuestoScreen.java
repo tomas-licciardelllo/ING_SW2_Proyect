@@ -325,21 +325,15 @@ public class PresupuestoScreen {
                             .anyMatch(item -> item.equalsIgnoreCase(nombreLimpio));
 
                     if (!existe) {
-                        // Si no existe, la guardamos en la BD INMEDIATAMENTE
                         try {
-                            // Creamos una "plantilla" de parte (con 0 paños, sin cambio)
-                            // para guardarla en la base de datos.
                             parte parteTemplate = new parte(nombreLimpio, 0, false);
-
-                            // Usamos el manager para guardar esta nueva parte.
-                            pManager.insertarParte(parteTemplate); // <-- Guardado en BD
+                            pManager.insertarParte(parteTemplate);
 
                             // Si se guardó exitosamente, la añadimos al ComboBox
                             partes.getItems().add(nombreLimpio);
                             partes.setValue(nombreLimpio); // Seleccionar la nueva parte
 
                         } catch (Exception ex) {
-                            // Manejar un posible error si el manager no puede crear la parte sola
                             System.err.println("Error al guardar la nueva parte en la BD: " + ex.getMessage());
                             mostrarAlertaAux(Alert.AlertType.ERROR, "Error de Base de Datos", "No se pudo guardar la nueva parte.", "Revise la consola para más detalles.");
                         }
@@ -425,43 +419,52 @@ public class PresupuestoScreen {
             try {
                 float costoFinal = Float.parseFloat(txtCostoTotal.getText());
 
+                // 1. Confirmar que el cliente acepta el presupuesto
                 Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
                 alerta.setTitle("Confirmar Presupuesto");
                 alerta.setHeaderText("Precio Final: $" + String.format("%.2f", costoFinal));
                 alerta.setContentText("¿El cliente acepta el presupuesto?");
                 Optional<ButtonType> respuesta = alerta.showAndWait();
 
-                if(respuesta.isPresent() && respuesta.get() == ButtonType.OK) {
-                    cliente clienteDePrueba = clienteSeleccionado;
-                    auto a = new auto(txtTipoAuto.getText(), txtPatenteAuto.getText(), Integer.parseInt(txtAnioAuto.getText()), txtMarcaAuto.getText(), txtModeloAuto.getText());
-                    a.setCliente(clienteDePrueba);
-                    pago p = new pago(0);
-                    autoManager manager = new autoManager();
-                    int ida = manager.crearOtraerAutoXpatente(a);
-                    tarea t = new tarea(txtTipoTrabajo.getText());
-                    a.setIdBD(ida);
-                    presupuesto presu = new presupuesto(0, LocalDate.now(), new ArrayList<>(listaPartes), txtTipoTrabajo.getText(), cmbTipoPintura.getValue(), Integer.parseInt(txtDiasTrabajo.getText()), costoFinal, clienteSeleccionado, a, p);
-                    presupuestoManager managerPresupuesto = new presupuestoManager();
-                    int l = managerPresupuesto.crearYobtenerID(presu);
-                    presu.setNumero(l);
-                    ordentrabajoManager ordenManager = new ordentrabajoManager();
-                    List<tarea> t1 = ordenManager.generarTareasDesdePresupuesto(presu);
-                    //Guardamos la Orden con -1
-                    ordentrabajo nueva = new ordentrabajo(ordentrabajo.Estado.Guardada, presu.getFecha(), LocalDate.now(), presu, t1);
-                    ordenManager.generarOrdenDeTrabajo(nueva);
-                    Alert alertaOrden = new Alert(Alert.AlertType.CONFIRMATION);
-                    alertaOrden.setTitle("ORDEN DE TRABAJO");
-                    alertaOrden.setContentText("¿Desea generar la Orden de Trabajo?");
-                    Optional<ButtonType> resultado = alertaOrden.showAndWait();
-                    if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
-                        new GenOrdenScreen(stage, presu,l,t);
-                    }
-                    else {
-                        stage.setScene(MainApp.mAppVolver(stage));
-                    }
+                // Si el cliente NO acepta el presupuesto (presiona Cancel), no hacemos nada.
+                if (respuesta.isEmpty() || respuesta.get() != ButtonType.OK) {
+                    return;
+                }
+                auto a = new auto(txtTipoAuto.getText(), txtPatenteAuto.getText(), Integer.parseInt(txtAnioAuto.getText()), txtMarcaAuto.getText(), txtModeloAuto.getText());
+                a.setCliente(clienteSeleccionado);
+                pago p = new pago(0);
+                autoManager manager = new autoManager();
+                int ida = manager.crearOtraerAutoXpatente(a);
+                a.setIdBD(ida);
+
+                presupuesto presu = new presupuesto(0, LocalDate.now(), new ArrayList<>(listaPartes), txtTipoTrabajo.getText(), cmbTipoPintura.getValue(), Integer.parseInt(txtDiasTrabajo.getText()), costoFinal, clienteSeleccionado, a, p);
+
+                presupuestoManager managerPresupuesto = new presupuestoManager();
+                int l = managerPresupuesto.crearYobtenerID(presu);
+                presu.setNumero(l); // El presupuesto ya está guardado y tiene ID
+
+
+                // Preguntar si quiere generar la orden AHORA
+                Alert alertaOrden = new Alert(Alert.AlertType.CONFIRMATION);
+                alertaOrden.setTitle("ORDEN DE TRABAJO");
+                alertaOrden.setContentText("¿Desea asignar empleados y generar la Orden de Trabajo ahora?");
+                Optional<ButtonType> resultado = alertaOrden.showAndWait();
+                ordentrabajoManager ordenManager = new ordentrabajoManager();
+                List<tarea> tareasDeLaOrden = ordenManager.generarTareasDesdePresupuesto(presu);
+
+                ordentrabajo nuevaOrden;
+                if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
+                    nuevaOrden = new ordentrabajo(ordentrabajo.Estado.Guardada, LocalDate.now(), LocalDate.now(), presu, tareasDeLaOrden);
+                    ordenManager.generarOrdenDeTrabajo(nuevaOrden);
+                    new GenOrdenScreen(stage, presu, 0, null);
+
+                } else {
+                    nuevaOrden = new ordentrabajo(ordentrabajo.Estado.Guardada, LocalDate.now(), LocalDate.now(), presu, tareasDeLaOrden);
+                    ordenManager.generarOrdenDeTrabajo(nuevaOrden);
+                    stage.setScene(MainApp.mAppVolver(stage));
                 }
             } catch (NumberFormatException ex) {
-                mostrarAlertaAux(Alert.AlertType.ERROR, "Error", "Datos Inválidos", "Revise que los campos numéricos (año, días, costo) sean correctos.");
+                mostrarAlertaAux(Alert.AlertType.ERROR, "Error", "Datos Inválidos", "Revise que los campos numéricos...");
             }
         });
 

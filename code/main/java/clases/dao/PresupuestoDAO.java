@@ -46,14 +46,95 @@ public class PresupuestoDAO implements dao<presupuesto>{
     }
 
     @Override
-    public presupuesto read(int id){
-        //Prueba
-        auto a = new auto("auto", "aa22", 2025, "audi", "r8");
-        cliente c = new cliente("Juan Perez","111", new ArrayList<>(),  new ArrayList<>());
-        pago p = new pago(0);
-        List<parte> repuestos = new ArrayList<>();
-        presupuesto aux = new presupuesto(1, LocalDate.now(), repuestos, "aa", "nueva", 2, 222, c, a, p);
-        return  aux;
+    public presupuesto read(int idPresupuesto) {
+        presupuesto p = null; // El presupuesto que vamos a devolver
+        List<parte> listaDePartes = new ArrayList<>(); // 1. Crea la lista AFUERA
+
+        String sql = """
+    SELECT 
+    p.idPresupuesto, p.fecha, p.t_trabajo, p.t_pintura, p.d_chapa, p.costo_total,
+    c.id AS idCliente, c.nombre AS nombreCliente, c.telefono AS telCliente,
+    au.aID AS idAuto, au.tipo AS tipoAuto, au.patente AS patenteAuto, 
+    au.anio AS anioAuto, au.marca AS marcaAuto, au.modelo AS modeloAuto,
+    pa.nombre AS nombreParte, pa.paniopint AS panioPint, pa.cambio AS cambioParte
+    FROM presupuesto p
+    LEFT JOIN persona c ON p.id_cliente = c.id
+    LEFT JOIN auto au ON au.aID = p.id_auto
+    LEFT JOIN parte pa ON pa.idPresupuesto = p.idPresupuesto
+    WHERE p.idPresupuesto = ? 
+    """;
+
+        Connection conn = Conexion.getInstance().getConnection();
+
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setInt(1, idPresupuesto);
+            try (ResultSet rs = pst.executeQuery()) {
+
+                while (rs.next()) {
+
+                    // --- 2. Crear el Presupuesto (SÓLO 1 VEZ) ---
+                    if (p == null) {
+                        cliente c = new cliente(
+                                rs.getString("nombreCliente"),
+                                rs.getString("telCliente"),
+                                new ArrayList<>(),
+                                new ArrayList<>()
+                        );
+
+                        auto au = new auto(
+                                rs.getString("tipoAuto"),
+                                rs.getString("patenteAuto"),
+                                rs.getInt("anioAuto"),
+                                rs.getString("marcaAuto"),
+                                rs.getString("modeloAuto")
+                        );
+
+                        String fechaStr = rs.getString("fecha");
+                        LocalDate fecha = null;
+                        if (fechaStr != null && !fechaStr.isEmpty()) {
+                            try {
+                                fecha = LocalDate.parse(fechaStr);
+                            } catch (Exception e) {
+                                System.out.println("Fecha con formato inesperado: " + fechaStr);
+                            }
+                        }
+
+                        p = new presupuesto(
+                                rs.getInt("idPresupuesto"),
+                                fecha,
+                                listaDePartes,
+                                rs.getString("t_trabajo"),
+                                rs.getString("t_pintura"),
+                                rs.getInt("d_chapa"),
+                                rs.getFloat("costo_total"),
+                                c,
+                                au,
+                                null
+                        );
+                    }
+
+                    // --- 3. Añadir Repuestos (CADA VEZ) ---
+                    // ¡Este bloque está AFUERA del 'if (p == null)'!
+                    // Se ejecutará en cada fila que devuelva la BD.
+                    String nombreParte = rs.getString("nombreParte");
+                    if (nombreParte != null && !nombreParte.isEmpty()) {
+                        parte repuesto = new parte(
+                                nombreParte,
+                                rs.getFloat("panioPint"),
+                                parte.intToBoolean(rs.getInt("cambioParte"))
+                        );
+                        // Añadimos a la lista. Como 'p' tiene una referencia
+                        // a esta lista, 'p' se actualiza automáticamente.
+                        listaDePartes.add(repuesto);
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return p; // Devolvemos el 'p' (que ahora sí tiene la lista de repuestos completa)
     }
 
     @Override
@@ -74,63 +155,87 @@ public class PresupuestoDAO implements dao<presupuesto>{
         LEFT JOIN persona c ON p.id_cliente = c.id
         LEFT JOIN auto au ON au.aID = p.id_auto
         LEFT JOIN parte pa ON pa.idPresupuesto = p.idPresupuesto
+        ORDER BY p.idPresupuesto
         """;
 
-        Connection conn = Conexion.getInstance().getConnection(); try(
+        Connection conn = Conexion.getInstance().getConnection();
 
-             Statement stmt = conn.createStatement();
+        try (Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
+            presupuesto presupuestoActual = null;
+            List<parte> partesActuales = new ArrayList<>();
+            int idPresupuestoActual = -1;
+
             while (rs.next()) {
-                // Crear cliente directamente desde ResultSet
-                cliente c = new cliente(
-                        rs.getString("nombreCliente"),
-                        rs.getString("telCliente"),
-                        new ArrayList<>(),
-                        new ArrayList<>()
-                );
-                // Crear parte
-                List <parte> par = new ArrayList<>();
-                parte repuestosStr = new parte(
-                        rs.getString("nombreParte"),
-                        rs.getFloat("panioPint"),
-                        parte.intToBoolean(rs.getInt("cambioParte"))
-                );
-                par.add(repuestosStr);
-                //
-                auto au = new auto(
-                        rs.getString("tipoAuto"),
-                        rs.getString("patenteAuto"),
-                        rs.getInt("anioAuto"),
-                        rs.getString("marcaAuto"),
-                        rs.getString("modeloAuto")
-                );
-                // Arregla el problema de la fecha
-                String fechaStr = rs.getString("fecha");
-                LocalDate fecha = null;
-                if (fechaStr != null && !fechaStr.isEmpty()) {
-                    try {
-                        fecha = LocalDate.parse(fechaStr);
-                    } catch (Exception e) {
-                        System.out.println("Fecha con formato inesperado: " + fechaStr);
+                int idPresupuesto = rs.getInt("idPresupuesto");
+
+                // Si cambiamos de presupuesto, guardamos el anterior
+                if (idPresupuestoActual != -1 && idPresupuestoActual != idPresupuesto) {
+                    if (presupuestoActual != null) {
+                        lista.add(presupuestoActual);
                     }
+                    partesActuales = new ArrayList<>();
                 }
 
-                // Crear presupuesto
-                presupuesto p = new presupuesto(
-                        rs.getInt("idPresupuesto"),
-                        fecha,
-                        par,
-                        rs.getString("t_trabajo"),
-                        rs.getString("t_pintura"),
-                        rs.getInt("d_chapa"),
-                        rs.getFloat("costo_total"),
-                        c,
-                        au,
-                        null
-                );
+                // Si es un nuevo presupuesto o el primero
+                if (idPresupuestoActual != idPresupuesto) {
+                    cliente c = new cliente(
+                            rs.getString("nombreCliente"),
+                            rs.getString("telCliente"),
+                            new ArrayList<>(),
+                            new ArrayList<>()
+                    );
 
-                lista.add(p);
+                    auto au = new auto(
+                            rs.getString("tipoAuto"),
+                            rs.getString("patenteAuto"),
+                            rs.getInt("anioAuto"),
+                            rs.getString("marcaAuto"),
+                            rs.getString("modeloAuto")
+                    );
+
+                    String fechaStr = rs.getString("fecha");
+                    LocalDate fecha = null;
+                    if (fechaStr != null && !fechaStr.isEmpty()) {
+                        try {
+                            fecha = LocalDate.parse(fechaStr);
+                        } catch (Exception e) {
+                            System.out.println("Fecha con formato inesperado: " + fechaStr);
+                        }
+                    }
+
+                    presupuestoActual = new presupuesto(
+                            idPresupuesto,
+                            fecha,
+                            partesActuales,
+                            rs.getString("t_trabajo"),
+                            rs.getString("t_pintura"),
+                            rs.getInt("d_chapa"),
+                            rs.getFloat("costo_total"),
+                            c,
+                            au,
+                            null
+                    );
+
+                    idPresupuestoActual = idPresupuesto;
+                }
+
+                // Agregar la parte si existe
+                String nombreParte = rs.getString("nombreParte");
+                if (nombreParte != null && !nombreParte.isEmpty()) {
+                    parte p = new parte(
+                            nombreParte,
+                            rs.getFloat("panioPint"),
+                            parte.intToBoolean(rs.getInt("cambioParte"))
+                    );
+                    partesActuales.add(p);
+                }
+            }
+
+            // Agregar el último presupuesto
+            if (presupuestoActual != null) {
+                lista.add(presupuestoActual);
             }
 
         } catch (SQLException e) {

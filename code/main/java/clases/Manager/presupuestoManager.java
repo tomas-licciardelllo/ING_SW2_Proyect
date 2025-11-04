@@ -24,4 +24,11 @@ public class presupuestoManager {
         List<presupuesto> presupuestosImpagos = new ArrayList<>();
         return  presupuestosImpagos;
     }
+
+    public List<presupuesto> getAll()
+    {
+        List<presupuesto> lista = pres.getAll();
+        return lista;
+    }
+
 }

@@ -64,15 +64,14 @@ public class parte {
         return i==1;
     }
 
-    public String parteRepuesto(){
-        if (this.cambio){
-            String respuesta = "Cambio de " + this.nombre;
-            return respuesta;
+    // En la clase parte
+    public String parteRepuesto() {
+        if (this.nombre == null || this.nombre.isEmpty()) {
+            return null;
         }
-        else{
-            String respuesta = "Reparación de " + this.nombre;
-            return respuesta;
-        }
-    }
 
+        // Si cambio es true, es "Cambio de", si es false es "Reparación de"
+        String accion = this.cambio ? "Cambio de " : "Reparación de ";
+        return accion + this.nombre;
+    }
 }

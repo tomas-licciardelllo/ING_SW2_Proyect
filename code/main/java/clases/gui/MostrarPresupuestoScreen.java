@@ -31,11 +31,11 @@ public class MostrarPresupuestoScreen {
     public MostrarPresupuestoScreen(Stage stage) {
 
         // DAOs
-        PresupuestoDAO presupuestoDAO = new PresupuestoDAO();
+        presupuestoManager presu = new presupuestoManager();
         ordentrabajoManager ordenManager = new ordentrabajoManager();
 
         // Traer todos los presupuestos
-        List<presupuesto> listaPresupuesto = presupuestoDAO.getAll();
+        List<presupuesto> listaPresupuesto = presu.getAll();
         ObservableList<presupuesto> data = FXCollections.observableArrayList(listaPresupuesto);
 
         // Filtro y orden
@@ -97,19 +97,20 @@ public class MostrarPresupuestoScreen {
 
                 generar.setOnAction(e -> {
                     presupuesto presupuestoActual = getTableRow().getItem();
-                    if(presupuestoActual != null){
+                    if(presupuestoActual != null) {
                         ordentrabajo orden = ordenManager.obtenerOrdenPorPresu(presupuestoActual.getNumero());
                         Stage stage = (Stage) getTableView().getScene().getWindow();
-                        if(orden != null && orden.getNumero() != -1){
+
+                        if (orden != null && orden.getNumero() != -1) {
                             mostrarOrden(orden, presupuestoActual);
-                        }
-                        else{
+                        } else {
                             Alert alertaOrden = new Alert(Alert.AlertType.CONFIRMATION);
                             alertaOrden.setTitle("ORDEN DE TRABAJO");
                             alertaOrden.setContentText("¿Desea generar la Orden de Trabajo?");
                             Optional<ButtonType> resultado = alertaOrden.showAndWait();
                             if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
                                 tarea t = new tarea(presupuestoActual.getTipoTrabajo().toString());
+                                System.out.println(presupuestoActual.getRepuestos());
                                 GenOrdenScreen genOrdenScreen = new GenOrdenScreen(stage, presupuestoActual, presupuestoActual.getNumero(), t);
                             }
                         }

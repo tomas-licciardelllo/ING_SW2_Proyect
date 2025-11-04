@@ -17,14 +17,37 @@ public class ordentrabajoManager {
     }
 
     public boolean generarOrdenDeTrabajo(ordentrabajo orden) {
-        try{
-            int idOrden = ordenDAO.createAndGetID(orden);
-            for(tarea tarea : orden.getTareas()){
-                int idTarea = tareasDAO.createAux(tarea);
-                tareasDAO.createTrabajo(idOrden, idTarea);
+        OrdenDAO ord = new OrdenDAO();
+        try {
+            ordentrabajo ordenExistente = obtenerOrdenPorPresu(orden.getPresupuesto().getNumero());
+            int idOrden;
+
+            if (ordenExistente != null) {
+                idOrden = ordenExistente.getID();
+                // Solo actualizar el estado y fechas
+                boolean actualizado = ord.updateEstado(idOrden, orden.getEstado());
+                if (!actualizado) {
+                    return false;
+                }
+                for (tarea tareaConEmpleado : orden.getTareas()) {
+                    tareasDAO.actualizarEmpleado(tareaConEmpleado);
+                }
+
+            } else {
+                idOrden = ordenDAO.createAndGetID(orden);
+
+                if (idOrden == -1) {
+                    return false;
+                }
+                for (tarea tarea : orden.getTareas()) {
+                    int idTarea = tareasDAO.createAux(tarea);
+                    if (idTarea != -1) {
+                        tareasDAO.createTrabajo(idOrden, idTarea);
+                    }
+                }
             }
             return true;
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
