@@ -19,9 +19,11 @@ public class presupuestoManager {
     }
 
     public List<presupuesto> obtenerDeudas(){
-        //Aca llamamos al DAO y le ponemos
-        //el método para obtener los que deben
         List<presupuesto> presupuestosImpagos = new ArrayList<>();
         return  presupuestosImpagos;
+    }
+
+    public List<presupuesto> obtenerTodos(){
+        return pres.getAll();
     }
 }

@@ -163,12 +163,16 @@ public class VehiculosScreen {
         pantalla.setMaxSize(600,400);
         pantalla.setSpacing(10);
         pantalla.setAlignment(Pos.CENTER);
+        pantalla.setStyle("-fx-background-color: -fx-celeste;");
 
         Label marca = new Label("Marca");
         Label modelo= new Label("Modelo");
         Label anio = new Label("Año");
         Label  patente = new Label("Patente");
-
+        marca.getStyleClass().add("fuenteWhite");
+        modelo.getStyleClass().add("fuenteWhite");
+        anio.getStyleClass().add("fuenteWhite");
+        patente.getStyleClass().add("fuenteWhite");
 
         TextField marcaField = new TextField(auxAuto.getMarca());
         TextField modeloField = new TextField(auxAuto.getModelo());
@@ -176,9 +180,9 @@ public class VehiculosScreen {
         TextField patenteField = new TextField(auxAuto.getPatente());
 
         Button btnGuardar = new Button("Modificar");
+        btnGuardar.getStyleClass().add("botonNormal");
         Button btnCancelar = new Button("Cancelar");
-        btnGuardar.setStyle("-fx-cursor: hand;");
-        btnCancelar.setStyle("-fx-cursor: hand;");
+        btnCancelar.getStyleClass().add("botonEliminar");
         btnCancelar.setOnAction(e->{
             root.setTop(anterior);
             root.setCenter(pantallaant);
@@ -191,14 +195,13 @@ public class VehiculosScreen {
 
         acciones.setAlignment(Pos.CENTER);
         pantalla.getChildren().addAll(marca,marcaField,modelo,modeloField, anio,anioField,patente,patenteField, acciones);
-        pantalla.getStyleClass().add("formulario");
+        pantalla.getStyleClass().add("formularioAz");
 
         btnGuardar.setOnAction(e->{
             auxAuto.setMarca(marcaField.getText());
             auxAuto.setModelo(modeloField.getText());
             auxAuto.setAnio(Integer.parseInt(anioField.getText()));
             auxAuto.setPatente(patenteField.getText());
-            System.out.println(auxAuto.toString());
             mgr.actualizarAuto(auxAuto);
         });
         return pantalla;

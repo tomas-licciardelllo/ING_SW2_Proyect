@@ -3,7 +3,6 @@ package clases.gui;
 import clases.Manager.ordentrabajoManager;
 import clases.Manager.presupuestoManager;
 import clases.Manager.tareaManager;
-import clases.dao.PresupuestoDAO;
 import clases.model.*;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -19,7 +18,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.List;
@@ -30,12 +28,13 @@ public class MostrarPresupuestoScreen {
 
     public MostrarPresupuestoScreen(Stage stage) {
 
-        // DAOs
-        PresupuestoDAO presupuestoDAO = new PresupuestoDAO();
+        // DAO
+        presupuestoManager presupuestoMan = new presupuestoManager();
         ordentrabajoManager ordenManager = new ordentrabajoManager();
 
         // Traer todos los presupuestos
-        List<presupuesto> listaPresupuesto = presupuestoDAO.getAll();
+
+        List<presupuesto> listaPresupuesto = presupuestoMan.obtenerTodos();
         ObservableList<presupuesto> data = FXCollections.observableArrayList(listaPresupuesto);
 
         // Filtro y orden
@@ -98,10 +97,10 @@ public class MostrarPresupuestoScreen {
                 generar.setOnAction(e -> {
                     presupuesto presupuestoActual = getTableRow().getItem();
                     if(presupuestoActual != null){
+                        System.out.println(presupuestoActual.getNumero());
                         ordentrabajo orden = ordenManager.obtenerOrdenPorPresu(presupuestoActual.getNumero());
-                        System.out.println("ORDEN NUM:"+orden.getID()+ "ORDEN NUM: " +orden.getNumero());
                         Stage stage = (Stage) getTableView().getScene().getWindow();
-                        if(orden != null && orden.getNumero() != -1){
+                        if(orden != null && orden.getEstado() != ordentrabajo.Estado.Guardada){
                             mostrarOrden(orden, presupuestoActual);
                         }
                         else{
@@ -110,8 +109,10 @@ public class MostrarPresupuestoScreen {
                             alertaOrden.setContentText("¿Desea generar la Orden de Trabajo?");
                             Optional<ButtonType> resultado = alertaOrden.showAndWait();
                             if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
-                                tarea t = new tarea(presupuestoActual.getTipoTrabajo().toString());
-                                GenOrdenScreen genOrdenScreen = new GenOrdenScreen(stage, presupuestoActual, presupuestoActual.getNumero(), t);
+                                if(orden.getPresupuesto() == null){
+                                    orden.setPresupuesto(presupuestoActual);
+                                }
+                                GenOrdenScreen genOrdenScreen = new GenOrdenScreen(stage, orden, presupuestoActual.getIdPresupuesto());
                             }
                         }
                     }

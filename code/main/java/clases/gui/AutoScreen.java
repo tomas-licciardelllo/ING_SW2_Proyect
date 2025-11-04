@@ -1,9 +1,7 @@
 package clases.gui;
 
-import clases.dao.AutoDAO;
-import clases.dao.ClienteDAO;
+import clases.Manager.autoManager;
 import clases.model.auto;
-import clases.model.cliente;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
@@ -17,15 +15,14 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import org.w3c.dom.Text;
 
 import java.awt.*;
 import java.util.List;
 
 public class AutoScreen {
     public AutoScreen(Stage stage){
-        AutoDAO autoDAO = new AutoDAO();
-        List<auto> listaAuto = autoDAO.getAll();
+        autoManager autoManager = new autoManager();
+        List<auto> listaAuto = autoManager.getAll();
         ObservableList<auto> data = FXCollections.observableArrayList(listaAuto);
         VBox formulario = new VBox(10);
         formulario.setMinSize(300, 200);
@@ -115,8 +112,8 @@ public class AutoScreen {
     private VBox ModificarAuto(BorderPane root, int idAutoBuscado, HBox anterior, VBox pantallaant){
         Node aux = root.getTop();
         root.setTop(null);
-        AutoDAO au = new AutoDAO();
-        auto auxAuto = au.read(idAutoBuscado);
+        autoManager autoMan = new autoManager();
+        auto auxAuto = autoMan.traerAutoId(idAutoBuscado);
         VBox pantalla = new VBox();
         pantalla.setMinSize(300,200);
         pantalla.setMaxSize(600,400);
@@ -157,7 +154,7 @@ public class AutoScreen {
             auxAuto.setModelo(modeloField.getText());
             auxAuto.setAnio(Integer.parseInt(anioField.getText()));
             auxAuto.setPatente(patenteField.getText());
-            au.update(auxAuto);
+            autoMan.actualizarAuto(auxAuto);
         });
         return pantalla;
     }

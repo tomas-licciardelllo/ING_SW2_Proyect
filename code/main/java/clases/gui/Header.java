@@ -1,6 +1,6 @@
 package clases.gui;
 
-import clases.dao.OrdenDAO;
+import clases.Manager.ordentrabajoManager;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -85,15 +85,15 @@ public class Header {
         btnOrdenes.getStyleClass().add("botonHeader");
 
         ContextMenu ordenContexto = new ContextMenu();
-        MenuItem mostrarOrdenes = new MenuItem("Mostrar Todas");
+        MenuItem mostrarOrdenes = new MenuItem("Mostrar");
         mostrarOrdenes.setOnAction(e -> {
             new OrdenScreen(stage);
         });
 
-        MenuItem pendientesOrdenes = new MenuItem("Ver Pendientes");
+        MenuItem pendientesOrdenes = new MenuItem("Pendientes");
         pendientesOrdenes.setOnAction(e -> {
-            OrdenDAO ordenDAO = new OrdenDAO();
-            if(ordenDAO.getAll().isEmpty()){
+            ordentrabajoManager ordenMan = new ordentrabajoManager();
+            if(ordenMan.obtenerTodas().isEmpty()){
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Atención!");
                 alert.setHeaderText("No hay ninguna Orden de Trabajo Registrada por el momento!");
@@ -121,9 +121,8 @@ public class Header {
         Button btnFacturas = new Button("Facturas");
         btnFacturas.getStyleClass().add("botonHeader");
         btnFacturas.setOnAction(e -> {
-            Alert alerta =  new Alert(Alert.AlertType.INFORMATION);
-            alerta.setTitle("FACTURACIÓN!");
-            alerta.setContentText("Servicio en Mantenimiento");
+            Mensajes mensajes = new Mensajes();
+            mensajes.alertaInformación("FACTURACIÓN!", "Por el momento el servicio de facturación no se encuentra disponible", "Servicio en Mantenimiento");
         });
 
         Button btnEmpleados = new Button("Empleados");

@@ -33,7 +33,6 @@ public class ordentrabajoManager {
     public List<tarea> generarTareasDesdePresupuesto(presupuesto p) {
         List<tarea> tareas = new ArrayList<>();
 
-        // Esta es la MISMA lógica que tenías en GenOrdenScreen
         String descPresu = "Tipo: " + p.getTipoTrabajo();
         String capasPresu = "Capas: " + p.getTipoPintura();
         tareas.add(new tarea(descPresu));
@@ -45,6 +44,10 @@ public class ordentrabajoManager {
             tareas.add(tareita);
         }
         return tareas;
+    }
+    public List<ordentrabajo> obtenerTodas(){
+        OrdenDAO ordencita = new  OrdenDAO();
+        return ordencita.getAll();
     }
 
     public List<ordentrabajo> obtenerPendientes(){
@@ -73,5 +76,15 @@ public class ordentrabajoManager {
         else{
             return false;
         }
+    }
+
+    public List<tarea> obtenerTareas(ordentrabajo orden) {
+        List<tarea> tareas = new ArrayList<>();
+        OrdenDAO ordenDAO = new OrdenDAO();
+        tareas = ordenDAO.getAllTrabajos(orden.getID());
+        if(!tareas.isEmpty()) {
+            return tareas;
+        }
+        else return null;
     }
 }

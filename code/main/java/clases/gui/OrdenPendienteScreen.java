@@ -3,11 +3,9 @@ package clases.gui;
 import clases.Manager.ordentrabajoManager;
 import clases.Manager.tareaManager;
 import clases.control.generarPDF;
-import clases.model.auto;
 import clases.model.tarea;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -18,18 +16,12 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import clases.dao.OrdenDAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Screen;
-import javafx.stage.Stage;
 import clases.model.ordentrabajo;
-import clases.model.presupuesto;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,8 +36,11 @@ public class OrdenPendienteScreen {
 
         VBox principal = new VBox(10);
         principal.setPadding(new Insets(15));
+        principal.getStyleClass().add("fondoSubMenu");
         Label lblTitulo = new Label("Listado de Ordenes de Trabajo Pendientes");
-        lblTitulo.setStyle("-fx-font-size: 25; -fx-font-weight: bold");
+        lblTitulo.getStyleClass().add("titulo");
+        lblTitulo.setAlignment(Pos.CENTER);
+        lblTitulo.setMaxWidth(Double.MAX_VALUE);
 
         HBox panelSup =  new HBox(10);
         panelSup.setAlignment(Pos.CENTER);
@@ -186,6 +181,7 @@ public class OrdenPendienteScreen {
         HBox panelInferior = new HBox();
         panelInferior.setPadding(new Insets(10, 0, 0, 0));
         Button btnVolver = new Button("Volver");
+        btnVolver.getStyleClass().add("botonNormal");
         btnVolver.setOnAction(event -> {
             stage.setScene(MainApp.mAppVolver(stage));
         });

@@ -47,13 +47,50 @@ public class PresupuestoDAO implements dao<presupuesto>{
 
     @Override
     public presupuesto read(int id){
-        //Prueba
-        auto a = new auto("auto", "aa22", 2025, "audi", "r8");
-        cliente c = new cliente("Juan Perez","111", new ArrayList<>(),  new ArrayList<>());
-        pago p = new pago(0);
-        List<parte> repuestos = new ArrayList<>();
-        presupuesto aux = new presupuesto(1, LocalDate.now(), repuestos, "aa", "nueva", 2, 222, c, a, p);
-        return  aux;
+        ClienteDAO clienteDAO = new ClienteDAO();
+        AutoDAO autoDAO = new AutoDAO();
+        String sql = "SELECT * FROM presupuesto WHERE idPresupuesto = ?";
+        Connection conn = Conexion.getInstance().getConnection();
+        presupuesto presupuestoRta = null;
+
+        try(PreparedStatement pst = conn.prepareStatement(sql)){
+            pst.setInt(1,id);
+            try(ResultSet rs = pst.executeQuery()){
+                if(rs.next()){
+                    int idPresupuesto = rs.getInt("idPresupuesto");
+                    LocalDate fecha = rs.getObject("fecha", LocalDate.class);
+                    String t_trabajo = rs.getString("t_trabajo");
+                    String t_pintura = rs.getString("t_pintura");
+                    int d_chapa = Integer.parseInt(rs.getString("d_chapa"));
+                    float costo_total = rs.getFloat("costo_total");
+
+                    int id_cliente = rs.getInt("id_cliente");
+                    int id_auto = rs.getInt("id_auto");
+                    cliente c =  clienteDAO.read(id_cliente);
+                    auto a = autoDAO.read(id_auto);
+
+                    //Vacía AUXILIAR
+                    List<parte> repuestos = new ArrayList<>();
+                    pago p = new pago(0);
+                    presupuestoRta = new presupuesto(
+                            idPresupuesto,
+                            fecha,
+                            repuestos,
+                            t_trabajo,
+                            t_pintura,
+                            d_chapa,
+                            costo_total,
+                            c,
+                            a,
+                            p
+                    );
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error al leer el presupuesto con id " + id + ": " + e.getMessage());
+            e.printStackTrace();
+        }
+        return presupuestoRta;
     }
 
     @Override

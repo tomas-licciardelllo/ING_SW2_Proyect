@@ -15,7 +15,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
@@ -34,8 +33,7 @@ public class PresupuestoScreen {
 
     public PresupuestoScreen(Stage stage) {
 
-        double anchoPantalla = Screen.getPrimary().getBounds().getWidth();
-        double altoPantalla = Screen.getPrimary().getBounds().getHeight();
+        Mensajes mensajes = new Mensajes();
 
         // Estilo para los paneles, simulando "tarjetas"
         String cardStyle = "-fx-background-color: #FFFFFF; " +
@@ -88,7 +86,7 @@ public class PresupuestoScreen {
         ComboBox<auto> cmbAutosCliente = new ComboBox<>();
         cmbAutosCliente.setPromptText("Seleccionar vehículo");
         cmbAutosCliente.setPrefWidth(200);
-        Button btnNuevoVehiculo = new Button("Ingresar Vehículo Nuevo");
+        Button btnNuevoVehiculo = new Button("Limpiar / Ingresar Vehículo Nuevo");
         btnNuevoVehiculo.setStyle("-fx-background-color: -fx-azul; -fx-text-fill: white;");
 
 
@@ -430,13 +428,6 @@ public class PresupuestoScreen {
                 alerta.setHeaderText("Precio Final: $" + String.format("%.2f", costoFinal));
                 alerta.setContentText("¿El cliente acepta el presupuesto?");
                 Optional<ButtonType> respuesta = alerta.showAndWait();
-
-                /*
-                Alert alertaOrden = new Alert(Alert.AlertType.CONFIRMATION);
-                alertaOrden.setTitle("ORDEN DE TRABAJO");
-                alertaOrden.setContentText("¿Desea generar la Orden de Trabajo?");
-                Optional<ButtonType> resultado = alertaOrden.showAndWait();
-                */
                 if(respuesta.isPresent() && respuesta.get() == ButtonType.OK) {
                     cliente clienteDePrueba = clienteSeleccionado;
                     auto a = new auto(txtTipoAuto.getText(), txtPatenteAuto.getText(), Integer.parseInt(txtAnioAuto.getText()), txtMarcaAuto.getText(), txtModeloAuto.getText());
@@ -452,9 +443,11 @@ public class PresupuestoScreen {
                     presu.setNumero(l);
                     ordentrabajoManager ordenManager = new ordentrabajoManager();
                     List<tarea> t1 = ordenManager.generarTareasDesdePresupuesto(presu);
-                    //Guardamos la Orden con -1
+                    //Guardamos la Orden con -1 para no perder las tareas
                     ordentrabajo nueva = new ordentrabajo(ordentrabajo.Estado.Guardada, presu.getFecha(), LocalDate.now(), presu, t1);
                     ordenManager.generarOrdenDeTrabajo(nueva);
+                    mensajes.alertaInformación("EXITO", "", "El Presupuesto fue Generado y Guardado con Éxito");
+                    stage.setScene(MainApp.mAppVolver(stage));
                 }
                 /*
                 if (resultado.isPresent() && resultado.get() == ButtonType.OK) {

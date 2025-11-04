@@ -1,37 +1,31 @@
 package clases.gui;
 import clases.Manager.empleadoManager;
 import clases.Manager.ordentrabajoManager;
-import clases.dao.OrdenDAO;
-import clases.dao.empleadoDAO;
 import clases.model.*;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import clases.control.generarPDF;
 import javafx.util.StringConverter;
 
 public class GenOrdenScreen {
-    public GenOrdenScreen(Stage stage, presupuesto presupuestoAprobado, int l,tarea ta){
+    public GenOrdenScreen(Stage stage, ordentrabajo ordenTrabajo, int l){
+        Mensajes mensaje = new Mensajes();
         BorderPane root = new BorderPane();
         VBox panelCentral = new VBox(20);
+        panelCentral.getStyleClass().add("fondoSubMenu");
         panelCentral.setPadding(new Insets(25));
         panelCentral.setStyle("-fx-background-color: #E0E0E0; -fx-background-radius: 15;");
         panelCentral.setAlignment(Pos.TOP_CENTER);
         panelCentral.setMaxWidth(800);
-        List<tarea> tareas = new ArrayList<>();
+        ordentrabajoManager ordenManager = new ordentrabajoManager();
+        List<tarea> tareas = ordenManager.obtenerTareas(ordenTrabajo);
 
-        Label lblTitulo = new Label("ORDEN DE TRABAJO DEL PRESUPUESTO N°" + presupuestoAprobado.getNumero());
+        Label lblTitulo = new Label("ORDEN DE TRABAJO DEL PRESUPUESTO N°" + ordenTrabajo.getPresupuesto().getNumero());
         lblTitulo.getStyleClass().add("titulo");
 
         GridPane grid = new GridPane();
@@ -39,34 +33,22 @@ public class GenOrdenScreen {
         grid.setVgap(10);
 
         Label lblClienteTitulo = new Label("Cliente:");
-        lblClienteTitulo.setStyle("-fx-font-weight: bold;");
-        Label lblClienteDato = new Label(presupuestoAprobado.getCliente().getNombre());
+        lblClienteTitulo.getStyleClass().add("subtitulo");
+        Label lblClienteDato = new Label(ordenTrabajo.getPresupuesto().getCliente().getNombre());
         grid.add(lblClienteTitulo, 0, 0);
         grid.add(lblClienteDato, 1, 0);
 
         Label lblAutoTitulo = new Label("Vehículo:");
-        lblAutoTitulo.setStyle("-fx-font-weight: bold;");
-        Label lblAutoDato = new Label(presupuestoAprobado.getAuto().getMarca() + " " + presupuestoAprobado.getAuto().getModelo());
+        lblAutoTitulo.getStyleClass().add("subtitulo");
+        Label lblAutoDato = new Label(ordenTrabajo.getPresupuesto().getAuto().getMarca() + " " + ordenTrabajo.getPresupuesto().getAuto().getModelo());
         grid.add(lblAutoTitulo, 0, 1);
         grid.add(lblAutoDato, 1, 1);
 
         Label lblFechaTitulo = new Label("Fecha:");
-        lblFechaTitulo.setStyle("-fx-font-weight: bold;");
-        Label lblFecha = new Label(presupuestoAprobado.getFecha().toString());
+        lblFechaTitulo.getStyleClass().add("subtitulo");
+        Label lblFecha = new Label(ordenTrabajo.getPresupuesto().getFecha().toString());
         grid.add(lblFechaTitulo, 0, 2);
         grid.add(lblFecha, 1, 2);
-
-        String descPresu = "Tipo: "+presupuestoAprobado.getTipoTrabajo();
-        String capasPresu = "Capas: " + presupuestoAprobado.getTipoPintura();
-        tarea t1 = new tarea(descPresu);
-        tarea t2 = new tarea(capasPresu);
-        tareas.add(t1);
-        tareas.add(t2);
-        for (parte parte : presupuestoAprobado.getRepuestos()) {
-            String descripcion = parte.parteRepuesto();
-            tarea tareita = new tarea(descripcion);
-            tareas.add(tareita);
-        }
 
         Label lblPartesTitulo = new Label("Tareas y Repuestos:");
         lblPartesTitulo.getStyleClass().add("subtitulo");
@@ -105,8 +87,8 @@ public class GenOrdenScreen {
 
         Button btnConfirmar = new Button("Confirmar");
         Button btnCancelar = new Button("Cancelar");
-        btnConfirmar.getStyleClass().add("BotonNormal");
-        btnCancelar.getStyleClass().add("BotonNormal");
+        btnConfirmar.getStyleClass().add("botonNormal");
+        btnCancelar.getStyleClass().add("botonNormal");
         HBox panelBotones = new HBox(15, btnConfirmar, btnCancelar);
         panelBotones.setAlignment(Pos.CENTER);
 
@@ -119,49 +101,26 @@ public class GenOrdenScreen {
                 }
             }
             if (!auxiliar) {
-                Alert alerta = new Alert(Alert.AlertType.WARNING);
-                alerta.setTitle("Atención");
-                alerta.setHeaderText("Faltan empleados por asignar");
-                alerta.setContentText("Por favor, asigne a TODAS las tareas un empleado");
-                alerta.showAndWait();
+                mensaje.alertaInformación("ATENCIÓN", "Por favor, asigne a TODAS las tareas un empleado a Cargo", "Faltan Empleados por Asignar");
                 return;
             }
 
-            ordentrabajoManager ordenManager = new ordentrabajoManager();
-            ordentrabajo nueva = new ordentrabajo(ordentrabajo.Estado.Pendiente, presupuestoAprobado.getFecha(), LocalDate.now(), presupuestoAprobado, tareas);
-            if(nueva.getEstado() == ordentrabajo.Estado.Pendiente){
-                boolean exito = ordenManager.generarOrdenDeTrabajo(nueva);
-                if(exito) {
+            ordenManager.actualizarOrden(ordenTrabajo, 0);
+            if(ordenTrabajo.getEstado() == ordentrabajo.Estado.Pendiente){
                     generarPDF aux = new generarPDF();
-                    aux.generarpdf(nueva);
-                    Alert alerta = new Alert(Alert.AlertType.INFORMATION);
-                    alerta.setTitle("Éxito");
-                    alerta.setContentText("La orden de trabajo fue generada correctamente.");
-                    alerta.showAndWait();
+                    aux.generarpdf(ordenTrabajo);
+                    mensaje.alertaInformación("ÉXITO", "La orden de Trabajo fue generada Correctamente", "");
                     stage.setScene(MainApp.mAppVolver(stage));
-                }
-                else{
-                    Alert alerta = new Alert(Alert.AlertType.ERROR);
-                    alerta.setTitle("ERROR!");
-                    alerta.setContentText("Hubo un problema al Cargar la Orden de Trabajo. Regresando al Menú...");
-                    alerta.showAndWait();
-                    stage.setScene(MainApp.mAppVolver(stage));
-                }
+
             }
             else{
-                Alert alerta = new Alert(Alert.AlertType.ERROR);
-                alerta.setTitle("ERROR!");
-                alerta.setContentText("Hubo un problema al Cargar la Orden de Trabajo. Regresando al Menú...");
-                alerta.showAndWait();
+                mensaje.alertaError("ERROR", "Hubo un problema al generar la Orden de Trabajo, regresando al Menú...", "");
                 stage.setScene(MainApp.mAppVolver(stage));
             }
         });
 
         btnCancelar.setOnAction(e -> {
-            Alert alerta = new Alert(Alert.AlertType.INFORMATION);
-            alerta.setTitle("Cancelada!");
-            alerta.setContentText("La orden de trabajo fue cancelada con éxito.");
-            alerta.showAndWait();
+            mensaje.alertaInformación("CANCELADA", "La orden de Trabajo fue cancelada Correctamente", "");
             stage.setScene(MainApp.mAppVolver(stage));
         });
 
