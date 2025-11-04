@@ -19,6 +19,8 @@ public class ordentrabajoManager {
     public boolean generarOrdenDeTrabajo(ordentrabajo orden) {
         try{
             int idOrden = ordenDAO.createAndGetID(orden);
+
+            tareasDAO.deleteAllTrabajosByOrdenID(idOrden);
             for(tarea tarea : orden.getTareas()){
                 int idTarea = tareasDAO.createAux(tarea);
                 tareasDAO.createTrabajo(idOrden, idTarea);

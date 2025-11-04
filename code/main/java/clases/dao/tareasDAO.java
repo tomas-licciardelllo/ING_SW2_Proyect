@@ -124,5 +124,18 @@ public class tareasDAO implements dao<tarea>{
             pst.executeUpdate();
         }
     }
-    
+
+    public boolean deleteAllTrabajosByOrdenID(int idOrden) {
+        String sql = "DELETE FROM trabajos WHERE ordenPertenece = ?";
+        Connection conn = Conexion.getInstance().getConnection();
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setInt(1, idOrden);
+            pst.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.out.println("Error al limpiar trabajos antiguos: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
