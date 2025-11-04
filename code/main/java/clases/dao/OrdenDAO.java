@@ -123,32 +123,6 @@ public class OrdenDAO implements dao<ordentrabajo> {
 
     @Override
     public List<ordentrabajo> getAll() {
-        /*
-        List<ordentrabajo> lista = new ArrayList<>();
-        String sql = "SELECT id,fecha_inicio,fecha_fin, estado, pID FROM orden_trabajo";
-        Connection conn = Conexion.getInstance().getConnection();
-        try(Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
-            while (rs.next()) {
-                int estadoNum = rs.getInt("estado");
-                ordentrabajo.Estado estado = ordentrabajo.Estado.fromInt(estadoNum);
-                int presupuestoId = rs.getInt("pID");
-                presupuesto p = new PresupuestoDAO().read(presupuestoId);
-                List<tarea> tareas = getAllTrabajos(rs.getInt("id"));
-                lista.add(new ordentrabajo(
-                                rs.getInt("id"),
-                                estado,
-                                LocalDate.parse(rs.getString("fecha_inicio")),
-                                LocalDate.parse(rs.getString("fecha_fin")),
-                                p,
-                                tareas
-                        )
-                );
-            }
-        } catch (SQLException e) {
-            System.out.println("Error al obtener las ordenes de trabajo: " + e.getMessage());
-        }
-
-        return lista;*/
         List<ordentrabajo> lista = new ArrayList<>();
         String sql = "SELECT id,fecha_inicio,fecha_fin, estado, pID FROM orden_trabajo";
         Connection conn = Conexion.getInstance().getConnection();

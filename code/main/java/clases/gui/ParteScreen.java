@@ -112,6 +112,11 @@ public class ParteScreen {
             // Llama al formulario en modo "Agregar" (pasando null)
             VBox formulario = crearFormularioParte(stage, root, panelTabla, null);
             root.setCenter(formulario);
+            Mensajes mensajes = new Mensajes();
+            mensajes.alertaInformación("EXITO", "La Parte fue agregada con Exito", "NNN");
+            mensajes.alertaConfirmación("CONFIRME", "NNN", "ASDASD");
+            mensajes.alertaError("ERROR", "NNN", "ASDASD");
+
         });
 
         // Acción Modificar
