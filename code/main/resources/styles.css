@@ -391,3 +391,66 @@
     .dialog-pane .cancel-button:hover {
         -fx-background-color: #E53935;
     }
+
+
+    .panel-contenido-flotante {
+        -fx-background-color: white;
+        -fx-background-radius: 12px;
+        -fx-border-radius: 12px;
+        -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 20, 0, 0, 5);
+    }
+
+    .fila-tarea {
+        -fx-background-color: -fx-celeste;
+        -fx-padding: 8px;
+        -fx-background-radius: 8px;
+        -fx-border-radius: 8px;
+    }
+    .fila-tarea .label {
+        -fx-text-fill: white;
+        -fx-font-family: "Livvic Black";
+    }
+
+    .combo_box_emp {
+        -fx-background-color: white;
+        -fx-border-color: #cccccc;
+        -fx-border-width: 1px;
+        -fx-background-radius: 5px;
+        -fx-border-radius: 5px;
+        -fx-pref-width: 200px;
+    }
+    .combo_box_emp:hover {
+        -fx-border-color: #aaaaaa;
+    }
+    .combo_box_emp .list-cell {
+        -fx-text-fill: #333333;
+        -fx-padding: 4px 8px;
+    }
+    .combo_box_emp .arrow-button {
+        -fx-background-color: transparent;
+    }
+    .combo_box_emp .arrow {
+        -fx-background-color: #555555;
+    }
+    .combo-box-popup .list-cell {
+        -fx-text-fill: #333333;
+        -fx-background-color: white;
+    }
+    .combo-box-popup .list-cell:hover {
+        -fx-background-color: #f4f4f4;
+    }
+    .combo-box-popup .list-cell:filled:selected {
+        -fx-background-color: -fx-azul;
+        -fx-text-fill: white;
+    }
+
+    .scroll-pane-nuevo {
+        -fx-background-color: transparent;
+        -fx-border-color: transparent;
+        -fx-focus-color: transparent;
+        -fx-faint-focus-color: transparent;
+    }
+
+    .scroll-pane-nuevo .viewport {
+        -fx-background-color: transparent;
+    }

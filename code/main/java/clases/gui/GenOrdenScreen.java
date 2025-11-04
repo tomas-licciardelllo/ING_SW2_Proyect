@@ -19,7 +19,8 @@ public class GenOrdenScreen {
         VBox panelCentral = new VBox(20);
         panelCentral.getStyleClass().add("fondoSubMenu");
         panelCentral.setPadding(new Insets(25));
-        panelCentral.setStyle("-fx-background-color: #E0E0E0; -fx-background-radius: 15;");
+        panelCentral.getStyleClass().add("fondoSubMenu");
+        panelCentral.getStyleClass().add("panel-contenido-flotante");
         panelCentral.setAlignment(Pos.TOP_CENTER);
         panelCentral.setMaxWidth(800);
         ordentrabajoManager ordenManager = new ordentrabajoManager();
@@ -56,8 +57,7 @@ public class GenOrdenScreen {
         empleadoManager empleadoManager = new empleadoManager();
         List<empleado> empleadoResu = empleadoManager.obtenerTodos();
 
-        VBox tareasContenedor = new VBox(10);
-        tareasContenedor.setStyle("-fx-background-color: white; -fx-padding: 10; -fx-border-color: #cccccc; -fx-border-radius: 5;");
+        VBox tareasContenedor = new VBox(5);
         for(tarea t : tareas){
             Label lblTarea = new Label(t.getDescripcion());
             lblTarea.setMinWidth(Region.USE_PREF_SIZE);
@@ -66,6 +66,7 @@ public class GenOrdenScreen {
             ComboBox<empleado> empleados = new ComboBox<>();
             empleados.setPromptText("Asigne un Empleado...");
             empleados.getItems().addAll(empleadoResu);
+            empleados.getStyleClass().add("combo_box_emp");
 
             empleados.setConverter(new StringConverter<empleado>() {
                 @Override public String toString(empleado e) { return e == null ? null : e.getNombre(); }
@@ -78,17 +79,20 @@ public class GenOrdenScreen {
 
             HBox tareaRow = new HBox(lblTarea,espacio,empleados);
             tareaRow.setAlignment(Pos.CENTER_LEFT);
+            tareaRow.getStyleClass().add("fila-tarea");
             tareasContenedor.getChildren().add(tareaRow);
         }
 
         ScrollPane scrollPaneTareas = new ScrollPane(tareasContenedor);
         scrollPaneTareas.setFitToWidth(true);
         scrollPaneTareas.setPrefHeight(200);
+        scrollPaneTareas.getStyleClass().add("scroll-pane-nuevo");
+        scrollPaneTareas.setFocusTraversable(false);
 
         Button btnConfirmar = new Button("Confirmar");
         Button btnCancelar = new Button("Cancelar");
         btnConfirmar.getStyleClass().add("botonNormal");
-        btnCancelar.getStyleClass().add("botonNormal");
+        btnCancelar.getStyleClass().add("botonEliminar");
         HBox panelBotones = new HBox(15, btnConfirmar, btnCancelar);
         panelBotones.setAlignment(Pos.CENTER);
 
@@ -131,6 +135,7 @@ public class GenOrdenScreen {
         root.setCenter(fondo);
 
         Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("/resources/styles.css").toExternalForm());
         stage.setScene(scene);
         stage.setMaximized(true);
         stage.setTitle("ChapAPP - Generar Orden de Trabajo");
