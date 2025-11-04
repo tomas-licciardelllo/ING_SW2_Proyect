@@ -10,6 +10,10 @@ public class clienteManager {
         cli = new ClienteDAO();
     }
 
+    public void crearCliente(cliente c){
+        cli.create(c);
+    }
+
     public cliente subirCliente(cliente c){
        return cli.createMOD(c);
     }
@@ -24,5 +28,9 @@ public class clienteManager {
 
     public cliente traerCLiente(int id){
         return cli.read(id);
+    }
+
+    public List<cliente> obtenerTodosID(){
+        return cli.getAllwID();
     }
 }

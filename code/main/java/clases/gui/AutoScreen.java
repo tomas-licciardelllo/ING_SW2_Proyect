@@ -1,7 +1,6 @@
 package clases.gui;
 
-import clases.dao.AutoDAO;
-import clases.dao.ClienteDAO;
+import clases.Manager.autoManager;
 import clases.model.auto;
 import clases.model.cliente;
 import javafx.collections.FXCollections;
@@ -24,8 +23,8 @@ import java.util.List;
 
 public class AutoScreen {
     public AutoScreen(Stage stage){
-        AutoDAO autoDAO = new AutoDAO();
-        List<auto> listaAuto = autoDAO.getAll();
+        autoManager AM = new autoManager();
+        List<auto> listaAuto = AM.getAll();
         ObservableList<auto> data = FXCollections.observableArrayList(listaAuto);
         VBox formulario = new VBox(10);
         formulario.setMinSize(300, 200);
@@ -115,7 +114,7 @@ public class AutoScreen {
     private VBox ModificarAuto(BorderPane root, int idAutoBuscado, HBox anterior, VBox pantallaant){
         Node aux = root.getTop();
         root.setTop(null);
-        AutoDAO au = new AutoDAO();
+        autoManager au = new autoManager();
         auto auxAuto = au.read(idAutoBuscado);
         VBox pantalla = new VBox();
         pantalla.setMinSize(300,200);

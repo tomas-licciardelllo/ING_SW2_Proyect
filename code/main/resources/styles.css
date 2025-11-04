@@ -5,6 +5,9 @@
         -fx-grisosc: #808080;
         -fx-azul: #004E89;
         -fx-celeste: #008AC0;
+        -fx-alto:F2F2F2;
+        -fx-medio:DBDBDB;
+        -fx-bajo:C4C4C4;
     }
 
     .titulo{
@@ -25,6 +28,12 @@
         -fx-font-family: "Livvic Black";
         -fx-text-fill: white;
     }
+
+    .fuenteWhite{
+            -fx-font-size: 20px;
+            -fx-font-family: "Livvic Black";
+            -fx-text-fill: white;
+        }
 
 
     .img-cont{
@@ -73,6 +82,9 @@
 
     .fondo {
         -fx-background-color: -fx-celeste;
+    }
+    .fondoSubMenu{
+        -fx-background-color: linear-gradient(-fx-alto 0%, -fx-medio 50%, -fx-bajo 100%)
     }
 
     .botonHeader{
@@ -170,6 +182,8 @@
         -fx-border-width: 1;
         -fx-border-radius: 10;
         -fx-background-radius: 10;
+        -fx-fixed-cell-size: 45px;
+        -fx-alignment: CENTER_LEFT;
     }
     .table-view .filler, .table-view .column-header-background .filler {
         -fx-background-color: transparent;
@@ -239,6 +253,15 @@
        -fx-border-width: 1;
        -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 10, 0, 0, 4);
     }
+    .formularioAz{
+           -fx-padding: 20;
+           -fx-background-color: -fx-azul;
+           -fx-background-radius: 15;
+           -fx-border-radius: 15;
+           -fx-border-color: #cccccc;
+           -fx-border-width: 1;
+           -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 10, 0, 0, 4);
+        }
 
     .contenedores{
         -fx-background-color: #E8E8E8;
@@ -295,4 +318,139 @@
     }
     .menu-item:focused .label {
         -fx-text-fill: #0078D7;
+    }
+
+
+    .dialog-pane {
+        -fx-background-color: #FAFAFA;
+        -fx-border-color: -fx-celeste;
+        -fx-border-width: 2px;
+    }
+    .dialog-pane .button{
+        -fx-background-color: -fx-celeste;
+        -fx-text-fill: white;
+        -fx-font-family: "Livvic Regular";
+        -fx-font-weight: bold;
+        -fx-background-radius: 5px;
+    }
+    .dialog-pane .button:hover {
+        -fx-background-color: -fx-azul;
+    }
+    .alerta .header-panel {
+        -fx-background-color: -fx-azul;
+    }
+
+    .alerta .header-panel .label {
+        -fx-text-fill: white;
+        -fx-font-size: 18px;
+    }
+    .alerta .content.label {
+        -fx-font-size: 14px;
+        -fx-text-fill: #333;
+    }
+
+    .alertaConfirmacion .header-panel {
+        -fx-background-color: -fx-grisosc;
+    }
+
+    .alertaConfirmacion .header-panel .label {
+        -fx-text-fill: white;
+        -fx-font-size: 18px;
+    }
+    .alertaConfirmacion .content.label {
+        -fx-font-size: 14px;
+        -fx-text-fill: #333;
+    }
+
+    .alertaError .header-panel {
+            -fx-background-color: -fx-rojo;
+    }
+
+    .alertaError .header-panel .label {
+        -fx-text-fill: white;
+        -fx-font-size: 18px;
+    }
+    .alertaError .content.label {
+        -fx-font-size: 14px;
+        -fx-text-fill: #333;
+    }
+
+    .dialog-pane .ok-button {
+        -fx-background-color: #73BA36;
+        -fx-text-fill: white;
+        -fx-font-weight: bold;
+    }
+    .dialog-pane .ok-button:hover {
+        -fx-background-color: #65A22F;
+    }
+    .dialog-pane .cancel-button {
+        -fx-background-color: -fx-rojo;
+        -fx-text-fill: white;
+        -fx-font-weight: bold;
+    }
+    .dialog-pane .cancel-button:hover {
+        -fx-background-color: #E53935;
+    }
+
+
+    .panel-contenido-flotante {
+        -fx-background-color: white;
+        -fx-background-radius: 12px;
+        -fx-border-radius: 12px;
+        -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 20, 0, 0, 5);
+    }
+
+    .fila-tarea {
+        -fx-background-color: -fx-celeste;
+        -fx-padding: 8px;
+        -fx-background-radius: 8px;
+        -fx-border-radius: 8px;
+    }
+    .fila-tarea .label {
+        -fx-text-fill: white;
+        -fx-font-family: "Livvic Black";
+    }
+
+    .combo_box_emp {
+        -fx-background-color: white;
+        -fx-border-color: #cccccc;
+        -fx-border-width: 1px;
+        -fx-background-radius: 5px;
+        -fx-border-radius: 5px;
+        -fx-pref-width: 200px;
+    }
+    .combo_box_emp:hover {
+        -fx-border-color: #aaaaaa;
+    }
+    .combo_box_emp .list-cell {
+        -fx-text-fill: #333333;
+        -fx-padding: 4px 8px;
+    }
+    .combo_box_emp .arrow-button {
+        -fx-background-color: transparent;
+    }
+    .combo_box_emp .arrow {
+        -fx-background-color: #555555;
+    }
+    .combo-box-popup .list-cell {
+        -fx-text-fill: #333333;
+        -fx-background-color: white;
+    }
+    .combo-box-popup .list-cell:hover {
+        -fx-background-color: #f4f4f4;
+    }
+    .combo-box-popup .list-cell:filled:selected {
+        -fx-background-color: -fx-azul;
+        -fx-text-fill: white;
+    }
+
+    .scroll-pane-nuevo {
+        -fx-background-color: transparent;
+        -fx-border-color: transparent;
+        -fx-focus-color: transparent;
+        -fx-faint-focus-color: transparent;
+    }
+
+    .scroll-pane-nuevo .viewport {
+        -fx-background-color: transparent;
     }

@@ -7,8 +7,6 @@ import javafx.application.Application;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
-import javafx.fxml.Initializable;
-import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -21,17 +19,11 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.animation.PauseTransition;
-import clases.control.Conexion;
 import clases.model.*;
-
 import java.net.URL;
-import java.sql.CallableStatement;
-import java.sql.Connection;
 import java.time.LocalDate;
-import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 
 public class MainApp extends Application {
 

@@ -1,22 +1,19 @@
 package clases.gui;
 
-import clases.dao.ClienteDAO;
+import clases.Manager.clienteManager;
 import clases.model.cliente;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.StageStyle;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +21,7 @@ import java.util.Optional;
 public class SeleccionCliente extends Dialog<cliente> {
 
     private ObservableList<cliente> data;
-    private ClienteDAO clienteDAO = new ClienteDAO();
+    private clienteManager clienteMan = new clienteManager();
 
     public SeleccionCliente() {
         // --- Configuración básica del Diálogo ---
@@ -33,7 +30,7 @@ public class SeleccionCliente extends Dialog<cliente> {
         initStyle(StageStyle.UTILITY);
 
         // --- Cargar datos ---
-        List<cliente> listaClientes = clienteDAO.getAllwID();
+        List<cliente> listaClientes = clienteMan.obtenerTodosID();
         data = FXCollections.observableArrayList(listaClientes);
         FilteredList<cliente> filtroData = new FilteredList<>(data, p -> true);
 
@@ -145,7 +142,7 @@ public class SeleccionCliente extends Dialog<cliente> {
         Optional<cliente> resultado = dialog.showAndWait();
 
         resultado.ifPresent(nuevoCliente -> {
-            clienteDAO.create(nuevoCliente); // Guardar en la BD
+            clienteMan.crearCliente(nuevoCliente);
             data.add(nuevoCliente); // Agregar a la lista observable para que aparezca en la tabla
         });
     }

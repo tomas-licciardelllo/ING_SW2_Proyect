@@ -15,12 +15,11 @@ public class tareaManager {
         lista = ordenDAO.getAllTrabajos(idOrden);
         return lista;
     }
-
-    public List<tarea> getTareasPorOrden(int id)
+    public List<tarea>getTareasXOrden(int id)
     {
-        tareasDAO tD = new tareasDAO();
-        List<tarea> t = new ArrayList<>();
-        return t = tD.getTareasPorOrden(id);
+        List<tarea> tareas = new ArrayList<>();
+        tareasDAO tDao = new tareasDAO();
+        tareas = tDao.getTareasPorOrden(id);
+        return tareas;
     }
-
 }

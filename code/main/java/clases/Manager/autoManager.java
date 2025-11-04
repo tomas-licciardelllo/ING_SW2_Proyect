@@ -2,6 +2,7 @@ package clases.Manager;
 import clases.dao.AutoDAO;
 import clases.model.auto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class autoManager {
@@ -9,13 +10,13 @@ public class autoManager {
     public autoManager(){
         car = new AutoDAO();
     }
-    public auto traerAutoId(int id) { return car.read(id); }
     public List<auto> traerAutos(int id){
         return  car.getAutosByClienteId(id);
     }
-    public List<auto> getAll() { return car.getAll(); }
     public int crearOtraerAutoXpatente(auto a){
         return car.obtenerOcrearAutoPorPatente(a);
     }
-    public boolean actualizarAuto(auto a) { return car.update(a); }
+    public List<auto> getAll(){List<auto> au = new ArrayList<>();return au = car.getAll();}
+    public auto read(int id){return car.read(id);}
+    public void update(auto aux){car.update(aux);}
 }

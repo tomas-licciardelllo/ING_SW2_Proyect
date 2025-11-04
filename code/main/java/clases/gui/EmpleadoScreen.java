@@ -50,15 +50,8 @@ public class EmpleadoScreen {
         colDNI.setCellValueFactory(new PropertyValueFactory<>("documento"));
         TableColumn<empleado, String> colNombre = new TableColumn<>("NOMBRE");
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-        colDNI.prefWidthProperty().bind(empleados.widthProperty().multiply(0.3));
-        colNombre.prefWidthProperty().bind(empleados.widthProperty().multiply(0.7));
+        empleados.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         empleados.getColumns().addAll(colDNI, colNombre);
-        empleados.setFixedCellSize(35);
-        empleados.prefHeightProperty().bind(
-                empleados.fixedCellSizeProperty().multiply(
-                        javafx.beans.binding.Bindings.size(empleados.getItems()).add(1.01)
-                )
-        );
         empleados.setMaxHeight(600);
         javafx.scene.layout.VBox tablita = new javafx.scene.layout.VBox(empleados);
         tablita.setPadding(new Insets(10, 10, 0, 10));
