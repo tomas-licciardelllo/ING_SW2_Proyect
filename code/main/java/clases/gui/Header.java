@@ -26,6 +26,7 @@ public class Header {
         barra.setPrefWidth((double)220.0F);
         barra.prefHeightProperty().bind(stage.heightProperty());
         URL url = Header.class.getResource("/resources/img/logoJD.jpg");
+
         if (url != null) {
             Image logo = new Image(url.toExternalForm());
             ImageView logoIV = new ImageView(logo);

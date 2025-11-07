@@ -115,7 +115,6 @@ public class OrdenPendienteScreen {
                     btnVer.setText("Ver");
                 }
 
-
                 btnPdf.setOnAction(event -> {
                     ordentrabajo orden = getTableView().getItems().get(getIndex());
                     ordentrabajoManager ordenMan = new ordentrabajoManager();

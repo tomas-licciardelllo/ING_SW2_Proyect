@@ -34,7 +34,7 @@ public class SeleccionCliente extends Dialog<cliente> {
         data = FXCollections.observableArrayList(listaClientes);
         FilteredList<cliente> filtroData = new FilteredList<>(data, p -> true);
 
-        // --- UI del Diálogo (muy similar a tu ClienteScreen) ---
+        // --- UI del Diálogo ---
         BorderPane root = new BorderPane();
         root.setPrefSize(600, 400);
 
@@ -131,7 +131,6 @@ public class SeleccionCliente extends Dialog<cliente> {
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == guardarButtonType) {
                 if (txtNombre.getText().trim().isEmpty() || txtTelefono.getText().trim().isEmpty()) {
-                    // Aquí podrías mostrar una alerta de error
                     return null;
                 }
                 return new cliente(txtNombre.getText(), txtTelefono.getText(), new ArrayList<>(), new ArrayList<>());

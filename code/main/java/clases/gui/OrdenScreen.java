@@ -40,7 +40,7 @@ public class OrdenScreen {
             if (orden != null && orden.getPresupuesto() != null && orden.getPresupuesto().getAuto() != null) {
                 return new javafx.beans.property.SimpleStringProperty(orden.getPresupuesto().getAuto().getMarca());
             }
-            return new javafx.beans.property.SimpleStringProperty("OJO! NO HAY CHE");
+            return new javafx.beans.property.SimpleStringProperty("Error! NO SE ENCONTRO");
         });
 
         TableColumn<ordentrabajo, String> colModelo = new TableColumn<>("Vehículo Modelo");
@@ -49,7 +49,7 @@ public class OrdenScreen {
             if (orden != null && orden.getPresupuesto() != null && orden.getPresupuesto().getAuto() != null) {
                 return new javafx.beans.property.SimpleStringProperty(orden.getPresupuesto().getAuto().getModelo());
             }
-            return new javafx.beans.property.SimpleStringProperty("OJO! NO HAY CHE");
+            return new javafx.beans.property.SimpleStringProperty("Error! NO SE ENCONTRO");
         });
 
         TableColumn<ordentrabajo, String> colPatente = new TableColumn<>("Patente");
@@ -58,7 +58,7 @@ public class OrdenScreen {
             if (orden != null && orden.getPresupuesto() != null && orden.getPresupuesto().getAuto() != null) {
                 return new javafx.beans.property.SimpleStringProperty(orden.getPresupuesto().getAuto().getPatente());
             }
-            return new javafx.beans.property.SimpleStringProperty("OJO! NO HAY CHE");
+            return new javafx.beans.property.SimpleStringProperty("Error! NO SE ENCONTRO");
         });
         TableColumn<ordentrabajo, String> colTareas = new TableColumn<>("Tareas");
         colTareas.setCellValueFactory(cellData -> {

@@ -31,7 +31,7 @@ public class MainApp extends Application {
     public void start(Stage stage) {
         // --- Cargar fuentes ---
         Font.loadFont(getClass().getResourceAsStream("/font/Livvic-Regular.ttf"), 14);
-        Font.loadFont(getClass().getResourceAsStream("/font/Livvic-Bold.ttf"), 14);
+        Font.loadFont(getClass().getResourceAsStream("/font/Livvic-Bold.ttf"    ), 14);
         Font.loadFont(getClass().getResourceAsStream("/font/Livvic-Black.ttf"), 14);
 
         // --- Pantalla de carga ---

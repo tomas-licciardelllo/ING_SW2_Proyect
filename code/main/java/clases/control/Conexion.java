@@ -17,17 +17,17 @@ public class Conexion{
     private Conexion(){
         try {
                 conn = DriverManager.getConnection(URL);
-                System.out.println("CONESION ETAVLESIDA\n"); // ESTO DESPUÉS SE BORRA
+                System.out.println("CONEXION ESTABLECIDA\n"); // ESTO DESPUÉS SE BORRA
         }catch (SQLException e)
         {
-            System.out.println("NO SE A PODIO HACER LA CONETSION: "+e);
+            System.out.println("NO SE A PODIO ESTABLECER LA CONEXION: "+e);
         }
     }
-
+/*
     private static void createInstance(){
 
         INSTANCE = new Conexion();
-    }
+    }*/
     public static Conexion getInstance(){ // LO CAMBIE SÓLO PARA VER SI FUNCIONA, DESPUÉS SI QUIEREN HACEMOS LA FUNCIÓN DE 1 LINEA QUE HABÍA HECHO LEO
         if(INSTANCE == null)
         {

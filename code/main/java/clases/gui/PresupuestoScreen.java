@@ -29,8 +29,6 @@ public class PresupuestoScreen {
     private float costoTotal;
     private cliente clienteSeleccionado;
     private auto autoSeleccionado;
-    // La variable clienteSeleccionado ya no es necesaria a nivel de clase
-    // private cliente clienteSeleccionado;
 
     public PresupuestoScreen(Stage stage) {
 
@@ -227,17 +225,14 @@ public class PresupuestoScreen {
             }
         });
 
-        // Añadimos los 3 componentes directamente al VBox principal del panel
         repuestosContent.getChildren().addAll(repuestosInputBox, listaView, btnEliminar);
 
-        // Le decimos SOLO a la lista que crezca verticalmente
         VBox.setVgrow(listaView, Priority.ALWAYS);
 
 
         TitledPane repuestosPane = new TitledPane("4. Partes y Reparaciones", repuestosContent);
         repuestosPane.setCollapsible(false);
         repuestosPane.setStyle(cardStyle);
-        // Permitir que este panel crezca verticalmente
         GridPane.setVgrow(repuestosPane, Priority.ALWAYS);
 
 

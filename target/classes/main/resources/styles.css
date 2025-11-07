@@ -1,4 +1,4 @@
-    .root {
+ .root {
         -fx-rojo: #C11720;
         -fx-gris: #8E8D8D;
         -fx-grisclaro: #ADADAD;
@@ -408,6 +408,7 @@
     }
     .fila-tarea .label {
         -fx-text-fill: white;
+        -fx-font-family: "Livvic Black";
     }
 
     .combo_box_emp {
